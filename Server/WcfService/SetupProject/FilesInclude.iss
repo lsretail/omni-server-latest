@@ -4,21 +4,27 @@ Source: "..\Service\*.svc"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
 
 Source: "..\Service\bin\LSOmni*.dll"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
 Source: "..\Service\bin\LSRetail.Omni*.dll"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
+Source: "LSIcon.ico"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion; 
 
-Source: "..\Service\bin\CavemanTools.dll"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
-Source: "..\Service\bin\NLog.dll"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
 Source: "..\Service\bin\System.Runtime.Serialization.Primitives.dll"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
 Source: "..\Service\bin\System.Net.Http.dll"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
 Source: "..\Service\bin\System.Data.SqlClient.dll"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
 Source: "..\Service\bin\netstandard.dll"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
+
+Source: "..\Service\bin\NLog.dll"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
+Source: "..\Service\bin\Braintree.dll"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
+Source: "..\Service\bin\zxing*.*"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
 Source: "..\Service\bin\Newtonsoft.Json.dll"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
-Source: "LSIcon.ico"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion; 
 
 ; XML files
 Source: "..\Service\Xsl\notification.xsl"; DestDir: "{app}\{code:WcfDir}\Xsl\"; Flags: ignoreversion
 
 ; XML files
 Source: "..\Service\Xml\navdata.xml"; DestDir: "{app}\{code:WcfDir}\Xml\"; Flags: ignoreversion
+
+; SPG Notification
+Source: "..\Service\bin\FirebaseAdmin.*"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
+Source: "..\Service\bin\Google.Api.*.*"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
 
 ; Configs Files
 Source: "..\Service\Web.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion

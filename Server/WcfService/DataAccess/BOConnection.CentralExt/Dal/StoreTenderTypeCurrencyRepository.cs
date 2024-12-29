@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
@@ -15,7 +16,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public StoreTenderTypeCurrencyRepository(BOConfiguration config) : base(config)
+        public StoreTenderTypeCurrencyRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlcolumns = "mt.[Store No_],mt.[Tender Type Code],mt.[Currency Code],mt.[Description]";
 
@@ -118,6 +119,68 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             if (recordsRemaining < 0)
                 recordsRemaining = 0;
 
+            return list;
+        }
+
+        public List<ReplStoreTenderTypeCurrency> ReplicateStoreTenderTypeCurrencyTM(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref int recordsRemaining)
+        {
+            ProcessLastKey(lastKey, out string mainKey, out string delKey);
+            List<JscKey> keys = GetPrimaryKeys("LSC Tender Type Currency Setup$5ecfc871-5d82-43f1-9c54-59685e82318d");
+
+            SQLHelper.CheckForSQLInjection(storeId);
+            string where = " AND mt.[Store No_]='" + storeId + "'";
+            string sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatement(true, keys, where, false);
+            recordsRemaining = GetRecordCountTM(mainKey, sql, keys);
+
+            List<JscActions> actions = LoadDeleteActions(fullReplication, TABLEID, "LSC Tender Type Currency Setup$5ecfc871-5d82-43f1-9c54-59685e82318d", keys, batchSize, ref delKey);
+            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(true, keys, where, true);
+
+            List<ReplStoreTenderTypeCurrency> list = new List<ReplStoreTenderTypeCurrency>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    JscActions actKey = new JscActions(mainKey);
+                    SetWhereValues(command, actKey, keys, true, true);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        int cnt = 0;
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToStoreTenderTypeCurrency(reader, out mainKey));
+                            cnt++;
+                        }
+                        reader.Close();
+                        recordsRemaining -= cnt;
+                    }
+
+                    foreach (JscActions act in actions)
+                    {
+                        string[] par = act.ParamValue.Split(';');
+                        if (par.Length < 3 || par.Length != keys.Count)
+                            continue;
+
+                        list.Add(new ReplStoreTenderTypeCurrency()
+                        {
+                            StoreID = par[0],
+                            TenderTypeId = par[1],
+                            CurrencyCode = par[2],
+                            IsDeleted = true
+                        });
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            lastKey = $"R={mainKey};D={delKey};";
             return list;
         }
 

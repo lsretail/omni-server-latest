@@ -135,6 +135,68 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return list;
         }
 
+        public List<ReplCustomer> ReplicateMembersTM(int batchSize, bool fullReplication, ref string lastKey, ref int recordsRemaining)
+        {
+            ProcessLastKey(lastKey, out string mainKey, out string delKey);
+            List<JscKey> keys = GetPrimaryKeys("LSC Member Contact$5ecfc871-5d82-43f1-9c54-59685e82318d");
+
+            sqlcolumns += ",ma.[Club Code],ma.[Scheme Code]";
+            sqlfrom += " LEFT JOIN [" + navCompanyName + "LSC Member Account$5ecfc871-5d82-43f1-9c54-59685e82318d] ma ON ma.[No_]=mt.[Account No_]";
+
+            string sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatement(true, keys, false);
+            recordsRemaining = GetRecordCountTM(mainKey, sql, keys);
+
+            List<JscActions> actions = LoadDeleteActions(fullReplication, TABLEID, "LSC Member Contact$5ecfc871-5d82-43f1-9c54-59685e82318d", keys, batchSize, ref delKey);
+            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(true, keys, true);
+
+            List<ReplCustomer> list = new List<ReplCustomer>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    JscActions actKey = new JscActions(mainKey);
+                    SetWhereValues(command, actKey, keys, true, true);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        int cnt = 0;
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToCustomer(reader, out mainKey));
+                            cnt++;
+                        }
+                        reader.Close();
+                        recordsRemaining -= cnt;
+                    }
+
+                    foreach (JscActions act in actions)
+                    {
+                        string[] par = act.ParamValue.Split(';');
+                        if (par.Length < 2 || par.Length != keys.Count)
+                            continue;
+
+                        list.Add(new ReplCustomer()
+                        {
+                            AccountNumber = par[0],
+                            Id = par[1],
+                            IsDeleted = true
+                        });
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            lastKey = $"R={mainKey};D={delKey};";
+            return list;
+        }
+
         public List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned, Statistics stat)
         {
             if (maxNumberOfRowsReturned < 1)

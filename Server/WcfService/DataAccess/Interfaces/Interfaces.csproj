@@ -61,6 +61,7 @@
     <Compile Include="Repository\Loyalty\INotificationRepository.cs" />
     <Compile Include="Repository\Loyalty\IOneListRepository.cs" />
     <Compile Include="Repository\Loyalty\IOrderQueueRepository.cs" />
+    <Compile Include="Repository\Loyalty\ISpgNotificationRepository.cs" />
     <Compile Include="Repository\Loyalty\IPushNotificationRepository.cs" />
     <Compile Include="Repository\Loyalty\IResetPasswordRepository.cs" />
   </ItemGroup>

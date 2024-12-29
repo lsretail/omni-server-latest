@@ -121,6 +121,60 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return list;
         }
 
+        public List<ReplItemCategory> ReplicateItemCategoryTM(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref int recordsRemaining)
+        {
+            ProcessLastKey(lastKey, out string mainKey, out string delKey);
+            List<JscKey> keys = GetPrimaryKeys("Item Category$437dbf0e-84ff-417a-965d-ed2bb9650972");
+
+            string sql = "SELECT COUNT(DISTINCT mt.[Code])" + sqlfrom + GetWhereStatementWithStoreDist(true, keys, "it.[No_]", storeId, false);
+            recordsRemaining = GetRecordCountTM(mainKey, sql, keys);
+
+            List<JscActions> actions = LoadDeleteActions(fullReplication, TABLEID, "Item Category$437dbf0e-84ff-417a-965d-ed2bb9650972", keys, batchSize, ref delKey);
+            sql = GetSQL(fullReplication, batchSize, true, true) + sqlcolumns + sqlfrom + GetWhereStatementWithStoreDist(true, keys, "it.[No_]", storeId, true);
+
+            List<ReplItemCategory> list = new List<ReplItemCategory>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    JscActions actKey = new JscActions(mainKey);
+                    SetWhereValues(command, actKey, keys, true, true);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        int cnt = 0;
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToItemCategory(reader, out mainKey));
+                            cnt++;
+                        }
+                        reader.Close();
+                        recordsRemaining -= cnt;
+                    }
+
+                    foreach (JscActions act in actions)
+                    {
+                        list.Add(new ReplItemCategory()
+                        {
+                            Id = act.ParamValue,
+                            IsDeleted = true
+                        });
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            lastKey = $"R={mainKey};D={delKey};";
+            return list;
+        }
+
         public List<ItemCategory> ItemCategoriesGetAll(string storeId, string culture, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);

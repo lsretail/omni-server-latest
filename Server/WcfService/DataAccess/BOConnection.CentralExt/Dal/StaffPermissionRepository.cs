@@ -17,7 +17,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public StaffPermissionRepository(BOConfiguration config) : base(config)
+        public StaffPermissionRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlcolumns = "st.[ID]," +
                          "st.[Manager Privileges] AS FLD_A1,st.[Void Transaction] AS FLD_A2,st.[Void Line] AS FLD_A3,st.[Return in Transaction] AS FLD_A4,st.[Suspend Transaction] AS FLD_A5," +
@@ -38,7 +38,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             List<ReplStaffPermission> list = new List<ReplStaffPermission>();
 
             // get valid staff list
-            StaffRepository repo = new StaffRepository(config);
+            StaffRepository repo = new StaffRepository(config, LSCVersion);
             List<ReplStaff> staffs = repo.ReplicateStaff(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
             if (staffs.Count == 0)
                 return list;

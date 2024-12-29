@@ -62,6 +62,7 @@
     </Compile>
     <Compile Include="BaseRepository.cs" />
     <Compile Include="DeviceRepository.cs" />
+    <Compile Include="SpgNotificationRepository.cs" />
     <Compile Include="UserRepository.cs" />
     <Compile Include="ConfigRepository.cs" />
     <Compile Include="ImageCacheRepository..cs" />

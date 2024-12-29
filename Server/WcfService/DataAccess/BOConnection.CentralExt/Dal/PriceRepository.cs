@@ -21,7 +21,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
         private string sqlMcolumns = string.Empty;
         private string sqlMfrom = string.Empty;
 
-        public PriceRepository(BOConfiguration config) : base(config)
+        public PriceRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlMcolumns = "mt.[Store No_],mt.[Item No_],mt.[Variant Code],mt.[Unit of Measure Code],mt.[Customer Disc_ Group]," +
                           "mt.[Loyalty Scheme Code],mt.[Currency Code],mt.[Unit Price],mt.[Net Unit Price],mt.[Offer No_],mt.[Last Modify Date]," +
@@ -365,6 +365,86 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             if (recordsRemaining < 0)
                 recordsRemaining = 0;
 
+            return list;
+        }
+
+        public List<ReplPrice> ReplicatePriceLinesTM(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref int recordsRemaining)
+        {
+            ProcessLastKey(lastKey, out string mainKey, out string delKey);
+            List<JscKey> keys = GetPrimaryKeys("Price List Line$437dbf0e-84ff-417a-965d-ed2bb9650972");
+
+            // get records remaining
+            string sqlfrom = " FROM [" + navCompanyName + "Price List Line$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
+                             "JOIN [" + navCompanyName + "Price List Line$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] mt2 " +
+                             "ON mt2.[Price List Code]=mt.[Price List Code] AND mt2.[Line No_]=mt.[Line No_] " +
+                             "JOIN [" + navCompanyName + "LSC Store Price Group$5ecfc871-5d82-43f1-9c54-59685e82318d] spg " +
+                             "ON spg.[Store] = '" + storeId + "' AND spg.[Price Group Code]=mt.[Source No_]";
+            string where = " AND mt.[Asset Type]=10";
+            string sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatementWithStoreDist(true, keys, where, "mt.[Asset No_]", storeId, false);
+            recordsRemaining = GetRecordCountTM(mainKey, sql, keys);
+
+            List<JscActions> actions = LoadDeleteActions(fullReplication, TABLEID, "Price List Line$437dbf0e-84ff-417a-965d-ed2bb9650972", keys, batchSize, ref delKey);
+            sql = GetSQL(fullReplication, batchSize) +
+                "mt.[Asset No_],mt.[Source Type],mt.[Source No_],mt.[Starting Date],mt.[Ending Date]," +
+                "mt.[Currency Code],mt.[Variant Code],mt.[Unit of Measure Code],mt.[Minimum Quantity]," +
+                "mt.[Unit Price],mt.[Price Includes VAT],mt.[VAT Bus_ Posting Gr_ (Price)]," +
+                "mt2.[LSC Unit Price Including VAT$5ecfc871-5d82-43f1-9c54-59685e82318d],spg.[Priority]" +
+                sqlfrom + GetWhereStatementWithStoreDist(true, keys, where, "mt.[Asset No_]", storeId, true);
+
+            List<ReplPrice> list = new List<ReplPrice>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    JscActions actKey = new JscActions(mainKey);
+                    SetWhereValues(command, actKey, keys, true, true);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        int cnt = 0;
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToPriceLine(reader, storeId, out mainKey));
+                            cnt++;
+                        }
+                        reader.Close();
+                        recordsRemaining -= cnt;
+                    }
+
+                    foreach (JscActions act in actions)
+                    {
+                        /* we dont know the item id from delete action
+
+                        string[] par = act.ParamValue.Split(';');
+                        if (par.Length < 8 || par.Length != keys.Count)
+                            continue;
+
+                        list.Add(new ReplPrice()
+                        {
+                            ItemId = par[0],
+                            SaleType = Convert.ToInt32(par[1]),
+                            SaleCode = par[2],
+                            StartingDate = GetDateTimeFromNav(par[3]),
+                            CurrencyCode = par[4],
+                            VariantId = par[5],
+                            UnitOfMeasure = par[6],
+                            MinimumQuantity = Convert.ToDecimal(par[7]),
+                            IsDeleted = true
+                        });
+                        */
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            lastKey = $"R={mainKey};D={delKey};";
             return list;
         }
 

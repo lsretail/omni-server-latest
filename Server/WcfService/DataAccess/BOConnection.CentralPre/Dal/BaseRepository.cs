@@ -80,7 +80,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         if (navCompanyName.EndsWith("$") == false)
                             navCompanyName += "$";
 
-                        SQLHelper.CheckForSQLInjection(navCompanyName);
+                        SQLHelper.CheckForSQLInjection(navCompanyName, 1);
                     }
 
                     if (builder.ContainsKey("Initial Catalog"))

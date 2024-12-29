@@ -17,7 +17,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public ItemModifierRepository(BOConfiguration config) : base(config)
+        public ItemModifierRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlcolumns = "tsi.[Value],mt.[Code],mt.[Subcode],mt.[Description],mt.[Variant Code],mt.[Unit of Measure]," +
                          "mt.[Trigger Function],mt.[Trigger Code],mt.[Price Type],mt.[Price Handling],mt.[Amount _Percent]," +
@@ -141,6 +141,72 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             if (recordsRemaining < 0)
                 recordsRemaining = 0;
 
+            return list;
+        }
+
+        public List<ReplItemModifier> ReplicateItemModifierTM(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref int recordsRemaining)
+        {
+            ProcessLastKey(lastKey, out string mainKey, out string delKey);
+            List<JscKey> keys = GetPrimaryKeys("LSC Information Subcode$5ecfc871-5d82-43f1-9c54-59685e82318d");
+
+            string sql = "SELECT COUNT(*) " + sqlfrom + GetWhereStatementWithStoreDist(true, keys, "tsi.[Value]", storeId, false);
+            recordsRemaining = GetRecordCountTM(mainKey, sql, keys);
+
+            List<JscActions> actions = LoadDeleteActions(fullReplication, TABLEID, "LSC Information Subcode$5ecfc871-5d82-43f1-9c54-59685e82318d", keys, batchSize, ref delKey);
+            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom +
+                " LEFT JOIN [" + navCompanyName + "LSC Infocode$5ecfc871-5d82-43f1-9c54-59685e82318d] ic ON ic.[Code]=mt.[Code]" +
+                GetWhereStatementWithStoreDist(true, keys, "tsi.[Value]", storeId, true);
+
+            List<ReplItemModifier> list = new List<ReplItemModifier>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    JscActions actKey = new JscActions(mainKey);
+                    SetWhereValues(command, actKey, keys, true, true);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        int cnt = 0;
+                        while (reader.Read())
+                        {
+                            ReplItemModifier rec = ReaderToModifier(reader, out mainKey);
+                            list.Add(rec);
+                            if (rec.TriggerFunction == ItemTriggerFunction.Infocode)
+                            {
+                                list.AddRange(GetSubCodes(rec.TriggerCode, rec.Id));
+                            }
+                            cnt++;
+                        }
+                        reader.Close();
+                        recordsRemaining -= cnt;
+                    }
+
+                    foreach (JscActions act in actions)
+                    {
+                        string[] par = act.ParamValue.Split(';');
+                        if (par.Length < 2 || par.Length != keys.Count)
+                            continue;
+
+                        list.Add(new ReplItemModifier()
+                        {
+                            Code = par[0],
+                            SubCode = par[1],
+                            IsDeleted = true
+                        });
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            lastKey = $"R={mainKey};D={delKey};";
             return list;
         }
 

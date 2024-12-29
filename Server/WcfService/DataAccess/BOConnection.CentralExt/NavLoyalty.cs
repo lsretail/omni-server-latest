@@ -112,7 +112,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
         public virtual List<Customer> CustomerSearch(CustomerSearchType searchType, string search, int maxNumberOfRowsReturned, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
-            CustomerRepository rep = new CustomerRepository(config);
+            CustomerRepository rep = new CustomerRepository(config, LSCVersion);
             List<Customer> list = rep.CustomerSearch(searchType, search, maxNumberOfRowsReturned);
             logger.StatisticEndSub(ref stat, index);
             return list;
@@ -300,7 +300,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
             logger.StatisticStartSub(false, ref stat, out int index);
 
             decimal rate = 0;
-            CurrencyExchRateRepository rep = new CurrencyExchRateRepository(config);
+            CurrencyExchRateRepository rep = new CurrencyExchRateRepository(config, LSCVersion);
 
             if (string.IsNullOrEmpty(currency) == false)
             {
@@ -411,7 +411,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
         public virtual UnitOfMeasure ItemUOMGetByIds(string itemid, string uomid, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
-            ItemUOMRepository rep = new ItemUOMRepository(config);
+            ItemUOMRepository rep = new ItemUOMRepository(config, LSCVersion);
             UnitOfMeasure data = rep.ItemUOMGetByIds(itemid, uomid);
             logger.StatisticEndSub(ref stat, index);
             return data;
@@ -452,7 +452,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
 
         public virtual List<Hierarchy> HierarchyGet(string storeId, Statistics stat)
         {
-            HierarchyRepository rep = new HierarchyRepository(config);
+            HierarchyRepository rep = new HierarchyRepository(config, LSCVersion);
             return rep.HierarchyGetByStore(storeId, stat);
         }
 
@@ -699,10 +699,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
         {
             logger.StatisticStartSub(false, ref stat, out int index);
             StoreRepository rep = new StoreRepository(config, LSCVersion);
-            AttributeValueRepository arep = new AttributeValueRepository(config);
+            AttributeValueRepository arep = new AttributeValueRepository(config, LSCVersion);
+            ImageRepository irep = new ImageRepository(config, LSCVersion);
             Store store = rep.StoreLoyGetById(id, true);
             if (store != null)
             {
+                store.Images = irep.ImageGetByKey("LSC Store", store.Id, string.Empty, string.Empty, 0, false);
                 store.StoreHours = StoreHoursGetByStoreId(id, stat);
                 store.Attributes = arep.AttributesGet(id, AttributeLinkType.Store, stat);
             }
@@ -714,12 +716,14 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
         {
             logger.StatisticStartSub(false, ref stat, out int index);
             StoreRepository rep = new StoreRepository(config, LSCVersion);
-            AttributeValueRepository arep = new AttributeValueRepository(config);
+            ImageRepository irep = new ImageRepository(config, LSCVersion);
+            AttributeValueRepository arep = new AttributeValueRepository(config, LSCVersion);
             List<Store> stores = rep.StoreLoyGetAll(storeType, inclDetails);
             if (inclDetails)
             {
                 foreach (Store store in stores)
                 {
+                    store.Images = irep.ImageGetByKey("LSC Store", store.Id, string.Empty, string.Empty, 0, false);
                     store.StoreHours = StoreHoursGetByStoreId(store.Id, stat);
                     store.Attributes = arep.AttributesGet(store.Id, AttributeLinkType.Store, stat);
                 }
@@ -744,60 +748,87 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
         public virtual List<ReplImageLink> ReplEcommImageLinks(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             ImageRepository rep = new ImageRepository(config, LSCVersion);
-            return rep.ReplEcommImageLink(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+            if (rep.UseTimeStampReplication())
+                return rep.ReplEcommImageLinkTM(batchSize, fullReplication, ref lastKey, ref recordsRemaining);
+            else
+                return rep.ReplEcommImageLink(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplImage> ReplEcommImages(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             ImageRepository rep = new ImageRepository(config, LSCVersion);
-            return rep.ReplEcommImage(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+            if (rep.UseTimeStampReplication())
+                return rep.ReplEcommImageTM(batchSize, fullReplication, ref lastKey, ref recordsRemaining);
+            else
+                return rep.ReplEcommImage(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplAttribute> ReplEcommAttribute(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            AttributeRepository rep = new AttributeRepository(config);
-            return rep.ReplicateEcommAttribute(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+            AttributeRepository rep = new AttributeRepository(config, LSCVersion);
+            if (rep.UseTimeStampReplication())
+                return rep.ReplicateEcommAttributeTM(batchSize, fullReplication, ref lastKey, ref recordsRemaining);
+            else
+                return rep.ReplicateEcommAttribute(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplAttributeValue> ReplEcommAttributeValue(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            AttributeValueRepository rep = new AttributeValueRepository(config);
-            return rep.ReplicateEcommAttributeValue(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+            AttributeValueRepository rep = new AttributeValueRepository(config, LSCVersion);
+            if (rep.UseTimeStampReplication())
+                return rep.ReplicateEcommAttributeValueTM(batchSize, fullReplication, ref lastKey, ref recordsRemaining);
+            else
+                return rep.ReplicateEcommAttributeValue(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplAttributeOptionValue> ReplEcommAttributeOptionValue(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            AttributeOptionValueRepository rep = new AttributeOptionValueRepository(config);
-            return rep.ReplicateEcommAttributeOptionValue(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+            AttributeOptionValueRepository rep = new AttributeOptionValueRepository(config, LSCVersion);
+            if (rep.UseTimeStampReplication())
+                return rep.ReplicateEcommAttributeOptionValueTM(batchSize, fullReplication, ref lastKey, ref recordsRemaining);
+            else
+                return rep.ReplicateEcommAttributeOptionValue(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplLoyVendorItemMapping> ReplEcommVendorItemMapping(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            VendorItemMappingRepository rep = new VendorItemMappingRepository(config);
-            return rep.ReplicateEcommVendorItemMapping(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+            VendorItemMappingRepository rep = new VendorItemMappingRepository(config, LSCVersion);
+            if (rep.UseTimeStampReplication())
+                return rep.ReplicateEcommVendorItemMappingTM(storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
+            else
+                return rep.ReplicateEcommVendorItemMapping(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplDataTranslation> ReplEcommDataTranslation(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            DataTranslationRepository rep = new DataTranslationRepository(config);
-            return rep.ReplicateEcommDataTranslation(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+            DataTranslationRepository rep = new DataTranslationRepository(config, LSCVersion);
+            if (rep.UseTimeStampReplication())
+                return rep.ReplicateEcommDataTranslationTM(batchSize, fullReplication, ref lastKey, ref recordsRemaining);
+            else
+                return rep.ReplicateEcommDataTranslation(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplDataTranslation> ReplEcommItemHtmlTranslation(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            DataTranslationRepository rep = new DataTranslationRepository(config);
-            return rep.ReplicateEcommItemHtmlTranslation(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+            DataTranslationRepository rep = new DataTranslationRepository(config, LSCVersion);
+            if (rep.UseTimeStampReplication())
+                return rep.ReplicateEcommItemHtmlTranslationTM(storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
+            else
+                return rep.ReplicateEcommItemHtmlTranslation(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplDataTranslation> ReplEcommDealHtmlTranslation(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            DataTranslationRepository rep = new DataTranslationRepository(config);
-            return rep.ReplicateEcommDealHtmlTranslation(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+            DataTranslationRepository rep = new DataTranslationRepository(config, LSCVersion);
+            if (rep.UseTimeStampReplication())
+                return rep.ReplicateEcommDealHtmlTranslationTM(storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
+            else
+                return rep.ReplicateEcommDealHtmlTranslation(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplDataTranslationLangCode> ReplicateEcommDataTranslationLangCode(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            DataTranslationRepository rep = new DataTranslationRepository(config);
+            DataTranslationRepository rep = new DataTranslationRepository(config, LSCVersion);
             return rep.ReplicateEcommDataTranslationLangCode();
         }
 
@@ -810,7 +841,10 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
         public virtual List<ReplCustomer> ReplEcommMember(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             ContactRepository rep = new ContactRepository(config, LSCVersion);
-            return rep.ReplicateMembers(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+            if (rep.UseTimeStampReplication())
+                return rep.ReplicateMembersTM(batchSize, fullReplication, ref lastKey, ref recordsRemaining);
+            else
+                return rep.ReplicateMembers(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplCountryCode> ReplEcommCountryCode(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

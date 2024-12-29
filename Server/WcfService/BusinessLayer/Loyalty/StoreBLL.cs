@@ -19,14 +19,14 @@ namespace LSOmni.BLL.Loyalty
         public virtual List<Store> StoresGetAll(StoreGetType storeType, bool inclDetails, bool inclImages, Statistics stat)
         {
             List<Store> stores = BOLoyConnection.StoresGetAll(storeType, inclDetails, stat);
-            if (inclImages || inclDetails)
+
+            ImageBLL imgBLL = new ImageBLL(config);
+            foreach (Store store in stores)
             {
-                ImageBLL imgBLL = new ImageBLL(config);
-                foreach (Store store in stores)
-                {
+                if (inclImages)
                     store.Images = imgBLL.ImagesGetByKey("LSC Store", store.Id, string.Empty, string.Empty, 0, inclImages, stat);
+                if (inclDetails)
                     store.StoreServices = StoreServicesGetByStoreId(store.Id, stat);
-                }
             }
             return stores;
         }
@@ -35,7 +35,9 @@ namespace LSOmni.BLL.Loyalty
         {
             Store store = BOLoyConnection.StoreGetById(id, stat);
             ImageBLL imgBLL = new ImageBLL(config);
-            store.Images = imgBLL.ImagesGetByKey("LSC Store", store.Id, string.Empty, string.Empty, 0, inclImages, stat);
+            if (inclImages)
+                store.Images = imgBLL.ImagesGetByKey("LSC Store", store.Id, string.Empty, string.Empty, 0, inclImages, stat);
+
             store.StoreServices = StoreServicesGetByStoreId(store.Id, stat);
             return store;
         }

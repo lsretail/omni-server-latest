@@ -25,14 +25,15 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
         protected static CultureInfo CultInfo = CultureInfo.CurrentUICulture;
         protected static LSLogger logger = new LSLogger();
         protected static BOConfiguration config = null;
+        protected static int useTMReplication = 0;
 
         private static readonly Object myLock = new Object();
 
-        public static Version LSCVersion = new Version("24.0");
+        public static Version LSCVersion = new Version("25.0");
 
         public BaseRepository(BOConfiguration config, Version navVersion) : this(config)
         {
-            if(navVersion != null)
+            if (navVersion != null)
                 LSCVersion = navVersion;
         }
 
@@ -80,7 +81,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                         if (navCompanyName.EndsWith("$") == false)
                             navCompanyName += "$";
 
-                        SQLHelper.CheckForSQLInjection(navCompanyName);
+                        SQLHelper.CheckForSQLInjection(navCompanyName, 1);
                     }
 
                     if (builder.ContainsKey("Initial Catalog"))
@@ -114,7 +115,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                     }
                 }
 
-                CurrencyRepository currRep = new CurrencyRepository(config);
+                CurrencyRepository currRep = new CurrencyRepository(config, LSCVersion);
                 CurrencyLocalUnit = currRep.CurrencyLoyGetById(curcode, culture);
                 if (CurrencyLocalUnit == null)
                     CurrencyLocalUnit = new Currency();
@@ -274,6 +275,23 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return cnt;
         }
 
+        public int GetRecordCountTM(string lastKey, string replSQL, List<JscKey> keys)
+        {
+            int cnt = 0;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = replSQL;
+                    JscActions act = new JscActions(lastKey);
+                    SetWhereValues(command, act, keys, true, true);
+                    cnt = (int)command.ExecuteScalar();
+                }
+            }
+            return cnt;
+        }
+
         public string GetSQL(bool fullreplication, int batchsize, bool gettimestamp = true, bool distinct = false)
         {
             string sql;
@@ -297,8 +315,10 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
         private string GetSQLAction(int tableid, string lastkey, bool orderby)
         {
             string sql = string.Format(" FROM [{0}{1}] p1 WHERE p1.[Table No_]={2} AND p1.[Entry No_]>{3} {4}",
-                navCompanyName, "LSC Preaction$5ecfc871-5d82-43f1-9c54-59685e82318d", tableid, lastkey,
-                "GROUP BY p1.[Table No_],p1.[Key]");
+                    navCompanyName,
+                    UseTimeStampReplication() ? "LSC Commerce Action$5ecfc871-5d82-43f1-9c54-59685e82318d" : "LSC Preaction$5ecfc871-5d82-43f1-9c54-59685e82318d", 
+                    tableid, lastkey,
+                    "GROUP BY p1.[Table No_],p1.[Key]");
 
             if (orderby)
                 sql += " ORDER BY [EntryNo]";
@@ -318,11 +338,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = GetSQL(true, batchsize, false) +
-                                        "p1.[Table No_],p1.[Key],MAX(p1.[Entry No_]) AS [EntryNo],(SELECT TOP 1 p2.[Action] " +
-                                        "FROM [" + navCompanyName + "LSC Preaction$5ecfc871-5d82-43f1-9c54-59685e82318d] p2 " +
-                                        "WHERE p2.[Table No_]=p1.[Table No_] AND p2.[Key]=p1.[Key] " +
-                                        "ORDER BY p2.[Entry No_] DESC) AS [Action]" +
-                                        GetSQLAction(tableid, lastkey, true);
+                            "p1.[Table No_],p1.[Key],MAX(p1.[Entry No_]) AS [EntryNo],(SELECT TOP 1 p2.[Action] " +
+                            "FROM [" + navCompanyName + 
+                            (UseTimeStampReplication() ? "LSC Commerce Action$5ecfc871-5d82-43f1-9c54-59685e82318d] p2 " : "LSC Preaction$5ecfc871-5d82-43f1-9c54-59685e82318d] p2 ") +
+                            "WHERE p2.[Table No_]=p1.[Table No_] AND p2.[Key]=p1.[Key] " +
+                            "ORDER BY p2.[Entry No_] DESC) AS [Action]" +
+                            GetSQLAction(tableid, lastkey, true);
 
                     TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -345,6 +366,61 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                             actions.Add(act);
                         }
                         reader.Close();
+                    }
+                }
+                connection.Close();
+            }
+            return actions;
+        }
+
+        public List<JscActions> LoadDeleteActions(bool fullReplication, int tableId, string tableName, List<JscKey> keys, int batchSize, ref string delKey)
+        {
+            List<JscActions> actions = new List<JscActions>();
+            if (fullReplication)
+                return actions;
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = GetSQL(true, batchSize, false) +
+                                        "[Table No_],[Key],[Entry No_] " +
+                                        "FROM [" + navCompanyName + "LSC Delete Preaction$5ecfc871-5d82-43f1-9c54-59685e82318d] " +
+                                        "WHERE [Table No_]=@tid AND [Entry No_]>@eid ORDER BY [Entry No_]";
+                    command.Parameters.AddWithValue("@tid", tableId);
+                    command.Parameters.AddWithValue("@eid", delKey);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        using (SqlCommand command2 = connection.CreateCommand())
+                        {
+                            command2.CommandText = string.Format("SELECT COUNT(1) FROM [{0}{1}] mt{2}",
+                                navCompanyName, tableName, GetWhereStatement(false, keys, false));
+
+                            while (reader.Read())
+                            {
+                                JscActions act = new JscActions()
+                                {
+                                    id = SQLHelper.GetInt64(reader[2]),
+                                    Type = DDStatementType.Delete,
+                                    TableId = SQLHelper.GetInt32(reader[0]),
+                                    ParamValue = SQLHelper.GetString(reader[1])
+                                };
+
+                                if (String.IsNullOrEmpty(act.ParamValue))
+                                    continue;
+
+                                SetWhereValues(command2, act, keys, true);
+                                int rows = command2.ExecuteNonQuery();
+                                if (rows > 0)
+                                    continue;
+
+                                delKey = act.id.ToString();
+                                actions.Add(act);
+                            }
+                            reader.Close();
+                        }
                     }
                 }
                 connection.Close();
@@ -386,6 +462,48 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return keys;
         }
 
+        public void ProcessLastKey(string lastKey, out string mainKey, out string delKey, out string actKey)
+        {
+            ProcessLastKey(lastKey, out mainKey, out delKey);
+            actKey = GetKeyValue(lastKey, 'A');
+        }
+
+        public void ProcessLastKey(string lastKey, out string mainKey, out string delKey)
+        {
+            if (string.IsNullOrEmpty(lastKey))
+                lastKey = "0";
+
+            if (lastKey.StartsWith("R="))
+            {
+                mainKey = GetKeyValue(lastKey, 'R');
+                delKey = GetKeyValue(lastKey, 'D');
+            }
+            else
+            {
+                mainKey = (string.IsNullOrEmpty(lastKey)) ? "0" : lastKey;
+                delKey = "0";
+            }
+        }
+
+        private string GetKeyValue(string lastKey, char keyId)
+        {
+            if (string.IsNullOrWhiteSpace(lastKey))
+                return("0");
+
+            int start = lastKey.IndexOf($"{keyId}=");
+            if (start == -1)
+                return("0");
+
+            start += 2;
+            // Key for timestamp replication
+            int end = lastKey.IndexOf(";", start);
+            if (end == -1)
+                return("0");
+
+            string key = lastKey.Substring(start, end - start);
+            return key;
+        }
+
         public string GetWhereStatementWithStoreDist(bool fullreplication, List<JscKey> keys, string whereaddon, string itemcolumnname, string storeid, bool includeorder)
         {
             return GetWhereStatement(fullreplication, keys, whereaddon + GetSQLStoreDist(itemcolumnname, storeid, fullreplication), includeorder);
@@ -407,12 +525,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             if (fullreplication)
             {
                 return " AND " + itemcolumnname + " IN (SELECT id.[Item No_] FROM [" + navCompanyName + "LSC Store Group Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] sg" +
-                   " LEFT JOIN [" + navCompanyName + "LSC Item Distribution$5ecfc871-5d82-43f1-9c54-59685e82318d] id ON id.[Code]=sg.[Store Group]" +
+                   " LEFT JOIN [" + navCompanyName + "LSC Item Distribution$5ecfc871-5d82-43f1-9c54-59685e82318d] id ON id.[Code]=sg.[Store Group] OR id.[Code]='" + storeid + "'" +
                    " WHERE " + ((usestatus) ? "(id.[Status]=0 OR id.[Status]=2) AND " : string.Empty) + "sg.[Store Code]='" + storeid + "')";
             }
 
             return " AND " + itemcolumnname + " IN (SELECT id.[Item No_] FROM [" + navCompanyName + "LSC Store Group Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] sg" +
-                   " LEFT JOIN [" + navCompanyName + "LSC Item Distribution$5ecfc871-5d82-43f1-9c54-59685e82318d] id ON id.[Code]=sg.[Store Group]" +
+                   " LEFT JOIN [" + navCompanyName + "LSC Item Distribution$5ecfc871-5d82-43f1-9c54-59685e82318d] id ON id.[Code]=sg.[Store Group] OR id.[Code]='" + storeid + "'" +
                    " WHERE sg.[Store Code]='" + storeid + "')";
         }
 
@@ -546,6 +664,44 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                 }
             }
             return true;
+        }
+
+        public bool UseTimeStampReplication()
+        {
+            if (LSCVersion < new Version("25.0"))
+                return false;
+
+            // 0=not set, 1=use, 2=not use
+            if (useTMReplication > 0)
+                return (useTMReplication == 1);
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT 1 FROM sys.columns WHERE [Name]='Use Preaction Timestamp' AND Object_ID=Object_ID('[" + navCompanyName + "LSC Distribution Location$5ecfc871-5d82-43f1-9c54-59685e82318d]')";
+                    bool hascol = SQLHelper.GetBool(command.ExecuteScalar());
+                    if (hascol == false)
+                        return false;
+                        
+                    command.CommandText = "SELECT dl.[Use Preaction Timestamp] " +
+                        "FROM [" + navCompanyName + "LSC Retail Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] rs " +
+                        "JOIN [" + navCompanyName + "LSC Distribution Location$5ecfc871-5d82-43f1-9c54-59685e82318d] dl " +
+                        "ON dl.[Code]=rs.[Distribution Location]";
+                    try
+                    {
+                        bool useTM = ConvertTo.SafeBoolean(command.ExecuteScalar().ToString());
+                        useTMReplication = (useTM) ? 1 : 2;
+                    }
+                    catch
+                    {
+                        logger.Error(config.LSKey.Key, "[Use Preaction Timestamp] not found in Dist.Location table");
+                    }
+                }
+                connection.Close();
+            }
+            return useTMReplication == 1;
         }
 
         public static byte[] StringToByteArray(String hex)

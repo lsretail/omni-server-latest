@@ -115,7 +115,7 @@ namespace LSOmni.Service
         bool OneListDeleteById(string oneListId);
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        OneList OneListItemModify(string onelistId, OneListItem item, bool remove, bool calculate);
+        OneList OneListItemModify(string onelistId, OneListItem item, string cardId, bool remove, bool calculate);
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         bool OneListLinking(string oneListId, string cardId, string email, string phone, LinkStatus status);

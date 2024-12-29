@@ -449,8 +449,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     QRMessage = XMLHelper.GetString(order.QRData),
 
                     OrderProductionTimeInMin = 0,
-                    ContactCommentIcon = string.Empty,
                     ContactComment = false,
+                    ContactCommentIcon = string.Empty,
                     CreatedOnPOSTermnial = string.Empty,
                     QueueCounter = string.Empty,
                     KitchenStatus = string.Empty,

@@ -72,6 +72,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         ScanPayGo_Staff = 1182,
         ScanPayGo_CheckPayAuth = 1183,
 
+        SPG_Notify_FollowerUpdate = 1185,
+        SPG_Notify_ItemUpdate = 1186,
+
         Inventory_Mask_IncludeCycleCounting = 1191,
 
         Cache_Image_DurationInMinutes = 1200,

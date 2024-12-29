@@ -171,6 +171,70 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return list;
         }
 
+        public List<ReplItemVariantRegistration> ReplicateItemVariantRegistrationTM(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref int recordsRemaining)
+        {
+            ProcessLastKey(lastKey, out string mainKey, out string delKey);
+            List<JscKey> keys = GetPrimaryKeys("LSC Item Variant Registration$5ecfc871-5d82-43f1-9c54-59685e82318d");
+
+            string sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatementWithStoreDist(true, keys, "mt.[Item No_]", storeId, false);
+            recordsRemaining = GetRecordCountTM(mainKey, sql, keys);
+
+            List<JscActions> actions = LoadDeleteActions(fullReplication, TABLEID, "LSC Item Variant Registration$5ecfc871-5d82-43f1-9c54-59685e82318d", keys, batchSize, ref delKey);
+            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatementWithStoreDist(true, keys, "mt.[Item No_]", storeId, true);
+
+            List<ReplItemVariantRegistration> list = new List<ReplItemVariantRegistration>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    JscActions actKey = new JscActions(mainKey);
+                    SetWhereValues(command, actKey, keys, true, true);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        int cnt = 0;
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToItemVariantRegistration(reader, out mainKey));
+                            cnt++;
+                        }
+                        reader.Close();
+                        recordsRemaining -= cnt;
+                    }
+
+                    foreach (JscActions act in actions)
+                    {
+                        string[] par = act.ParamValue.Split(';');
+                        if (par.Length < 7 || par.Length != keys.Count)
+                            continue;
+
+                        list.Add(new ReplItemVariantRegistration()
+                        {
+                            ItemId = par[0],
+                            VariantDimension1 = par[1],
+                            VariantDimension2 = par[2],
+                            VariantDimension3 = par[3],
+                            VariantDimension4 = par[4],
+                            VariantDimension5 = par[5],
+                            VariantDimension6 = par[6],
+                            IsDeleted = true
+                        });
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            lastKey = $"R={mainKey};D={delKey};";
+            return list;
+        }
+
         public List<ReplItemVariant> ReplicateItemVariant(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (string.IsNullOrWhiteSpace(lastKey))
@@ -263,6 +327,65 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             if (recordsRemaining < 0)
                 recordsRemaining = 0;
 
+            return list;
+        }
+
+        public List<ReplItemVariant> ReplicateItemVariantTM(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref int recordsRemaining)
+        {
+            ProcessLastKey(lastKey, out string mainKey, out string delKey);
+            List<JscKey> keys = GetPrimaryKeys("Item Variant$437dbf0e-84ff-417a-965d-ed2bb9650972");
+
+            string sql = "SELECT COUNT(*)" + sqlorgfrom + GetWhereStatementWithStoreDist(true, keys, "mt.[Item No_]", storeId, false);
+            recordsRemaining = GetRecordCountTM(mainKey, sql, keys);
+
+            List<JscActions> actions = LoadDeleteActions(fullReplication, TABLEORGID, "Item Variant$437dbf0e-84ff-417a-965d-ed2bb9650972", keys, batchSize, ref delKey);
+            sql = GetSQL(fullReplication, batchSize) + sqlorgcolumns + sqlorgfrom + GetWhereStatementWithStoreDist(true, keys, "mt.[Item No_]", storeId, true);
+
+            List<ReplItemVariant> list = new List<ReplItemVariant>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    JscActions actKey = new JscActions(mainKey);
+                    SetWhereValues(command, actKey, keys, true, true);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        int cnt = 0;
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToItemVariant(reader, out mainKey));
+                            cnt++;
+                        }
+                        reader.Close();
+                        recordsRemaining -= cnt;
+                    }
+
+                    foreach (JscActions act in actions)
+                    {
+                        string[] par = act.ParamValue.Split(';');
+                        if (par.Length < 2 || par.Length != keys.Count)
+                            continue;
+
+                        list.Add(new ReplItemVariant()
+                        {
+                            ItemId = par[0],
+                            VariantId = par[1],
+                            IsDeleted = true
+                        });
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            lastKey = $"R={mainKey};D={delKey};";
             return list;
         }
 

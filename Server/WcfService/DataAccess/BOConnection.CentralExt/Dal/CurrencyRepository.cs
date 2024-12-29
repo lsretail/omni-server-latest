@@ -18,7 +18,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public CurrencyRepository(BOConfiguration config) : base(config)
+        public CurrencyRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlcolumns = "mt.[Code],mt.[Description],mt.[Amount Rounding Precision],mt.[Invoice Rounding Type],mt.[Invoice Rounding Precision]," +
                          "mt2.[LSC POS Currency Symbol$5ecfc871-5d82-43f1-9c54-59685e82318d],mt2.[LSC Placement Of Curr_ Symbol$5ecfc871-5d82-43f1-9c54-59685e82318d]";
@@ -117,36 +117,58 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return list;
         }
 
-        public ReplCurrency CurrencyGetByStoreId(string storeId)
+        public List<ReplCurrency> ReplicateCurrencyTM(int batchSize, bool fullReplication, ref string lastKey, ref int recordsRemaining)
         {
-            StoreRepository storeRep = new StoreRepository(config, LSCVersion);
-            ReplStore store = storeRep.StoreGetById(storeId);
-            return CurrencyGetById(store.Currency);
-        }
+            ProcessLastKey(lastKey, out string mainKey, out string delKey);
+            List<JscKey> keys = GetPrimaryKeys("Currency$437dbf0e-84ff-417a-965d-ed2bb9650972");
 
-        public ReplCurrency CurrencyGetById(string id)
-        {
-            ReplCurrency currency = null;
+            string sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatement(true, keys, false);
+            recordsRemaining = GetRecordCountTM(mainKey, sql, keys);
+
+            List<JscActions> actions = LoadDeleteActions(fullReplication, TABLEID, "Currency$437dbf0e-84ff-417a-965d-ed2bb9650972", keys, batchSize, ref delKey);
+            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(true, keys, true);
+
+            List<ReplCurrency> list = new List<ReplCurrency>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = GetSQL(false, 0) + sqlcolumns + sqlfrom + " WHERE mt.[Code]=@id";
-                    command.Parameters.AddWithValue("@id", id);
-                    TraceSqlCommand(command);
                     connection.Open();
+                    command.CommandText = sql;
+
+                    JscActions actKey = new JscActions(mainKey);
+                    SetWhereValues(command, actKey, keys, true, true);
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        if (reader.Read())
+                        int cnt = 0;
+                        while (reader.Read())
                         {
-                            currency = ReaderToCurrency(reader, out string ts);
+                            list.Add(ReaderToCurrency(reader, out mainKey));
+                            cnt++;
                         }
                         reader.Close();
+                        recordsRemaining -= cnt;
+                    }
+
+                    foreach (JscActions act in actions)
+                    {
+                        list.Add(new ReplCurrency()
+                        {
+                            CurrencyCode = act.ParamValue,
+                            IsDeleted = true
+                        });
                     }
                     connection.Close();
                 }
             }
-            return currency;
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            lastKey = $"R={mainKey};D={delKey};";
+            return list;
         }
 
         private ReplCurrency ReaderToCurrency(SqlDataReader reader, out string timestamp)

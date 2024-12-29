@@ -48,7 +48,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://dhqsrvomni010:9047/LscRelease/WS/CRONUS%20-%20LS%20Central/Codeunit/OmniWr" +
+        [global::System.Configuration.DefaultSettingValueAttribute("http://ishqr90q4tqm:9047/LSCentral24/WS/CRONUS%20-%20LS%20Central/Codeunit/OmniWr" +
             "apper")]
         public string LSOmni_DataAccess_BOConnection_PreCommon_NavWS_OmniWrapper {
             get {
@@ -59,8 +59,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://dhqsrvomni001:9047/LscRelease/WS/CRONUS%20-%20LS%20Central/Codeunit/Activi" +
-            "ty")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://ishqr90q4tqm:9047/LSCentralDev/WS/CRONUS%20-%20LS%20Central/Codeunit/Activ" +
+            "ity")]
         public string LSOmni_DataAccess_BOConnection_PreCommon_LSActivity15_Activity {
             get {
                 return ((string)(this["LSOmni_DataAccess_BOConnection_PreCommon_LSActivity15_Activity"]));
@@ -81,8 +81,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://dhqsrvomni001:9047/LscRelease/WS/CRONUS%20-%20LS%20Central/Codeunit/ODataR" +
-            "equest")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://dhqsrvomni001:9047/LSCentralDev/WS/CRONUS%20-%20LS%20Central/Codeunit/ODat" +
+            "aRequest")]
         public string LSOmni_DataAccess_BOConnection_PreCommon_LSOData_ODataRequest {
             get {
                 return ((string)(this["LSOmni_DataAccess_BOConnection_PreCommon_LSOData_ODataRequest"]));
@@ -92,8 +92,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://ishqr90q4tqm:9047/LSCentralDev/WS/CRONUS%20-%20LS%20Central/Codeunit/OmniW" +
-            "rapper")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://dhqsrvomni010:9047/LSCentralMa/WS/ReplaceWithAPercentEncodedCompanyName/Co" +
+            "deunit/OmniWrapper")]
         public string LSOmni_DataAccess_BOConnection_PreCommon_LSCentral25_OmniWrapper {
             get {
                 return ((string)(this["LSOmni_DataAccess_BOConnection_PreCommon_LSCentral25_OmniWrapper"]));

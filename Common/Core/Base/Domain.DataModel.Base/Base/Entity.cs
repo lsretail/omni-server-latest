@@ -23,16 +23,16 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Base
             Id = id == null ? NewKey() : id;
         }
 
-        protected string NewKey()
+        protected static string NewKey()
         {
             return Guid.NewGuid().ToString().ToUpper();
         }
 
         protected void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            if (propertyName != null && PropertyChanged != null)
+            if (propertyName != null)
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
         }
     }

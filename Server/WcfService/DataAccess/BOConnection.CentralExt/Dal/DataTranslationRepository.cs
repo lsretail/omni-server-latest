@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
@@ -23,7 +24,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
         private string sqlDealHtmlcolumns = string.Empty;
         private string sqlDealHtmlfrom = string.Empty;
 
-        public DataTranslationRepository(BOConfiguration config) : base(config)
+        public DataTranslationRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlcolumns = "mt.[Key],mt.[Language Code],mt.[Translation],mt.[Translation ID]";
             sqlfrom = " FROM [" + navCompanyName + "LSC Data Translation$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
@@ -131,6 +132,66 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return list;
         }
 
+        public List<ReplDataTranslation> ReplicateEcommDataTranslationTM(int batchSize, bool fullReplication, ref string lastKey, ref int recordsRemaining)
+        {
+            ProcessLastKey(lastKey, out string mainKey, out string delKey);
+            List<JscKey> keys = GetPrimaryKeys("LSC Data Translation$5ecfc871-5d82-43f1-9c54-59685e82318d");
+
+            string sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatement(true, keys, false);
+            recordsRemaining = GetRecordCountTM(mainKey, sql, keys);
+
+            List<JscActions> actions = LoadDeleteActions(fullReplication, TABLEID, "LSC Data Translation$5ecfc871-5d82-43f1-9c54-59685e82318d", keys, batchSize, ref delKey);
+            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(true, keys, true);
+
+            List<ReplDataTranslation> list = new List<ReplDataTranslation>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    JscActions actKey = new JscActions(mainKey);
+                    SetWhereValues(command, actKey, keys, true, true);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        int cnt = 0;
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToDataTranslation(reader, out mainKey));
+                            cnt++;
+                        }
+                        reader.Close();
+                        recordsRemaining -= cnt;
+                    }
+
+                    foreach (JscActions act in actions)
+                    {
+                        string[] par = act.ParamValue.Split(';');
+                        if (par.Length < 3 || par.Length != keys.Count)
+                            continue;
+
+                        list.Add(new ReplDataTranslation()
+                        {
+                            TranslationId = par[0],
+                            Key = par[1],
+                            LanguageCode = par[2],
+                            IsDeleted = true
+                        });
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            lastKey = $"R={mainKey};D={delKey};";
+            return list;
+        }
+
         public List<ReplDataTranslation> ReplicateEcommItemHtmlTranslation(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (string.IsNullOrWhiteSpace(lastKey))
@@ -226,6 +287,65 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return list;
         }
 
+        public List<ReplDataTranslation> ReplicateEcommItemHtmlTranslationTM(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref int recordsRemaining)
+        {
+            ProcessLastKey(lastKey, out string mainKey, out string delKey);
+            List<JscKey> keys = GetPrimaryKeys("LSC Item HTML ML$5ecfc871-5d82-43f1-9c54-59685e82318d");
+
+            string sql = "SELECT COUNT(*)" + sqlHtmlfrom + GetWhereStatementWithStoreDist(true, keys, "mt.[Item No_]", storeId, false);
+            recordsRemaining = GetRecordCountTM(mainKey, sql, keys);
+
+            List<JscActions> actions = LoadDeleteActions(fullReplication, TABLEHTMLID, "LSC Item HTML ML$5ecfc871-5d82-43f1-9c54-59685e82318d", keys, batchSize, ref delKey);
+            sql = GetSQL(fullReplication, batchSize) + sqlHtmlcolumns + sqlHtmlfrom + GetWhereStatementWithStoreDist(true, keys, "mt.[Item No_]", storeId, true);
+
+            List<ReplDataTranslation> list = new List<ReplDataTranslation>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    JscActions actKey = new JscActions(mainKey);
+                    SetWhereValues(command, actKey, keys, true, true);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        int cnt = 0;
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToHtmlTranslation(reader, out mainKey));
+                            cnt++;
+                        }
+                        reader.Close();
+                        recordsRemaining -= cnt;
+                    }
+
+                    foreach (JscActions act in actions)
+                    {
+                        string[] par = act.ParamValue.Split(';');
+                        if (par.Length < 2 || par.Length != keys.Count)
+                            continue;
+
+                        list.Add(new ReplDataTranslation()
+                        {
+                            TranslationId = par[0],
+                            LanguageCode = par[1],
+                            IsDeleted = true
+                        });
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            lastKey = $"R={mainKey};D={delKey};";
+            return list;
+        }
+
         public List<ReplDataTranslation> ReplicateEcommDealHtmlTranslation(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (string.IsNullOrWhiteSpace(lastKey))
@@ -318,6 +438,65 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             if (recordsRemaining < 0)
                 recordsRemaining = 0;
 
+            return list;
+        }
+
+        public List<ReplDataTranslation> ReplicateEcommDealHtmlTranslationTM(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref int recordsRemaining)
+        {
+            ProcessLastKey(lastKey, out string mainKey, out string delKey);
+            List<JscKey> keys = GetPrimaryKeys("LSC Offer HTML ML$5ecfc871-5d82-43f1-9c54-59685e82318d");
+
+            string sql = "SELECT COUNT(*)" + sqlDealHtmlfrom + GetWhereStatement(true, keys, false);
+            recordsRemaining = GetRecordCountTM(mainKey, sql, keys);
+
+            List<JscActions> actions = LoadDeleteActions(fullReplication, TABLEDEALHTMLID, "LSC Offer HTML ML$5ecfc871-5d82-43f1-9c54-59685e82318d", keys, batchSize, ref delKey);
+            sql = GetSQL(fullReplication, batchSize) + sqlDealHtmlcolumns + sqlDealHtmlfrom + GetWhereStatement(true, keys, true);
+
+            List<ReplDataTranslation> list = new List<ReplDataTranslation>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    JscActions actKey = new JscActions(mainKey);
+                    SetWhereValues(command, actKey, keys, true, true);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        int cnt = 0;
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToDealHtmlTranslation(reader, out mainKey));
+                            cnt++;
+                        }
+                        reader.Close();
+                        recordsRemaining -= cnt;
+                    }
+
+                    foreach (JscActions act in actions)
+                    {
+                        string[] par = act.ParamValue.Split(';');
+                        if (par.Length < 2 || par.Length != keys.Count)
+                            continue;
+
+                        list.Add(new ReplDataTranslation()
+                        {
+                            TranslationId = par[0],
+                            LanguageCode = par[1],
+                            IsDeleted = true
+                        });
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            lastKey = $"R={mainKey};D={delKey};";
             return list;
         }
 

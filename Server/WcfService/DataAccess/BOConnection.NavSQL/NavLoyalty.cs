@@ -589,9 +589,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
         {
             StoreRepository rep = new StoreRepository(config, NAVVersion);
             AttributeValueRepository arep = new AttributeValueRepository(config);
+            ImageRepository irep = new ImageRepository(config);
             Store store = rep.StoreLoyGetById(id);
             if (store != null)
             {
+                store.Images = irep.ImageGetByKey("LSC Store", store.Id, string.Empty, string.Empty, 0, false);
                 store.StoreHours = StoreHoursGetByStoreId(id);
                 store.Attributes = arep.AttributesGet(id, AttributeLinkType.Store);
             }
@@ -602,11 +604,13 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
         {
             StoreRepository rep = new StoreRepository(config, NAVVersion);
             AttributeValueRepository arep = new AttributeValueRepository(config);
+            ImageRepository irep = new ImageRepository(config);
             List<Store> stores = rep.StoreLoyGetAll(storeType);
             if (inclDetails)
             {
                 foreach (Store store in stores)
                 {
+                    store.Images = irep.ImageGetByKey("LSC Store", store.Id, string.Empty, string.Empty, 0, false);
                     store.StoreHours = StoreHoursGetByStoreId(store.Id);
                     store.Attributes = arep.AttributesGet(store.Id, AttributeLinkType.Store);
                 }

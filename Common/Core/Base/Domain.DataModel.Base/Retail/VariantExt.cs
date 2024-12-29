@@ -48,6 +48,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
         [DataMember]
         public int DisplayOrder { get; set; }
 
+        public string tmpValue { get; set; }
+
         // Sets the IsSelected variable of each variant in the variantsExt's variant list. 
         // If the variant description is found in variantRegistration then isSelected = true,
         // else it is set to isSelected = false

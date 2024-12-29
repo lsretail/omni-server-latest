@@ -251,7 +251,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             string uid = SQLHelper.GetString(reader["Unit of Measure"]);
             if (string.IsNullOrEmpty(uid) == false)
             {
-                UnitOfMeasureRepository urepo = new UnitOfMeasureRepository(config);
+                UnitOfMeasureRepository urepo = new UnitOfMeasureRepository(config, LSCVersion);
                 ritem.UnitOfMeasure = urepo.UnitOfMeasureGetById(uid);
                 ritem.UnitOfMeasure.ItemId = ritem.Id;
             }

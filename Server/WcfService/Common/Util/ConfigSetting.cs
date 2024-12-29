@@ -13,13 +13,13 @@ namespace LSOmni.Common.Util
                 return false;
         }
 
-        public static string GetString(string key, string defaultValue = "")
+        public static string GetString(string key, string defaultValue = null)
         {
             if (ConfigurationManager.AppSettings[key] != null)
                 return ConfigurationManager.AppSettings[key].ToString();
             else
             {
-                if (string.IsNullOrWhiteSpace(defaultValue))
+                if (defaultValue == null)
                     throw new ArgumentException("AppSettings key: " + key + " doesn't exists in the current configurations", key);
                 else
                     return defaultValue;

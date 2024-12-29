@@ -91,6 +91,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public string Name { get; set; }
         [DataMember]
+        public string DataEntryCodes { get; set; }
+        [DataMember]
         public int TenderFunction { get; set; }
         [DataMember]
         public string ChangeTenderId { get; set; }

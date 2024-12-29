@@ -269,7 +269,7 @@ namespace LSOmni.Service
             try
             {
                 // Nav returns version number, Ax returns "AX"
-                CheckToken(config);
+                bll.CheckToken(config);
                 ver = bll.PingWs(out string centralVer);
 
                 tenVer = config.SettingsGetByKey(ConfigKey.LSNAV_Version);

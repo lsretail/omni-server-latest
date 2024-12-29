@@ -37,12 +37,24 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         #region Item
 
-        public LoyItem ItemGetById(string id, Statistics stat)
+        public LoyItem ItemGetById(string itemId, string storeNo, bool inclDetails, Statistics stat)
         {
             logger.StatisticStartSub(true, ref stat, out int index);
 
+            if (LSCVersion >= new Version("26.0"))
+            {
+                string data = "{ \"itemNo\": \"" + itemId + "\", \"storeNo\": \"" + storeNo + "\", \"barcode\": \"\", " +
+                                "\"includeDetail\": " + inclDetails.ToString().ToLower() + " }";
+
+                string ret = SendToOData("GetItem_GetItem", data, false);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
+                LoyItem it = map.GetItem(ret, inclDetails);
+                logger.StatisticEndSub(ref stat, index);
+                return it;
+            }
+
             NAVWebXml xml = new NAVWebXml();
-            string xmlRequest = xml.GetGeneralWebRequestXML("Item", "No.", id);
+            string xmlRequest = xml.GetGeneralWebRequestXML("Item", "No.", itemId);
             string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
@@ -103,6 +115,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             logger.StatisticStartSub(true, ref stat, out int index);
 
+            if (LSCVersion >= new Version("26.0"))
+            {
+                string data = "{ \"barcode\": \"" + barcode + "\", \"storeNo\": \"" + storeId + "\", \"itemNo\": \"\", \"includeDetail\":false }";
+
+                string ret = SendToOData("GetItem_GetItem", data, false);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
+                LoyItem it = map.GetItem(ret, false);
+                logger.StatisticEndSub(ref stat, index);
+                return it;
+            }
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("LSC Barcodes", "Barcode No.", barcode);
             string xmlResponse = RunOperation(xmlRequest, true);
@@ -121,7 +144,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             field = table.FieldList.Find(f => f.FieldName.Equals("Unit of Measure Code"));
             string uomId = field.Values[0];
 
-            LoyItem item = ItemGetById(itemId, stat);
+            LoyItem item = ItemGetById(itemId, storeId, true, stat);
 
             if (string.IsNullOrWhiteSpace(variantId) == false)
             {
@@ -397,7 +420,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             ItemRepository rep = new ItemRepository(config);
             foreach (string no in itemno)
             {
-                items.Add(ItemGetById(no, stat));
+                items.Add(ItemGetById(no, storeId, details, stat));
             }
             logger.StatisticEndSub(ref stat, index);
             return items;
@@ -1479,6 +1502,18 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             logger.StatisticStartSub(true, ref stat, out int index);
 
+            if (LSCVersion >= new Version("26.0"))
+            {
+                string data = "{ \"storeGetType\": \"4\", \"searchText\": \"" + search +  "\", " +
+                                "\"includeDetail\": false }";
+
+                string ret = SendToOData("GetStores_GetStores", data, false);
+                SetupJMapping map = new SetupJMapping(config.IsJson);
+                List<Store> slist = map.GetStores(ret, 0);
+                logger.StatisticEndSub(ref stat, index);
+                return slist;
+            }
+
             search = string.Format("*{0}*", search);
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("LSC Store", "Name", search);
@@ -2005,7 +2040,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             order.PointsRewarded = pointEarned;
             order.PointsUsedInOrder = pointUsed;
 
-            Store store = StoreGetById(order.StoreId, stat);
+            Store store = StoreGetById(order.StoreId, false, 0, stat);
             order.StoreName = store.Description;
             order.StoreCurrency = store.Currency.Id;
 
@@ -2220,7 +2255,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             SalesEntry entry = map.MapFromRootToRetailTransaction(root);
 
-            Store store = StoreGetById(entry.StoreId, stat);
+            Store store = StoreGetById(entry.StoreId, false, 0, stat);
             entry.StoreName = store.Description;
             if (string.IsNullOrEmpty(entry.StoreCurrency))
                 entry.StoreCurrency = store.Currency.Id;
@@ -2242,7 +2277,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             foreach (SalesEntryLine line in entry.Lines)
             {
-                LoyItem item = ItemGetById(line.ItemId, stat);
+                LoyItem item = ItemGetById(line.ItemId, storeId, true, stat);
                 line.ItemDescription = item.Description;
 
                 if (item.VariantsRegistration.Count > 0)
@@ -2278,9 +2313,46 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         #region Store
 
-        public Store StoreGetById(string id, Statistics stat)
+        private string GetCodes(string storeId, bool price)
+        {
+            string codes = string.Empty;
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest;
+            if (price)
+                xmlRequest = xml.GetGeneralWebRequestXML("LSC Store Price Group", "Store", storeId);
+            else
+                xmlRequest = xml.GetGeneralWebRequestXML("LSC Store Group Setup", "Store Code", storeId);
+
+            string xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+            if (table != null && table.NumberOfValues > 0)
+            {
+                string fld = (price) ? "Price Group Code" : "Store Group";
+                XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals(fld));
+                foreach (string c in field.Values)
+                {
+                    codes += c + ";";
+                }
+            }
+            return codes;
+        }
+
+        public Store StoreGetById(string id, bool inclDetails, int offset, Statistics stat)
         {
             logger.StatisticStartSub(true, ref stat, out int index);
+
+            if (LSCVersion >= new Version("26.0"))
+            {
+                string data = "{ \"storeGetType\": \"0\", \"searchText\": \"" + id + "\", " +
+                                "\"includeDetail\": " + inclDetails.ToString().ToLower() + " }";
+
+                string ret = SendToOData("GetStores_GetStores", data, false);
+                SetupJMapping map = new SetupJMapping(config.IsJson);
+                List<Store> slist = map.GetStores(ret, offset);
+                logger.StatisticEndSub(ref stat, index);
+                return slist.FirstOrDefault();
+            }
 
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("LSC Store", "No.", id);
@@ -2297,6 +2369,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             }
 
             Store store = list.FirstOrDefault();
+            store.PriceGroupCodes = GetCodes(store.Id, true);
+            store.StoreGroupCodes = GetCodes(store.Id, false);
+
             if (store.Currency == null || string.IsNullOrEmpty(store.Currency.Id))
             {
                 xmlRequest = xml.GetGeneralWebRequestXML("General Ledger Setup");
@@ -2340,9 +2415,22 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return store;
         }
 
-        public List<Store> StoresGet(StoreGetType storeType, bool inclDetails, Statistics stat)
+        public List<Store> StoresGet(StoreGetType storeType, bool inclDetails, int offset, Statistics stat)
         {
             logger.StatisticStartSub(true, ref stat, out int index);
+
+            if (LSCVersion >= new Version("26.0"))
+            {
+                int searchType = (int)storeType + 1;
+                string data = "{ \"storeGetType\": \"" + searchType.ToString() + "\", \"searchText\": \"\", " +
+                                "\"includeDetail\": " + inclDetails.ToString().ToLower() + " }";
+
+                string ret = SendToOData("GetStores_GetStores", data, false);
+                SetupJMapping map = new SetupJMapping(config.IsJson);
+                List<Store> slist = map.GetStores(ret, offset);
+                logger.StatisticEndSub(ref stat, index);
+                return slist;
+            }
 
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest;
@@ -2384,6 +2472,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             foreach (Store store in list)
             {
+                store.PriceGroupCodes = GetCodes(store.Id, true);
+                store.StoreGroupCodes = GetCodes(store.Id, false);
+
                 if (store.Currency == null || string.IsNullOrEmpty(store.Currency.Id))
                 {
                     store.Currency = new Currency(localCur);

@@ -102,7 +102,20 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Setup
         public DateTime Created { get; set; }
     }
 
+
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    public enum NotificationPermission
+    {
+        [EnumMember]
+        Unknown = 0,
+        [EnumMember]
+        None = 1,
+        [EnumMember]
+        All = 2,
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    [Flags]
     public enum NotificationStatus
     {
         [EnumMember]

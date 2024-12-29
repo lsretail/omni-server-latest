@@ -463,6 +463,56 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
+        private string GetStoreGroups(string storeId)
+        {
+            string codes = string.Empty;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT [Store Group] FROM [" + navCompanyName + "LSC Store Group Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Store Code]=@id";
+                    command.Parameters.AddWithValue("@id", storeId);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            codes += SQLHelper.GetString(reader["Store Group"]) + ";";
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            return codes;
+        }
+
+        private string GetPriceGroups(string storeId)
+        {
+            string codes = string.Empty;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT [Price Group Code] FROM [" + navCompanyName + "LSC Store Price Group$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Store]=@id";
+                    command.Parameters.AddWithValue("@id", storeId);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            codes += SQLHelper.GetString(reader["Price Group Code"]) + ";";
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            return codes;
+        }
+
         private ReturnPolicy ReaderToPolicy(SqlDataReader reader)
         {
             return new ReturnPolicy()
@@ -522,6 +572,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 Currency = SQLHelper.GetString(reader["Currency Code"])
             };
 
+            store.StoreGroupCodes = GetStoreGroups(store.Id);
+            store.PriceGroupCodes = GetPriceGroups(store.Id);
             if (string.IsNullOrWhiteSpace(store.Currency))
                 store.Currency = SQLHelper.GetString(reader["LCYCode"]);
 
@@ -561,6 +613,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     Type = AddressType.Store
                 }
             };
+
+            store.StoreGroupCodes = GetStoreGroups(store.Id);
+            store.PriceGroupCodes = GetPriceGroups(store.Id);
 
             string cur = SQLHelper.GetString(reader["Currency Code"]);
             if (string.IsNullOrWhiteSpace(cur))

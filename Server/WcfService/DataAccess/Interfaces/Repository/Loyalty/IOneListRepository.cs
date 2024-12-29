@@ -14,5 +14,6 @@ namespace LSOmni.DataAccess.Interface.Repository.Loyalty
         List<OneList> OneListSearch(string contactId, string search, int maxNumberOfLists, ListType listType, bool includeLines, Statistics stat);
         void OneListLinking(string oneListId, string cardId, string name, LinkStatus status, Statistics stat);
         void OneListRemoveLinking(string cardId, Statistics stat);
+        List<OneListLink> OneListLinkGetById(string oneListId);
     }
 }

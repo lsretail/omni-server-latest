@@ -226,6 +226,160 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return list;
         }
 
+        public List<ReplItem> ReplicateItemsTM(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            ProcessLastKey(lastKey, out string mainKey, out string delKey, out string actKey);
+            List<JscKey> keys = GetPrimaryKeys("Item$437dbf0e-84ff-417a-965d-ed2bb9650972");
+
+            // get records remaining
+            string sql = "SELECT COUNT(*)" + sqlFrom + GetWhereStatementWithStoreDist(true, keys, "mt.[No_]", storeId, false);
+            recordsRemaining = GetRecordCountTM(mainKey, sql, keys);
+
+            List<JscActions> actions = LoadDeleteActions(fullReplication, TABLEID, "Item$437dbf0e-84ff-417a-965d-ed2bb9650972", keys, batchSize, ref delKey);
+
+            if (fullReplication == false)
+            {
+                string tmplastkey = actKey;
+                string mainlastkey = actKey;
+                int tmpcount = 0;
+
+                // get item HTML
+                List<JscActions> itemact = LoadActions(fullReplication, TABLEHTMLID, batchSize, ref tmplastkey, ref tmpcount);
+                if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
+                    mainlastkey = tmplastkey;
+
+                // get item status
+                tmplastkey = actKey;
+                itemact.AddRange(LoadActions(fullReplication, 10001404, batchSize, ref tmplastkey, ref tmpcount));
+                if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
+                    mainlastkey = tmplastkey;
+
+                // get distribution changes 
+                tmplastkey = actKey;
+                itemact.AddRange(LoadActions(fullReplication, 10000704, batchSize, ref tmplastkey, ref tmpcount));
+                if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
+                    mainlastkey = tmplastkey;
+
+                actKey = mainlastkey;
+
+                foreach (JscActions act in itemact)
+                {
+                    string[] parvalues = act.ParamValue.Split(';');
+                    JscActions newact;
+
+                    if (act.TableId == 10000704)
+                    {
+                        newact = new JscActions()
+                        {
+                            id = act.id,
+                            TableId = act.TableId,
+                            Type = DDStatementType.Insert,
+                            ParamValue = (parvalues.Length > 2) ? parvalues[2] : act.ParamValue
+                        };
+                    }
+                    else
+                    {
+                        newact = new JscActions()
+                        {
+                            id = act.id,
+                            TableId = act.TableId,
+                            Type = DDStatementType.Insert,
+                            ParamValue = (parvalues.Length == 1) ? act.ParamValue : parvalues[0]
+                        };
+                    }
+
+                    JscActions findme = actions.Find(x => x.ParamValue.Equals(newact.ParamValue));
+                    if (findme == null)
+                    {
+                        actions.Add(newact);
+                    }
+                }
+                recordsRemaining += actions.Count;
+            }
+
+            string col = sqlColumns + ",(SELECT TOP(1) id.[Status] FROM [" + navCompanyName + "LSC Store Group Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] sg " +
+             "LEFT JOIN [" + navCompanyName + "LSC Item Distribution$5ecfc871-5d82-43f1-9c54-59685e82318d] id ON id.[Code]=sg.[Store Group] " +
+             "WHERE sg.[Store Code]='" + storeId + "' AND id.[Item No_]=mt.[No_] ORDER BY sg.[Level] DESC) AS DistStatus";
+
+            // get records
+            sql = GetSQL(fullReplication, batchSize) + col + sqlFrom + GetWhereStatementWithStoreDist(true, keys, "mt.[No_]", storeId, true, false);
+
+            List<ReplItem> list = new List<ReplItem>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    JscActions actPrimKey = new JscActions(mainKey);
+                    SetWhereValues(command, actPrimKey, keys, true, true);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            ReplItem item = ReaderToItem(reader, out mainKey);
+                            list.Add(item);
+                            recordsRemaining--;
+
+                            // remove from other sub tables insert actions 
+                            JscActions findme = actions.Find(x => x.ParamValue.Equals(item.Id) && x.Type == DDStatementType.Insert);
+                            if (findme != null)
+                            {
+                                actions.Remove(findme);
+                                recordsRemaining--;
+                            }
+                        }
+                        reader.Close();
+                    }
+
+                    if (fullReplication == false)
+                    {
+                        command.CommandText = GetSQL(fullReplication, batchSize) + col + sqlFrom + GetWhereStatementWithStoreDist(false, keys, "mt.[No_]", storeId, true, false);
+
+                        bool first = true;
+                        foreach (JscActions act in actions)
+                        {
+                            if (act.Type == DDStatementType.Delete)
+                            {
+                                list.Add(new ReplItem()
+                                {
+                                    Id = act.ParamValue,
+                                    IsDeleted = true
+                                });
+                                recordsRemaining--;
+                                continue;
+                            }
+
+                            if (SetWhereValues(command, act, keys, first) == false)
+                                continue;
+
+                            TraceSqlCommand(command);
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    list.Add(ReaderToItem(reader, out string ts));
+                                    recordsRemaining--;
+                                }
+                                reader.Close();
+                            }
+                            first = false;
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            lastKey = $"R={mainKey};D={delKey};A={actKey};";
+            return list;
+        }
+
         public List<LoyItem> ReplicateEcommFullItems(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (string.IsNullOrWhiteSpace(lastKey))
@@ -544,14 +698,14 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
 
         public LoyItem ItemLoyGetByBarcode(string code, string storeId, string culture, Statistics stat)
         {
-            BarcodeRepository brepo = new BarcodeRepository(config);
+            BarcodeRepository brepo = new BarcodeRepository(config, LSCVersion);
             Barcode bcode = brepo.BarcodeGetByCode(code);
             if (bcode == null)  // barcode not found
                 return null;
 
             LoyItem item = ItemLoyGetById(bcode.ItemId, storeId, string.Empty, true, stat);
 
-            PriceRepository prepo = new PriceRepository(config);
+            PriceRepository prepo = new PriceRepository(config, LSCVersion);
             Price price = prepo.PriceGetByIds(bcode.ItemId, storeId, bcode.VariantId, bcode.UnitOfMeasureId, culture);
             if (price == null)
                 price = prepo.PriceGetByIds(bcode.ItemId, storeId, bcode.VariantId, string.Empty, culture);
@@ -582,7 +736,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
 
             if (string.IsNullOrWhiteSpace(bcode.UnitOfMeasureId) == false)
             {
-                ItemUOMRepository ireop = new ItemUOMRepository(config);
+                ItemUOMRepository ireop = new ItemUOMRepository(config, LSCVersion);
                 item.UnitOfMeasures.Clear();
                 item.UnitOfMeasures.Add(new UnitOfMeasure()
                 {
@@ -777,13 +931,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             if (incldetails == false)
                 return item;
 
-            ItemLocationRepository locrep = new ItemLocationRepository(config);
+            ItemLocationRepository locrep = new ItemLocationRepository(config, LSCVersion);
             item.Locations = locrep.ItemLocationGetByItemId(item.Id, storeId, stat);
 
-            PriceRepository pricerep = new PriceRepository(config);
+            PriceRepository pricerep = new PriceRepository(config, LSCVersion);
             item.Prices = pricerep.PricesGetByItemId(item.Id, storeId, culture, stat);
 
-            ItemUOMRepository uomrep = new ItemUOMRepository(config);
+            ItemUOMRepository uomrep = new ItemUOMRepository(config, LSCVersion);
             item.UnitOfMeasures = uomrep.ItemUOMGetByItemId(item.Id, stat);
 
             ItemVariantRegistrationRepository varrep = new ItemVariantRegistrationRepository(config, LSCVersion);
@@ -792,13 +946,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             ExtendedVariantValuesRepository extvarrep = new ExtendedVariantValuesRepository(config, LSCVersion);
             item.VariantsExt = extvarrep.VariantRegGetByItemId(item.Id, stat);
             
-            AttributeValueRepository attrrep = new AttributeValueRepository(config);
+            AttributeValueRepository attrrep = new AttributeValueRepository(config, LSCVersion);
             item.ItemAttributes = attrrep.AttributesGet(item.Id, AttributeLinkType.Item, stat);
 
-            ItemRecipeRepository recrep = new ItemRecipeRepository(config);
+            ItemRecipeRepository recrep = new ItemRecipeRepository(config, LSCVersion);
             item.Recipes = recrep.RecipeGetByItemId(item.Id, stat);
 
-            ItemModifierRepository modrep = new ItemModifierRepository(config);
+            ItemModifierRepository modrep = new ItemModifierRepository(config, LSCVersion);
             item.Modifiers = modrep.ModifierGetByItemId(item.Id, stat);
 
             return item;

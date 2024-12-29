@@ -61,6 +61,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             TaxGroup = string.Empty;
             DefaultCustomerAccount = string.Empty;
             MainMenuID = string.Empty;
+            StoreGroupCodes = string.Empty;
+            PriceGroupCodes = string.Empty;
         }
 
         public void Dispose()
@@ -104,6 +106,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public string FunctionalityProfile { get; set; }
         [DataMember]
         public string TaxGroup { get; set; }
+        [DataMember]
+        public string StoreGroupCodes { get; set; }
+        [DataMember]
+        public string PriceGroupCodes { get; set; }
         [DataMember]
         public string DefaultCustomerAccount { get; set; }
         [DataMember]

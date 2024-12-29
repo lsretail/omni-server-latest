@@ -120,7 +120,8 @@ namespace LSOmni.Service
                     HEADER_TOKEN, config.SecurityToken, serverUri, port, clientIPAddress, userAgent, Version(), version, deviceId, clientTimeOutInSeconds);
 
                 config = GetConfig(config);
-                CheckToken(config);
+                ConfigBLL bll = new ConfigBLL(config);
+                bll.CheckToken(config);
             }
             catch (Exception ex)
             {
@@ -252,88 +253,6 @@ namespace LSOmni.Service
             {
                 HandleExceptions(ex, "Failed to get Environment");
                 return null; //never gets here
-            }
-        }
-
-        private string CheckToken(BOConfiguration myconfig)
-        {
-            if (myconfig == null)
-                return string.Empty;
-
-            string protocol = myconfig.SettingsGetByKey(ConfigKey.BOProtocol);
-            if (protocol.ToUpper().Equals("S2S") == false)
-                return string.Empty;
-
-            string token = myconfig.SettingsGetByKey(ConfigKey.Central_Token);
-            if (string.IsNullOrEmpty(token) == false)
-            {
-                DateTime regtime = DateTime.MinValue;
-                string reg = myconfig.SettingsGetByKey(ConfigKey.Central_TokenTime);
-                if (string.IsNullOrEmpty(reg) == false)
-                    regtime = Convert.ToDateTime(reg);
-
-                if (regtime > DateTime.UtcNow)
-                {
-                    return token;
-                }
-            }
-
-            string clientId = myconfig.SettingsGetByKey(ConfigKey.BOUser);
-            string clientSecret = myconfig.SettingsGetByKey(ConfigKey.BOPassword);
-            string tenant = myconfig.SettingsGetByKey(ConfigKey.BOTenant);
-
-            if (string.IsNullOrEmpty(clientId))
-                return string.Empty;
-
-            //check if the password has been encrypted by our LSOmniPasswordGenerator.exe
-            if (DecryptConfigValue.IsEncryptedPwd(clientSecret))
-            {
-                clientSecret = DecryptConfigValue.DecryptString(clientSecret, myconfig.SettingsGetByKey(ConfigKey.EncrCode));
-            }
-
-            string scope = "https://api.businesscentral.dynamics.com/.default";
-            string authurl = $"https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token";
-            string body = $"grant_type=client_credentials&scope={scope}&client_id={clientId}&client_secret={clientSecret}";
-
-            try
-            {
-                Uri posturl = new Uri(authurl);
-                HttpWebRequest httpWebRequest = (HttpWebRequest)System.Net.WebRequest.Create(posturl);
-                httpWebRequest.Method = "POST";
-
-                logger.Debug(myconfig.LSKey.Key, "Send Token request for LS Central to:{0} Message:{1}", posturl.AbsoluteUri, body);
-                byte[] byteArray = Encoding.UTF8.GetBytes(body); //json
-
-                httpWebRequest.Accept = "application/json";
-                httpWebRequest.ContentType = "application/x-www-form-urlencoded";
-                httpWebRequest.ContentLength = byteArray.Length;
-
-                using (Stream streamWriter = httpWebRequest.GetRequestStream())
-                {
-                    streamWriter.Write(byteArray, 0, byteArray.Length);
-                    streamWriter.Flush();
-                }
-
-                HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-                using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
-                {
-                    string result = streamReader.ReadToEnd();
-                    logger.Debug(myconfig.LSKey.Key, "Token Result:[{0}]", result.Substring(0, 100));
-
-                    TokenS2S data = Serialization.Deserialize<TokenS2S>(result);
-                    token = data.token_type + " " + data.access_token;
-
-                    ConfigBLL bll = new ConfigBLL();
-                    bll.ConfigSetByKey(myconfig.LSKey.Key, ConfigKey.Central_Token, token, "string", true, "Active token");
-                    bll.ConfigSetByKey(myconfig.LSKey.Key, ConfigKey.Central_TokenTime, DateTime.UtcNow.AddSeconds(data.expires_in - 90).ToString(), "string", true, "Token Reg");
-                    myconfig.SettingsUpdateByKey(ConfigKey.Central_Token, token);
-                }
-                return token;
-            }
-            catch (Exception ex)
-            {
-                logger.Error(myconfig.LSKey.Key, ex);
-                throw new LSOmniServiceException(StatusCode.SecurityTokenInvalid, "Error getting token", ex);
             }
         }
 

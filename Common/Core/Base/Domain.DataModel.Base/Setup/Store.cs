@@ -19,6 +19,13 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             Description = string.Empty;
             Phone = string.Empty;
             TaxGroupId = string.Empty;
+            StoreGroupCodes = string.Empty;
+            PriceGroupCodes = string.Empty;
+            WebOmniStaff = string.Empty;
+            WebOmniTerminal = string.Empty;
+            CultureName = string.Empty;
+            FunctionalityProfileId = string.Empty;
+            UseDefaultCustomer = string.Empty;
             Latitude = 0.0;
             Longitude = 0.0;
             Distance = 0.0;
@@ -103,11 +110,17 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         [DataMember]
         public string TaxGroupId { get; set; }
         [DataMember]
+        public string StoreGroupCodes { get; set; }
+        [DataMember]
+        public string PriceGroupCodes { get; set; }
+        [DataMember]
         public List<StoreHours> StoreHours { get; set; }
         [DataMember]
         public List<StoreServices> StoreServices { get; set; }
         [DataMember]
         public List<RetailAttribute> Attributes { get; set; }
+
+        public string SalesTypeCodes { get; set; }
 
         public string FormatAddress
         {
@@ -404,5 +417,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         public bool CanCollect { get; set; }
         [DataMember]
         public string Description { get; set; }
+
+        public string StoreNo { get; set; }
     }
 }

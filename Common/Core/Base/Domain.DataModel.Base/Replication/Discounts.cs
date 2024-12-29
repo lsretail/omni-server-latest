@@ -223,6 +223,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             ValidToBeforeExpDate = string.Empty;
             ValidationPeriodId = string.Empty;
             LineGroup = string.Empty;
+            StoreGroupCodes = string.Empty;
         }
 
         public void Dispose()
@@ -264,6 +265,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public decimal DiscountAmountValue { get; set; }
         [DataMember]
         public string CustomerDiscountGroup { get; set; }
+        [DataMember]
+        public string StoreGroupCodes { get; set; }
         [DataMember]
         public decimal AmountToTrigger { get; set; }
         [DataMember]

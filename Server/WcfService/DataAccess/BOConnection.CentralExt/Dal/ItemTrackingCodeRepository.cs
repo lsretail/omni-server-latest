@@ -129,6 +129,60 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return list;
         }
 
+        public List<ReplItemTrackingCode> ReplicateItemTrackingCodeTM(int batchSize, bool fullReplication, ref string lastKey, ref int recordsRemaining)
+        {
+            ProcessLastKey(lastKey, out string mainKey, out string delKey);
+            List<JscKey> keys = GetPrimaryKeys("Item Tracking Code$437dbf0e-84ff-417a-965d-ed2bb9650972");
+
+            string sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatement(true, keys, string.Empty, false);
+            recordsRemaining = GetRecordCountTM(mainKey, sql, keys);
+
+            List<JscActions> actions = LoadDeleteActions(fullReplication, TABLEID, "Item Tracking Code$437dbf0e-84ff-417a-965d-ed2bb9650972", keys, batchSize, ref delKey);
+            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(true, keys, string.Empty, false);
+
+            List<ReplItemTrackingCode> list = new List<ReplItemTrackingCode>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    JscActions actKey = new JscActions(mainKey);
+                    SetWhereValues(command, actKey, keys, true, true);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        int cnt = 0;
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToCode(reader, out mainKey));
+                            cnt++;
+                        }
+                        reader.Close();
+                        recordsRemaining -= cnt;
+                    }
+
+                    foreach (JscActions act in actions)
+                    {
+                        list.Add(new ReplItemTrackingCode()
+                        {
+                            Code = act.ParamValue,
+                            IsDeleted = true
+                        });
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            lastKey = $"R={mainKey};D={delKey};";
+            return list;
+        }
+
         private ReplItemTrackingCode ReaderToCode(SqlDataReader reader, out string timestamp)
         {
             timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);

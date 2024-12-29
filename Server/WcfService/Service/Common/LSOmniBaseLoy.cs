@@ -1310,7 +1310,7 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual OneList OneListItemModify(string oneListId, OneListItem item, bool remove, bool calculate)
+        public virtual OneList OneListItemModify(string oneListId, OneListItem item, string cardId, bool remove, bool calculate)
         {
             Statistics stat = logger.StatisticStartMain(config, serverUri);
 
@@ -1319,7 +1319,7 @@ namespace LSOmni.Service
                 logger.Debug(config.LSKey.Key, $"OneListItem.Id:{item.Id} OneList.Id {oneListId}");
 
                 OneListBLL listBLL = new OneListBLL(config, clientTimeOutInSeconds);
-                return listBLL.OneListItemModify(oneListId, item, remove, calculate, stat);
+                return listBLL.OneListItemModify(oneListId, item, cardId, remove, calculate, stat);
             }
             catch (Exception ex)
             {
@@ -2493,6 +2493,52 @@ namespace LSOmni.Service
             {
                 HandleExceptions(ex, "storeId:{0}", storeId);
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
+        public virtual bool SpgRegisterNotification(string cardId, string token)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                logger.Debug(config.LSKey.Key, $"SPG Register Notification for cardId:{cardId}");
+
+                SpgNotificationBLL bll = new SpgNotificationBLL(config, clientTimeOutInSeconds);
+                bll.RegisterNotification(cardId, token, stat);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "cardId:{0}", cardId);
+                return false; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
+        public virtual bool SpgUnRegisterNotification(string cardId)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                logger.Debug(config.LSKey.Key, $"SPG UnRegister Notification for cardId:{cardId}");
+
+                SpgNotificationBLL bll = new SpgNotificationBLL(config, clientTimeOutInSeconds);
+                bll.Delete(cardId, stat);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "cardId:{0}", cardId);
+                return false; //never gets here
             }
             finally
             {

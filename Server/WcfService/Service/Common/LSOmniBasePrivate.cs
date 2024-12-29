@@ -83,6 +83,9 @@ namespace LSOmni.Service
                     {
                         DataContractJsonSerializer ser = new DataContractJsonSerializer(objIn.GetType());
                         ser.WriteObject(memstream, objIn);
+                        if (memstream.Length > 2097152)
+                            return "> Json Object too big (size > 2MB) <";
+
                         sOut = Encoding.Default.GetString(memstream.ToArray());
                         //remove the password
                         if (sOut.Contains("\"Password\":"))

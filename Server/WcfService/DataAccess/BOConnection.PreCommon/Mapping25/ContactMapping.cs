@@ -304,6 +304,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                 }
             }
 
+            /*
+            if (root.MemberAccount != null)
+            {
+                memberContact.Account.Blocked = root.MemberAccount[0].Blocked;
+                memberContact.Account.Status = (AccountStatus)ConvertTo.SafeInt(root.MemberAccount[0].Status);
+                memberContact.Account.CustomerId = root.MemberAccount[0].CustomerNo;
+                memberContact.Account.Type = (AccountType)ConvertTo.SafeInt(root.MemberAccount[0].AccountType);
+            }
+            */
+
             if (root.MemberAttributeList != null)
             {
                 foreach (LSCentral25.MemberAttributeList3 attr in root.MemberAttributeList)
@@ -398,6 +408,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                     });
                 }
             }
+
+            /*
+            if (root.MemberAccount != null)
+            {
+                memberContact.Account.Blocked = root.MemberAccount[0].Blocked;
+                memberContact.Account.Status = (AccountStatus)ConvertTo.SafeInt(root.MemberAccount[0].Status);
+                memberContact.Account.CustomerId = root.MemberAccount[0].CustomerNo;
+                memberContact.Account.Type = (AccountType)ConvertTo.SafeInt(root.MemberAccount[0].AccountType);
+            }
+            */
 
             if (root.MemberAttributeList != null)
             {

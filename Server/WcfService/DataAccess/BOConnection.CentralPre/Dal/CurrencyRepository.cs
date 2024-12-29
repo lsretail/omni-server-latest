@@ -117,38 +117,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        public ReplCurrency CurrencyGetByStoreId(string storeId)
-        {
-            StoreRepository storeRep = new StoreRepository(config, LSCVersion);
-            ReplStore store = storeRep.StoreGetById(storeId);
-            return CurrencyGetById(store.Currency);
-        }
-
-        public ReplCurrency CurrencyGetById(string id)
-        {
-            ReplCurrency currency = null;
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    command.CommandText = GetSQL(false, 0) + sqlcolumns + sqlfrom + " WHERE mt.[Code]=@id";
-                    command.Parameters.AddWithValue("@id", id);
-                    TraceSqlCommand(command);
-                    connection.Open();
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            currency = ReaderToCurrency(reader, out string ts);
-                        }
-                        reader.Close();
-                    }
-                    connection.Close();
-                }
-            }
-            return currency;
-        }
-
         private ReplCurrency ReaderToCurrency(SqlDataReader reader, out string timestamp)
         {
             ReplCurrency currency = new ReplCurrency()

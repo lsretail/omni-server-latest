@@ -259,6 +259,66 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return list;
         }
 
+        public List<ReplImage> ReplEcommImageTM(int batchSize, bool fullReplication, ref string lastKey, ref int recordsRemaining)
+        {
+            ProcessLastKey(lastKey, out string mainKey, out string delKey);
+            List<JscKey> keys = GetPrimaryKeys("LSC Retail Image$5ecfc871-5d82-43f1-9c54-59685e82318d");
+
+            string sql = "SELECT COUNT(*)" + sqlimgfrom + GetWhereStatement(true, keys, false);
+            recordsRemaining = GetRecordCountTM(mainKey, sql, keys);
+
+            List<JscActions> actions = LoadDeleteActions(fullReplication, IMAGE_TABLEID, "LSC Retail Image$5ecfc871-5d82-43f1-9c54-59685e82318d", keys, batchSize, ref delKey);
+            sql = GetSQL(fullReplication, batchSize) +
+                    "mt.[Code],tm.[ID],mt.[Type],mt.[Image Location],mt.[Description],tm.[Content],tm.[Height],tm.[Width]" +
+                    "FROM [" + navCompanyName + "LSC Retail Image$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
+                    "LEFT JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] AND tms.[Company Name]=@cmp " +
+                    "LEFT JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID] " +
+                    GetWhereStatement(true, keys, true);
+
+            List<ReplImage> list = new List<ReplImage>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    JscActions actKey = new JscActions(mainKey);
+                    SetWhereValues(command, actKey, keys, true, true);
+                    command.Parameters.AddWithValue("@cmp", navOrgCompanyName);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        int cnt = 0;
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToMediaImage(reader, out mainKey));
+                            cnt++;
+                        }
+                        reader.Close();
+                        recordsRemaining -= cnt;
+                    }
+
+                    foreach (JscActions act in actions)
+                    {
+                        list.Add(new ReplImage()
+                        {
+                            Id = act.ParamValue,
+                            IsDeleted = true
+                        });
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            lastKey = $"R={mainKey};D={delKey};";
+            return list;
+        }
+
         private ReplImage ReaderToMediaImage(SqlDataReader reader, out string timestamp)
         {
             ReplImage img = new ReplImage()
@@ -385,6 +445,72 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             if (recordsRemaining < 0)
                 recordsRemaining = 0;
 
+            return list;
+        }
+
+        public List<ReplImageLink> ReplEcommImageLinkTM(int batchSize, bool fullReplication, ref string lastKey, ref int recordsRemaining)
+        {
+            ProcessLastKey(lastKey, out string mainKey, out string delKey);
+            List<JscKey> keys = GetPrimaryKeys("LSC Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d");
+
+            string sql = "SELECT COUNT(*) FROM [" + navCompanyName + "LSC Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" + GetWhereStatement(true, keys, false);
+            recordsRemaining = GetRecordCountTM(mainKey, sql, keys);
+
+            List<JscActions> actions = LoadDeleteActions(fullReplication, LINK_TABLEID, "LSC Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d", keys, batchSize, ref delKey);
+            sql = GetSQL(fullReplication, batchSize) +
+                "mt.[Image Id],mt.[Display Order],mt.[TableName],mt.[KeyValue],mt.[Description]" +
+                ((LSCVersion >= new Version("22.2")) ? ",mt.[Image Description]" : "") +
+                " FROM [" + navCompanyName + "LSC Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
+                GetWhereStatement(true, keys, true);
+
+            List<ReplImageLink> list = new List<ReplImageLink>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    JscActions actKey = new JscActions(mainKey);
+                    SetWhereValues(command, actKey, keys, true, true);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        int cnt = 0;
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToImageLink(reader, out mainKey));
+                            cnt++;
+                        }
+                        reader.Close();
+                        recordsRemaining -= cnt;
+                    }
+
+                    foreach (JscActions act in actions)
+                    {
+                        string[] par = act.ParamValue.Split(';');
+                        if (par.Length < 2 || par.Length != keys.Count)
+                            continue;
+
+                        string[] recId = par[0].Split(':');
+
+                        list.Add(new ReplImageLink()
+                        {
+                            TableName = recId[0].Trim(),
+                            KeyValue = recId[1].Trim(),
+                            ImageId = par[1],
+                            IsDeleted = true
+                        });
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            lastKey = $"R={mainKey};D={delKey};";
             return list;
         }
 

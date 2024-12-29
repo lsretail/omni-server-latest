@@ -12,8 +12,10 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
     public class OneListItem : Entity, IDisposable
     {
         private decimal quantity;
+        private decimal price;
         private decimal amount;
         private bool qtyIsVisible = false;
+
         public OneListItem(string id) : base(id)
         {
             OneListId = string.Empty;
@@ -173,8 +175,18 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
 
         [DataMember]
         public decimal NetPrice { get; set; }
+
         [DataMember]
-        public decimal Price { get; set; }
+        public decimal Price
+        {
+            get => price;
+            set
+            {
+                price = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         [DataMember]
         public bool PriceModified { get; set; }
         [DataMember]
@@ -190,6 +202,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
                 NotifyPropertyChanged();
             }
         }
+
         [DataMember]
         public decimal TaxAmount { get; set; }
         [DataMember]

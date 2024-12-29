@@ -33,7 +33,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             PointAmount = 0M;
 
             //Added for SPG
-            IsChecked = true;
+            IsChecked = false;
         }
 
         public OneList(string id, ObservableCollection<OneListItem> items, bool calculate) : this(id)
@@ -355,6 +355,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         Basket = 0,
         [EnumMember]
         Wish = 1,  //Wish list
+        [EnumMember]
+        Temporary = 2  // to be deleted
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]

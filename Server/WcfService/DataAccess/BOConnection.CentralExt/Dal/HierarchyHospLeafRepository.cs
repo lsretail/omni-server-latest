@@ -479,10 +479,10 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                 ImageId = SQLHelper.GetString(reader["ImageId"])
             };
 
-            ItemModifierRepository mrep = new ItemModifierRepository(config);
+            ItemModifierRepository mrep = new ItemModifierRepository(config, LSCVersion);
             leaf.Modifiers = mrep.ModifierGetByItemId(leaf.ItemNo, stat);
 
-            ItemRecipeRepository rrep = new ItemRecipeRepository(config);
+            ItemRecipeRepository rrep = new ItemRecipeRepository(config, LSCVersion);
             leaf.Recipies = rrep.RecipeGetByItemId(leaf.ItemNo, stat);
             return leaf;
         }

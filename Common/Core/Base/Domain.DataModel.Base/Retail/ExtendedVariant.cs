@@ -55,8 +55,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
 
                     case ExtendedVariantCode.Width:
                         return "WIDTH";
+                    default:
+                        return string.Empty;
                 }
-                return string.Empty;
             }
             set
             {

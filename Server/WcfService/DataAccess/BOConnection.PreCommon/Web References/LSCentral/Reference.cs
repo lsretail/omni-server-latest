@@ -161,6 +161,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private System.Threading.SendOrPostCallback LSCSalesShipmentUpdateOperationCompleted;
         
+        private System.Threading.SendOrPostCallback MIValidateItemTrackingV2OperationCompleted;
+        
         private System.Threading.SendOrPostCallback MIValidateItemTrackingOperationCompleted;
         
         private System.Threading.SendOrPostCallback MemberAuthenticatorLoginOperationCompleted;
@@ -490,6 +492,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         /// <remarks/>
         public event LSCSalesShipmentUpdateCompletedEventHandler LSCSalesShipmentUpdateCompleted;
+        
+        /// <remarks/>
+        public event MIValidateItemTrackingV2CompletedEventHandler MIValidateItemTrackingV2Completed;
         
         /// <remarks/>
         public event MIValidateItemTrackingCompletedEventHandler MIValidateItemTrackingCompleted;
@@ -3265,6 +3270,51 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             if ((this.LSCSalesShipmentUpdateCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.LSCSalesShipmentUpdateCompleted(this, new LSCSalesShipmentUpdateCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MIValidateItemTrackingV2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MIValidateItemTrackingV2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void MIValidateItemTrackingV2(string itemNo, string variantCode, string itemTrackingID, int worksheetNo, string documentNo, ref bool validTracking, ref string responseCode, ref string errorText) {
+            object[] results = this.Invoke("MIValidateItemTrackingV2", new object[] {
+                        itemNo,
+                        variantCode,
+                        itemTrackingID,
+                        worksheetNo,
+                        documentNo,
+                        validTracking,
+                        responseCode,
+                        errorText});
+            validTracking = ((bool)(results[0]));
+            responseCode = ((string)(results[1]));
+            errorText = ((string)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void MIValidateItemTrackingV2Async(string itemNo, string variantCode, string itemTrackingID, int worksheetNo, string documentNo, bool validTracking, string responseCode, string errorText) {
+            this.MIValidateItemTrackingV2Async(itemNo, variantCode, itemTrackingID, worksheetNo, documentNo, validTracking, responseCode, errorText, null);
+        }
+        
+        /// <remarks/>
+        public void MIValidateItemTrackingV2Async(string itemNo, string variantCode, string itemTrackingID, int worksheetNo, string documentNo, bool validTracking, string responseCode, string errorText, object userState) {
+            if ((this.MIValidateItemTrackingV2OperationCompleted == null)) {
+                this.MIValidateItemTrackingV2OperationCompleted = new System.Threading.SendOrPostCallback(this.OnMIValidateItemTrackingV2OperationCompleted);
+            }
+            this.InvokeAsync("MIValidateItemTrackingV2", new object[] {
+                        itemNo,
+                        variantCode,
+                        itemTrackingID,
+                        worksheetNo,
+                        documentNo,
+                        validTracking,
+                        responseCode,
+                        errorText}, this.MIValidateItemTrackingV2OperationCompleted, userState);
+        }
+        
+        private void OnMIValidateItemTrackingV2OperationCompleted(object arg) {
+            if ((this.MIValidateItemTrackingV2Completed != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.MIValidateItemTrackingV2Completed(this, new MIValidateItemTrackingV2CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -19215,6 +19265,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private bool restrictedFlagField;
         
+        private bool retrievedFromSuspendedTransField;
+        
         private string taxAreaCodeField;
         
         private bool wICTransactionField;
@@ -19271,6 +19323,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             this.overridePLBItemField = false;
             this.overrideDateTimeField = new System.DateTime(0);
             this.restrictedFlagField = false;
+            this.retrievedFromSuspendedTransField = false;
             this.wICTransactionField = false;
             this.taxLiableField = false;
             this.netIncExpAmountField = ((decimal)(0m));
@@ -20064,6 +20117,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool RetrievedFromSuspendedTrans {
+            get {
+                return this.retrievedFromSuspendedTransField;
+            }
+            set {
+                this.retrievedFromSuspendedTransField = value;
+            }
+        }
+        
+        /// <remarks/>
         public string TaxAreaCode {
             get {
                 return this.taxAreaCodeField;
@@ -20644,6 +20708,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private bool restrictedFlagField;
         
+        private bool retrievedFromSuspendedTransField;
+        
         private string taxAreaCodeField;
         
         private bool wICTransactionField;
@@ -20698,6 +20764,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             this.overridePLBItemField = false;
             this.overrideDateTimeField = new System.DateTime(0);
             this.restrictedFlagField = false;
+            this.retrievedFromSuspendedTransField = false;
             this.wICTransactionField = false;
             this.taxLiableField = false;
             this.netIncExpAmountField = ((decimal)(0m));
@@ -21446,6 +21513,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.restrictedFlagField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool RetrievedFromSuspendedTrans {
+            get {
+                return this.retrievedFromSuspendedTransField;
+            }
+            set {
+                this.retrievedFromSuspendedTransField = value;
             }
         }
         
@@ -27131,6 +27209,230 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="MemberAccount", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033215")]
+    public partial class MemberAccount2 {
+        
+        private string accountNoField;
+        
+        private string statusField;
+        
+        private string accountTypeField;
+        
+        private string descriptionField;
+        
+        private string mainContactField;
+        
+        private string mainContactNameField;
+        
+        private string customerNoField;
+        
+        private string clubCodeField;
+        
+        private string schemeCodeField;
+        
+        private string priceGroupField;
+        
+        private string custDiscGroupField;
+        
+        private string languageCodeField;
+        
+        private string createdByField;
+        
+        private System.DateTime createdDateField;
+        
+        private bool blockedField;
+        
+        private string blockedByField;
+        
+        private System.DateTime dateBlockedField;
+        
+        public MemberAccount2() {
+            this.createdDateField = new System.DateTime(0);
+            this.blockedField = false;
+            this.dateBlockedField = new System.DateTime(0);
+        }
+        
+        /// <remarks/>
+        public string AccountNo {
+            get {
+                return this.accountNoField;
+            }
+            set {
+                this.accountNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Status {
+            get {
+                return this.statusField;
+            }
+            set {
+                this.statusField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AccountType {
+            get {
+                return this.accountTypeField;
+            }
+            set {
+                this.accountTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Description {
+            get {
+                return this.descriptionField;
+            }
+            set {
+                this.descriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MainContact {
+            get {
+                return this.mainContactField;
+            }
+            set {
+                this.mainContactField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MainContactName {
+            get {
+                return this.mainContactNameField;
+            }
+            set {
+                this.mainContactNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CustomerNo {
+            get {
+                return this.customerNoField;
+            }
+            set {
+                this.customerNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ClubCode {
+            get {
+                return this.clubCodeField;
+            }
+            set {
+                this.clubCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SchemeCode {
+            get {
+                return this.schemeCodeField;
+            }
+            set {
+                this.schemeCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PriceGroup {
+            get {
+                return this.priceGroupField;
+            }
+            set {
+                this.priceGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CustDiscGroup {
+            get {
+                return this.custDiscGroupField;
+            }
+            set {
+                this.custDiscGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string LanguageCode {
+            get {
+                return this.languageCodeField;
+            }
+            set {
+                this.languageCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CreatedBy {
+            get {
+                return this.createdByField;
+            }
+            set {
+                this.createdByField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime CreatedDate {
+            get {
+                return this.createdDateField;
+            }
+            set {
+                this.createdDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool Blocked {
+            get {
+                return this.blockedField;
+            }
+            set {
+                this.blockedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string BlockedBy {
+            get {
+                return this.blockedByField;
+            }
+            set {
+                this.blockedByField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime DateBlocked {
+            get {
+                return this.dateBlockedField;
+            }
+            set {
+                this.dateBlockedField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(TypeName="MembershipCard", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033215")]
     public partial class MembershipCard4 {
         
@@ -27504,6 +27806,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private MembershipCard4[] membershipCardField;
         
+        private MemberAccount2[] memberAccountField;
+        
         private MemberContact3[] memberContactField;
         
         private MemberClub3[] memberClubField;
@@ -27542,6 +27846,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.membershipCardField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("MemberAccount")]
+        public MemberAccount2[] MemberAccount {
+            get {
+                return this.memberAccountField;
+            }
+            set {
+                this.memberAccountField = value;
             }
         }
         
@@ -29498,6 +29813,230 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="MemberAccount", Namespace="urn:microsoft-dynamics-nav/xmlports/x10032990")]
+    public partial class MemberAccount1 {
+        
+        private string accountNoField;
+        
+        private string statusField;
+        
+        private string accountTypeField;
+        
+        private string descriptionField;
+        
+        private string mainContactField;
+        
+        private string mainContactNameField;
+        
+        private string customerNoField;
+        
+        private string clubCodeField;
+        
+        private string schemeCodeField;
+        
+        private string priceGroupField;
+        
+        private string custDiscGroupField;
+        
+        private string languageCodeField;
+        
+        private string createdByField;
+        
+        private System.DateTime createdDateField;
+        
+        private bool blockedField;
+        
+        private string blockedByField;
+        
+        private System.DateTime dateBlockedField;
+        
+        public MemberAccount1() {
+            this.createdDateField = new System.DateTime(0);
+            this.blockedField = false;
+            this.dateBlockedField = new System.DateTime(0);
+        }
+        
+        /// <remarks/>
+        public string AccountNo {
+            get {
+                return this.accountNoField;
+            }
+            set {
+                this.accountNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Status {
+            get {
+                return this.statusField;
+            }
+            set {
+                this.statusField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AccountType {
+            get {
+                return this.accountTypeField;
+            }
+            set {
+                this.accountTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Description {
+            get {
+                return this.descriptionField;
+            }
+            set {
+                this.descriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MainContact {
+            get {
+                return this.mainContactField;
+            }
+            set {
+                this.mainContactField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MainContactName {
+            get {
+                return this.mainContactNameField;
+            }
+            set {
+                this.mainContactNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CustomerNo {
+            get {
+                return this.customerNoField;
+            }
+            set {
+                this.customerNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ClubCode {
+            get {
+                return this.clubCodeField;
+            }
+            set {
+                this.clubCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SchemeCode {
+            get {
+                return this.schemeCodeField;
+            }
+            set {
+                this.schemeCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PriceGroup {
+            get {
+                return this.priceGroupField;
+            }
+            set {
+                this.priceGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CustDiscGroup {
+            get {
+                return this.custDiscGroupField;
+            }
+            set {
+                this.custDiscGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string LanguageCode {
+            get {
+                return this.languageCodeField;
+            }
+            set {
+                this.languageCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CreatedBy {
+            get {
+                return this.createdByField;
+            }
+            set {
+                this.createdByField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime CreatedDate {
+            get {
+                return this.createdDateField;
+            }
+            set {
+                this.createdDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool Blocked {
+            get {
+                return this.blockedField;
+            }
+            set {
+                this.blockedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string BlockedBy {
+            get {
+                return this.blockedByField;
+            }
+            set {
+                this.blockedByField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime DateBlocked {
+            get {
+                return this.dateBlockedField;
+            }
+            set {
+                this.dateBlockedField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(TypeName="MembershipCard", Namespace="urn:microsoft-dynamics-nav/xmlports/x10032990")]
     public partial class MembershipCard3 {
         
@@ -29871,6 +30410,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private MembershipCard3[] membershipCardField;
         
+        private MemberAccount1[] memberAccountField;
+        
         private MemberContact2[] memberContactField;
         
         private MemberClub2[] memberClubField;
@@ -29909,6 +30450,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.membershipCardField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("MemberAccount")]
+        public MemberAccount1[] MemberAccount {
+            get {
+                return this.memberAccountField;
+            }
+            set {
+                this.memberAccountField = value;
             }
         }
         
@@ -36217,6 +36769,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private bool restrictedFlagField;
         
+        private bool retrievedFromSuspendedTransField;
+        
         private string taxAreaCodeField;
         
         private bool wICTransactionField;
@@ -36274,6 +36828,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             this.overridePLBItemField = false;
             this.overrideDateTimeField = new System.DateTime(0);
             this.restrictedFlagField = false;
+            this.retrievedFromSuspendedTransField = false;
             this.wICTransactionField = false;
             this.taxLiableField = false;
             this.netIncExpAmountField = ((decimal)(0m));
@@ -37087,6 +37642,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.restrictedFlagField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool RetrievedFromSuspendedTrans {
+            get {
+                return this.retrievedFromSuspendedTransField;
+            }
+            set {
+                this.retrievedFromSuspendedTransField = value;
             }
         }
         
@@ -44561,6 +45127,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private decimal kotProdTimeField;
         
+        private string orderIDField;
+        
         public KotStatus() {
             this.confirmedbyExpField = false;
             this.kotProdTimeField = ((decimal)(0m));
@@ -44613,6 +45181,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.kotProdTimeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string OrderID {
+            get {
+                return this.orderIDField;
+            }
+            set {
+                this.orderIDField = value;
             }
         }
     }
@@ -46557,12 +47135,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private string vendorTrustLevelField;
         
+        private bool validateTrackingCodeField;
+        
         public GetDocumentPOSTransInvHeader() {
             this.totalQtyField = ((decimal)(0m));
             this.qtyLeftField = ((decimal)(0m));
             this.expectedDateField = new System.DateTime(0);
             this.noOfCheckedRoundsField = 0;
             this.quickdefaultQuantityField = ((decimal)(0m));
+            this.validateTrackingCodeField = false;
         }
         
         /// <remarks/>
@@ -46727,6 +47308,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.vendorTrustLevelField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool ValidateTrackingCode {
+            get {
+                return this.validateTrackingCodeField;
+            }
+            set {
+                this.validateTrackingCodeField = value;
             }
         }
     }
@@ -58026,6 +58618,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
         public bool ContactComment {
             get {
                 return this.contactCommentField;
@@ -65165,6 +65758,48 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((string)(this.results[1]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void MIValidateItemTrackingV2CompletedEventHandler(object sender, MIValidateItemTrackingV2CompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class MIValidateItemTrackingV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal MIValidateItemTrackingV2CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool validTracking {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[2]));
             }
         }
     }

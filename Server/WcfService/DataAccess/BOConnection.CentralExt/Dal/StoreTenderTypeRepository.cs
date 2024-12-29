@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
@@ -19,7 +20,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
         //FUNCTION = 0  AND  FOREIGNCURRENCY = 1  ER CURRENCY
         //FUNCTION = 1 er card
 
-        public StoreTenderTypeRepository(BOConfiguration config) : base(config)
+        public StoreTenderTypeRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlcolumns = "mt.[Store No_],mt.[Code],mt.[Description],mt.[Function],mt.[Valid on Mobile POS]," +
                          "mt.[Counting Required],mt.[Change Tend_ Code],mt.[Above Min_ Change Tender Type]," +
@@ -128,6 +129,111 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return list;
         }
 
+        public List<ReplStoreTenderType> ReplicateStoreTenderTypeTM(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref int recordsRemaining)
+        {
+            ProcessLastKey(lastKey, out string mainKey, out string delKey);
+            List<JscKey> keys = GetPrimaryKeys("LSC Tender Type$5ecfc871-5d82-43f1-9c54-59685e82318d");
+            string tenderMap = config.SettingsGetByKey(ConfigKey.TenderType_Mapping);
+
+            SQLHelper.CheckForSQLInjection(storeId);
+            string where = " AND mt.[Store No_]='" + storeId + "'";
+            string sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatement(true, keys, where, false);
+            recordsRemaining = GetRecordCountTM(mainKey, sql, keys);
+
+            List<JscActions> actions = LoadDeleteActions(fullReplication, TABLEID, "LSC Tender Type$5ecfc871-5d82-43f1-9c54-59685e82318d", keys, batchSize, ref delKey);
+            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(true, keys, where, true);
+
+            List<ReplStoreTenderType> list = new List<ReplStoreTenderType>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    JscActions actKey = new JscActions(mainKey);
+                    SetWhereValues(command, actKey, keys, true, true);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        int cnt = 0;
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToStoreTenderType(reader, tenderMap, out mainKey));
+                            cnt++;
+                        }
+                        reader.Close();
+                        recordsRemaining -= cnt;
+                    }
+
+                    foreach (JscActions act in actions)
+                    {
+                        string[] par = act.ParamValue.Split(';');
+                        if (par.Length < 2 || par.Length != keys.Count)
+                            continue;
+
+                        list.Add(new ReplStoreTenderType()
+                        {
+                            StoreID = par[0],
+                            TenderTypeId = par[1],
+                            IsDeleted = true
+                        });
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            lastKey = $"R={mainKey};D={delKey};";
+            return list;
+        }
+
+        private string GetInfoCodes(string storeNo, string tenderType)
+        {
+            List<string> list = new List<string>();
+            char del = (char)177;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = "SELECT [Loc_ Group Filter Delimiter] FROM [" + navCompanyName + "LSC Scheduler Setup$5ecfc871-5d82-43f1-9c54-59685e82318d]";
+                    char ch = (char)command.ExecuteNonQuery();
+
+                    if (ch != '\uffff')
+                        del = ch;
+
+                    string value = $"{storeNo}{del}{tenderType}";
+                    command.CommandText = "SELECT t.[Infocode Code],i.[Data Entry Type] " +
+                                          "FROM [" + navCompanyName + "LSC Table Specific Infocode$5ecfc871-5d82-43f1-9c54-59685e82318d] t " +
+                                          "JOIN [" + navCompanyName + "LSC Infocode$5ecfc871-5d82-43f1-9c54-59685e82318d] i ON i.[Code]=t.[Infocode Code] " +
+                                          "WHERE t.[Table ID]=99001462 AND t.[Value]=@val";
+                    command.Parameters.AddWithValue("@val", value);
+                    TraceSqlCommand(command);
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string code = SQLHelper.GetString(reader["Data Entry Type"]);
+                            if (list.Contains(code) == false)
+                                list.Add(code);
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+
+            string infoCode = string.Empty;
+            foreach (string val in list)
+                infoCode += val + ";";
+            return infoCode;
+        }
+
         private ReplStoreTenderType ReaderToStoreTenderType(SqlDataReader reader, string tenderMap, out string timestamp)
         {
             timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
@@ -135,7 +241,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             string navId = SQLHelper.GetString(reader["Code"]);
             string omniId = ConfigSetting.TenderTypeMapping(tenderMap, navId, true);
 
-            return new ReplStoreTenderType()
+            ReplStoreTenderType ttype = new ReplStoreTenderType()
             {
                 StoreID = SQLHelper.GetString(reader["Store No_"]),
                 TenderTypeId = navId,
@@ -154,8 +260,10 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                 CountingRequired = SQLHelper.GetInt32(reader["Counting Required"]),
                 AllowOverTender = SQLHelper.GetInt32(reader["Overtender Allowed"]),
                 AllowUnderTender = SQLHelper.GetInt32(reader["Undertender Allowed"]),
-                OpenDrawer = SQLHelper.GetInt32(reader["Drawer Opens"])
+                OpenDrawer = SQLHelper.GetInt32(reader["Drawer Opens"]),
             };
+            ttype.DataEntryCodes = GetInfoCodes(ttype.StoreID, ttype.TenderTypeId);
+            return ttype;
         }
     }
 }

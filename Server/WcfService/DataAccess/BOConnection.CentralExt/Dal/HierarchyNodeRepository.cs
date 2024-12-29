@@ -21,7 +21,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
         private string sqlcolumnsLink = string.Empty;
         private string sqlfromLink = string.Empty;
 
-        public HierarchyNodeRepository(BOConfiguration config) : base(config)
+        public HierarchyNodeRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlcolumnsNode = "mt.[Hierarchy Code],mt.[Node ID],mt.[Parent Node ID],mt.[Description],mt.[Children Order],mt.[Indentation],mt.[Presentation Order]," +
                              "(SELECT TOP(1) il.[Image Id] FROM [" + navCompanyName + "LSC Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il " +
@@ -135,6 +135,67 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             if (recordsRemaining < 0)
                 recordsRemaining = 0;
 
+            return list;
+        }
+
+        public List<ReplHierarchyNode> ReplicateHierarchyNodeTM(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref int recordsRemaining)
+        {
+            ProcessLastKey(lastKey, out string mainKey, out string delKey);
+            List<JscKey> keys = GetPrimaryKeys("LSC Hierar_ Nodes$5ecfc871-5d82-43f1-9c54-59685e82318d");
+
+            SQLHelper.CheckForSQLInjection(storeId);
+            string where = string.Format(" AND hd.[Store Code]='{0}'", storeId);
+            string sql = "SELECT COUNT(*)" + sqlfromNode + GetWhereStatement(true, keys, where, false);
+            recordsRemaining = GetRecordCountTM(mainKey, sql, keys);
+
+            List<JscActions> actions = LoadDeleteActions(fullReplication, TABLENODEID, "LSC Hierar_ Nodes$5ecfc871-5d82-43f1-9c54-59685e82318d", keys, batchSize, ref delKey);
+            sql = GetSQL(fullReplication, batchSize) + sqlcolumnsNode + sqlfromNode + GetWhereStatement(true, keys, where, true);
+
+            List<ReplHierarchyNode> list = new List<ReplHierarchyNode>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    JscActions actKey = new JscActions(mainKey);
+                    SetWhereValues(command, actKey, keys, true, true);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        int cnt = 0;
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToHierarchyNode(reader, out mainKey));
+                            cnt++;
+                        }
+                        reader.Close();
+                        recordsRemaining -= cnt;
+                    }
+
+                    foreach (JscActions act in actions)
+                    {
+                        string[] par = act.ParamValue.Split(';');
+                        if (par.Length < 2 || par.Length != keys.Count)
+                            continue;
+
+                        list.Add(new ReplHierarchyNode()
+                        {
+                            HierarchyCode = par[0],
+                            Id = par[1],
+                            IsDeleted = true
+                        });
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            lastKey = $"R={mainKey};D={delKey};";
             return list;
         }
 
@@ -297,6 +358,85 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return list;
         }
 
+        public List<ReplHierarchyLeaf> ReplicateHierarchyLeafTM(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref int recordsRemaining)
+        {
+            ProcessLastKey(lastKey, out string mainKey, out string delKey);
+            List<JscKey> keys = GetPrimaryKeys("LSC Hierar_ Node Link$5ecfc871-5d82-43f1-9c54-59685e82318d");
+
+            SQLHelper.CheckForSQLInjection(storeId);
+            string where = string.Format(" AND hd.[Store Code]='{0}'", storeId);
+            string sql = "SELECT COUNT(*)" + sqlfromLink + GetWhereStatement(true, keys, where, false);
+            recordsRemaining = GetRecordCountTM(mainKey, sql, keys);
+
+            List<JscActions> actions = LoadDeleteActions(fullReplication, TABLELINKID, "LSC Hierar_ Node Link$5ecfc871-5d82-43f1-9c54-59685e82318d", keys, batchSize, ref delKey);
+
+            List<ReplHierarchyLeaf> list = new List<ReplHierarchyLeaf>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = "SELECT [Item Prepayment Hierarchy] FROM [" + navCompanyName + "LSC Customer Order Setup$5ecfc871-5d82-43f1-9c54-59685e82318d]";
+                    string vendorHir = command.ExecuteScalar().ToString();
+
+                    if (string.IsNullOrEmpty(vendorHir))
+                    {
+                        sql = GetSQL(fullReplication, batchSize) + sqlcolumnsLink + sqlfromLink + GetWhereStatement(true, keys, where, true);
+                    }
+                    else
+                    {
+                        sql = GetSQL(fullReplication, batchSize) + sqlcolumnsLink + ",vs.[Prepayment _] AS VPrePay" +
+                            sqlfromLink +
+                            " LEFT JOIN [" + navCompanyName + "LSC Hierar_ Node Link$5ecfc871-5d82-43f1-9c54-59685e82318d] vs ON vs.[No_]=mt.[No_] AND vs.[Hierarchy Code]=@vhir" +
+                            GetWhereStatement(true, keys, where, true);
+                    }
+                    command.CommandText = sql;
+
+                    JscActions actKey = new JscActions(mainKey);
+                    SetWhereValues(command, actKey, keys, true, true);
+                    if (string.IsNullOrEmpty(vendorHir) == false)
+                        command.Parameters.AddWithValue("@vhir", vendorHir);
+
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        int cnt = 0;
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToHierarchyNodeLink(reader, string.IsNullOrEmpty(vendorHir), out mainKey));
+                            cnt++;
+                        }
+                        reader.Close();
+                        recordsRemaining -= cnt;
+                    }
+
+                    foreach (JscActions act in actions)
+                    {
+                        string[] par = act.ParamValue.Split(';');
+                        if (par.Length < 4 || par.Length != keys.Count)
+                            continue;
+
+                        list.Add(new ReplHierarchyLeaf()
+                        {
+                            HierarchyCode = par[0],
+                            NodeId = par[1],
+                            Type = (HierarchyLeafType)Convert.ToInt32(par[2]),
+                            Id = par[3],
+                            IsDeleted = true
+                        });
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            lastKey = $"R={mainKey};D={delKey};";
+            return list;
+        }
+
         public List<HierarchyLeaf> HierarchyNodeLinkGet(string hCode, string nCode, string storeId, Statistics stat)
         {
             List<HierarchyLeaf> list = new List<HierarchyLeaf>();
@@ -437,10 +577,10 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                 Prepayment = SQLHelper.GetDecimal(reader["Prepayment _"])
             };
 
-            ItemModifierRepository mrep = new ItemModifierRepository(config);
+            ItemModifierRepository mrep = new ItemModifierRepository(config, LSCVersion);
             leaf.Modifiers = mrep.ModifierGetByItemId(leaf.Id, stat);
 
-            ItemRecipeRepository rrep = new ItemRecipeRepository(config);
+            ItemRecipeRepository rrep = new ItemRecipeRepository(config, LSCVersion);
             leaf.Recipies = rrep.RecipeGetByItemId(leaf.Id, stat);
             return leaf;
         }

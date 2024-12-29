@@ -95,7 +95,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
                 if (NAVVersion < new Version("17.5"))
                     stores = NavWSBase.StoresGet(StoreGetType.All, false);
 
-                stores = LSCWSBase.StoresGet(StoreGetType.All, false, stat);
+                stores = LSCWSBase.StoresGet(StoreGetType.All, false, 0, stat);
 
                 //get the storeIds close to this store
                 foreach (Store store in stores)

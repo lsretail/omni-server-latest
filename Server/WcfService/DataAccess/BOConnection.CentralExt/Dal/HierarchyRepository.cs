@@ -17,7 +17,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public HierarchyRepository(BOConfiguration config) : base(config)
+        public HierarchyRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlcolumns = "mt.[Hierarchy Code],mt.[Description],mt.[Type],hd.[Start Date],hd.[Priority],hd.[Sales Type Filter],hd.[Validation Schedule ID]";
 
@@ -118,6 +118,62 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return list;
         }
 
+        public List<ReplHierarchy> ReplicateHierarchyTM(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref int recordsRemaining)
+        {
+            ProcessLastKey(lastKey, out string mainKey, out string delKey);
+            List<JscKey> keys = GetPrimaryKeys("LSC Hierarchy$5ecfc871-5d82-43f1-9c54-59685e82318d");
+
+            SQLHelper.CheckForSQLInjection(storeId);
+            string where = string.Format(" AND hd.[Store Code]='{0}'", storeId);
+            string sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatement(true, keys, where, false);
+            recordsRemaining = GetRecordCountTM(mainKey, sql, keys);
+
+            List<JscActions> actions = LoadDeleteActions(fullReplication, TABLEID, "LSC Hierarchy$5ecfc871-5d82-43f1-9c54-59685e82318d", keys, batchSize, ref delKey);
+            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(true, keys, where, true);
+
+            List<ReplHierarchy> list = new List<ReplHierarchy>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    JscActions actKey = new JscActions(mainKey);
+                    SetWhereValues(command, actKey, keys, true, true);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        int cnt = 0;
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToHierarchy(reader, out mainKey));
+                            cnt++;
+                        }
+                        reader.Close();
+                        recordsRemaining -= cnt;
+                    }
+
+                    foreach (JscActions act in actions)
+                    {
+                        list.Add(new ReplHierarchy()
+                        {
+                            Id = act.ParamValue,
+                            IsDeleted = true
+                        });
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            lastKey = $"R={mainKey};D={delKey};";
+            return list;
+        }
+
         public List<Hierarchy> HierarchyGetByStore(string storeId, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
@@ -143,7 +199,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
 
             foreach (Hierarchy root in list)
             {
-                HierarchyNodeRepository rep = new HierarchyNodeRepository(config);
+                HierarchyNodeRepository rep = new HierarchyNodeRepository(config, LSCVersion);
                 List<HierarchyNode> nodes = rep.HierarchyNodeGet(root.Id, storeId, stat);
 
                 root.Nodes = nodes.FindAll(x => x.HierarchyCode == root.Id && string.IsNullOrEmpty(x.ParentNode));

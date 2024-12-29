@@ -406,7 +406,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetItemCategory(batchSize, fullRepl, lastKey, lastEntry);
                 logger.Trace(config.LSKey.Key, ret);
-                return map.GetReplItemCatagory(ret, ref lastKey, ref recordsRemaining);
+                return map.GetReplItemCategory(ret, ref lastKey, ref recordsRemaining);
             }
 
             XMLTableData table = DoReplication(5722, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
@@ -942,22 +942,30 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         public List<ReplStoreTenderType> ReplicateStoreTenderType(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
         {
+            string tenderMap = config.SettingsGetByKey(ConfigKey.TenderType_Mapping);
+
             if (LSCVersion >= new Version("19.3"))
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
-
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetTenderType(storeId, batchSize, fullRepl, lastKey, lastEntry);
-                logger.Trace(config.LSKey.Key, ret);
 
-                string tenderMap = config.SettingsGetByKey(ConfigKey.TenderType_Mapping);
+                string ret;
+                if (LSCVersion >= new Version("26.0"))
+                {
+                    ret = odataWS.GetTenderTypeEx(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                    logger.Trace(config.LSKey.Key, ret);
+                    return map.GetReplTenderTypeEx(ret, tenderMap, ref lastKey, ref recordsRemaining);
+                }
+
+                ret = odataWS.GetTenderType(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplTenderType(ret, tenderMap, ref lastKey, ref recordsRemaining);
             }
 
             XMLTableData table = DoReplication(99001462, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
             ReplicateRepository rep = new ReplicateRepository(config);
-            List<ReplStoreTenderType> list = rep.ReplicateStoreTenderType(table, config.SettingsGetByKey(ConfigKey.TenderType_Mapping));
+            List<ReplStoreTenderType> list = rep.ReplicateStoreTenderType(table, tenderMap);
             if (string.IsNullOrEmpty(storeId))
                 return list;
 

@@ -617,6 +617,32 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return disc;
         }
 
+        private string GetStoreGroups(string offerId)
+        {
+            string codes = string.Empty;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT [Store Group] FROM [" + navCompanyName + "LSC Distribution List$5ecfc871-5d82-43f1-9c54-59685e82318d] " +
+                                          "WHERE [Table ID]=99001453 AND [Value]=@id";
+                    command.Parameters.AddWithValue("@id", offerId);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            codes += SQLHelper.GetString(reader["Store Group"]) + ";";
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            return codes;
+        }
+
         private ReplDiscountSetup ReaderToDiscountSetup(SqlDataReader reader, out string timestamp)
         {
             timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
@@ -674,6 +700,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 LineMemberPoints = SQLHelper.GetDecimal(reader["LMemPoint"])
             };
 
+            disc.StoreGroupCodes = GetStoreGroups(disc.OfferNo);
             string tx1 = SQLHelper.GetString(reader["Pop-up Line 1"]);
             string tx2 = SQLHelper.GetString(reader["Pop-up Line 2"]);
             string tx3 = SQLHelper.GetString(reader["Pop-up Line 3"]);

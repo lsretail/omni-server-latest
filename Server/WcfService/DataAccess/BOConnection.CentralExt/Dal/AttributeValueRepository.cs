@@ -17,7 +17,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public AttributeValueRepository(BOConfiguration config) : base(config)
+        public AttributeValueRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlcolumns = "mt.[Link Type],mt.[Link Field 1],mt.[Link Field 2],mt.[Link Field 3],mt.[Attribute Code],mt.[Attribute Value],mt.[Numeric Value],mt.[Sequence]";
 
@@ -123,6 +123,69 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return list;
         }
 
+        public List<ReplAttributeValue> ReplicateEcommAttributeValueTM(int batchSize, bool fullReplication, ref string lastKey, ref int recordsRemaining)
+        {
+            ProcessLastKey(lastKey, out string mainKey, out string delKey);
+            List<JscKey> keys = GetPrimaryKeys("LSC Attribute Value$5ecfc871-5d82-43f1-9c54-59685e82318d");
+
+            string sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatement(true, keys, false);
+            recordsRemaining = GetRecordCountTM(mainKey, sql, keys);
+
+            List<JscActions> actions = LoadDeleteActions(fullReplication, TABLEID, "LSC Attribute Value$5ecfc871-5d82-43f1-9c54-59685e82318d", keys, batchSize, ref delKey);
+            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(true, keys, true);
+
+            List<ReplAttributeValue> list = new List<ReplAttributeValue>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    JscActions actKey = new JscActions(mainKey);
+                    SetWhereValues(command, actKey, keys, true, true);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        int cnt = 0;
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToEcommAttributeValue(reader, out mainKey));
+                            cnt++;
+                        }
+                        reader.Close();
+                        recordsRemaining -= cnt;
+                    }
+
+                    foreach (JscActions act in actions)
+                    {
+                        string[] par = act.ParamValue.Split(';');
+                        if (par.Length < 6 || par.Length != keys.Count)
+                            continue;
+
+                        list.Add(new ReplAttributeValue()
+                        {
+                            LinkType = Convert.ToInt32(par[0]),
+                            LinkField1 = par[1],
+                            LinkField2 = par[2],
+                            LinkField3 = par[3],
+                            Code = par[4],
+                            Sequence = Convert.ToInt32(par[5]),
+                            IsDeleted = true
+                        });
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            lastKey = $"R={mainKey};D={delKey};";
+            return list;
+        }
+
         /// <summary>
         /// Get Attributes by type and value
         /// </summary>
@@ -141,7 +204,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                     connection.Open();
 
                     command.CommandText = "SELECT " + sqlcolumns + ",a.[Description],a.[Value Type],a.[Default Value]" + sqlfrom +
-                        " LEFT JOIN [" + navCompanyName + "LSC Attribute$5ecfc871-5d82-43f1-9c54-59685e82318d] a ON a.[Code]=mt.[Attribute Code]" + " WHERE mt.[Link Field 1]=@id AND mt.[Link Type]=@type" ;
+                        " LEFT JOIN [" + navCompanyName + "LSC Attribute$5ecfc871-5d82-43f1-9c54-59685e82318d] a ON a.[Code]=mt.[Attribute Code]" + 
+                        " WHERE mt.[Link Field 1]=@id AND mt.[Link Type]=@type";
                     command.Parameters.AddWithValue("@id", value);
                     command.Parameters.AddWithValue("@type", (int)type);
 
@@ -178,7 +242,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                 ValueType = (AttributeValueType)SQLHelper.GetInt32(reader["Value Type"])
             };
 
-            AttributeOptionValueRepository rep = new AttributeOptionValueRepository(config);
+            AttributeOptionValueRepository rep = new AttributeOptionValueRepository(config, LSCVersion);
             attr.OptionValues = rep.GetOptionValues(attr.Code);
             return attr;
         }

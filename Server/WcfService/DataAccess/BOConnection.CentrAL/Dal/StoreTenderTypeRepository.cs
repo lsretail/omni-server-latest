@@ -128,6 +128,49 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             return list;
         }
 
+        private string GetInfoCodes(string storeNo, string tenderType)
+        {
+            List<string> list = new List<string>();
+            char del = (char)177;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = "SELECT [Loc_ Group Filter Delimiter] FROM [" + navCompanyName + "Scheduler Setup$5ecfc871-5d82-43f1-9c54-59685e82318d]";
+                    char ch = (char)command.ExecuteNonQuery();
+
+                    if (ch != '\uffff')
+                        del = ch;
+
+                    string value = $"{storeNo}{del}{tenderType}";
+                    command.CommandText = "SELECT t.[Infocode Code],i.[Data Entry Type] " +
+                                          "FROM [" + navCompanyName + "Table Specific Infocode$5ecfc871-5d82-43f1-9c54-59685e82318d] t " +
+                                          "JOIN [" + navCompanyName + "Infocode$5ecfc871-5d82-43f1-9c54-59685e82318d] i ON i.[Code]=t.[Infocode Code] " +
+                                          "WHERE t.[Table ID]=99001462 AND t.[Value]=@val";
+                    command.Parameters.AddWithValue("@val", value);
+                    TraceSqlCommand(command);
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string code = SQLHelper.GetString(reader["Data Entry Type"]);
+                            if (list.Contains(code) == false)
+                                list.Add(code);
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+
+            string infoCode = string.Empty;
+            foreach (string val in list)
+                infoCode += val + ";";
+            return infoCode;
+        }
+
         private ReplStoreTenderType ReaderToStoreTenderType(SqlDataReader reader, string tenderMap, out string timestamp)
         {
             timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
@@ -135,7 +178,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             string navId = SQLHelper.GetString(reader["Code"]);
             string omniId = ConfigSetting.TenderTypeMapping(tenderMap, navId, true);
 
-            return new ReplStoreTenderType()
+            ReplStoreTenderType ttype = new ReplStoreTenderType()
             {
                 StoreID = SQLHelper.GetString(reader["Store No_"]),
                 TenderTypeId = navId,
@@ -154,8 +197,10 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 CountingRequired = SQLHelper.GetInt32(reader["Counting Required"]),
                 AllowOverTender = SQLHelper.GetInt32(reader["Overtender Allowed"]),
                 AllowUnderTender = SQLHelper.GetInt32(reader["Undertender Allowed"]),
-                OpenDrawer = SQLHelper.GetInt32(reader["Drawer Opens"])
+                OpenDrawer = SQLHelper.GetInt32(reader["Drawer Opens"]),
             };
+            ttype.DataEntryCodes = GetInfoCodes(ttype.StoreID, ttype.TenderTypeId);
+            return ttype;
         }
     }
 }

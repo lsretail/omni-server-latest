@@ -57,7 +57,7 @@ namespace LSOmni.Service
         [OperationContract]
         bool OneListDeleteById(string oneListId);
         [OperationContract]
-        OneList OneListItemModify(string onelistId, OneListItem item, bool remove, bool calculate);
+        OneList OneListItemModify(string onelistId, OneListItem item, string cardId, bool remove, bool calculate);
         [OperationContract]
         bool OneListLinking(string oneListId, string cardId, string email, string phone, LinkStatus status);
 

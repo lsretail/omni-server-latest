@@ -73,7 +73,7 @@ namespace LSOmni.BLL.Loyalty
                     list.Name = contact.Name;
             }
 
-            iRepository.OneListSave(list,list.Name, calculate, stat);
+            iRepository.OneListSave(list, list.Name, calculate, stat);
             return list;
         }
 
@@ -219,7 +219,7 @@ namespace LSOmni.BLL.Loyalty
             }
         }
 
-        public virtual OneList OneListItemModify(string oneListId, OneListItem item, bool remove, bool calculate, Statistics stat)
+        public virtual OneList OneListItemModify(string oneListId, OneListItem item, string cardId, bool remove, bool calculate, Statistics stat)
         {
             OneList list = iRepository.OneListGetById(oneListId, true, stat);
 
@@ -261,6 +261,30 @@ namespace LSOmni.BLL.Loyalty
                     list.Items.Add(item);
                 }
             }
+
+            if (config.SettingsBoolGetByKey(ConfigKey.SPG_Notify_ItemUpdate))
+            {
+                SpgNotificationBLL nBLL = new SpgNotificationBLL(config, timeoutInSeconds);
+                nBLL.GetSpgNotificationData((remove) ? SpgMessageType.ItemDel : SpgMessageType.ItemAdd, out string body, out string title);
+
+                ContactBLL cBll = new ContactBLL(config, timeoutInSeconds);
+                MemberContact contact = cBll.ContactGet(ContactSearchType.CardId, cardId, stat);
+
+                List<OneListLink> links = iRepository.OneListLinkGetById(list.Id);
+                foreach (OneListLink link in links)
+                {
+                    if (link.CardId == cardId)
+                        continue;
+
+                    body = body.Replace("{name}", contact?.Name);
+                    body = body.Replace("{itemid}", item.ItemId);
+                    body = body.Replace("{desc}", item.ItemDescription);
+                    body = body.Replace("{listid}", list.Description);
+
+                    nBLL.SendNotification(link.CardId, title, body, stat);
+                }
+            }
+
             return OneListSave(list, calculate, stat);
         }
 
@@ -307,6 +331,24 @@ namespace LSOmni.BLL.Loyalty
                 }
             }
             iRepository.OneListLinking(oneListId, cardId, name, status, stat);
+
+            OneList list = iRepository.OneListGetById(oneListId, false, stat);
+            SpgMessageType spgType = SpgMessageType.None;
+            if (status == LinkStatus.Requesting)
+                spgType = SpgMessageType.UserAdd;
+            if (status == LinkStatus.Remove)
+                spgType = SpgMessageType.UserDel;
+
+            if (config.SettingsBoolGetByKey(ConfigKey.SPG_Notify_FollowerUpdate) && spgType != SpgMessageType.None)
+            {
+                SpgNotificationBLL nBLL = new SpgNotificationBLL(config, timeoutInSeconds);
+                nBLL.GetSpgNotificationData(spgType, out string body, out string title);
+                body = body.Replace("{cardid}", cardId);
+                body = body.Replace("{name}", name);
+                body = body.Replace("{listid}", list.Description);
+
+                nBLL.SendNotification(cardId, title, body, stat);
+            }
         }
 
         private void CheckItemSetup(OneList list)

@@ -34,7 +34,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base
 
         public string SettingsGetByKey(ConfigKey key)
         {
-            TenantSetting setting = Settings.FirstOrDefault(x => x.Key == key.ToString());
+            var setting = Settings.FirstOrDefault(x => x.Key == key.ToString());
             return setting == null ? string.Empty : setting.Value;
         }
 

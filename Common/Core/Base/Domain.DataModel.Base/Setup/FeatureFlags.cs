@@ -11,35 +11,35 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
 
         public void AddFlag(FeatureFlagName flagName, string flagValue)
         {
-            FeatureFlag flag = Flags.Find(f => f.name == flagName);
+            FeatureFlag flag = Flags.Find(f => f.Name == flagName);
             if (flag == null)
             {
                 Flags.Add(new FeatureFlag()
                 {
-                    name = flagName,
-                    value = flagValue
+                    Name = flagName,
+                    Value = flagValue
                 });
             }
             else
             {
-                flag.value = flagValue;
+                flag.Value = flagValue;
             }
         }
 
         public void AddFlag(FeatureFlagName flagName, int flagValue)
         {
-            FeatureFlag flag = Flags.Find(f => f.name == flagName);
+            FeatureFlag flag = Flags.Find(f => f.Name == flagName);
             if (flag == null)
             {
                 Flags.Add(new FeatureFlag()
                 {
-                    name = flagName,
-                    value = flagValue.ToString()
+                    Name = flagName,
+                    Value = flagValue.ToString()
                 });
             }
             else
             {
-                flag.value = flagValue.ToString();
+                flag.Value = flagValue.ToString();
             }
         }
 
@@ -151,6 +151,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                 case "CURRENCY CODE":
                     flagName = FeatureFlagName.CurrencyCode;
                     break;
+                case "ENABLE NOTIFICATIONS":
+                    flagName = FeatureFlagName.EnableNotifications;
+                    break;
 
                 //AUDKENNI SPG
                 case "AUDKENNI BASE URL":
@@ -226,43 +229,43 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                     break;
             }
 
-            FeatureFlag flag = Flags.Find(f => f.name == flagName);
+            FeatureFlag flag = Flags.Find(f => f.Name == flagName);
             if (flag == null)
             {
                 Flags.Add(new FeatureFlag()
                 {
-                    name = flagName,
-                    value = flagValue
+                    Name = flagName,
+                    Value = flagValue
                 });
             }
             else
             {
-                flag.value = flagValue;
+                flag.Value = flagValue;
             }
         }
 
 
         public bool GetFlagBool(FeatureFlagName flagName, bool defaultValue)
         {
-            FeatureFlag flag = Flags.Find(f => f.name == flagName);
+            FeatureFlag flag = Flags.Find(f => f.Name == flagName);
             if (flag == null)
                 return defaultValue;
 
             try
             {
-                return Convert.ToInt16(flag.value) == 1;
+                return Convert.ToInt16(flag.Value) == 1;
             }
             catch
             {
                 try
                 {
-                    return Convert.ToBoolean(flag.value);
+                    return Convert.ToBoolean(flag.Value);
                 }
                 catch
                 {
                     try
                     {
-                        return flag.value.Equals("Yes", StringComparison.OrdinalIgnoreCase);
+                        return flag.Value.Equals("Yes", StringComparison.OrdinalIgnoreCase);
                     }
                     catch
                     {
@@ -274,13 +277,13 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
 
         public int GetFlagInt(FeatureFlagName flagName, int defaultValue)
         {
-            FeatureFlag flag = Flags.Find(f => f.name == flagName);
+            FeatureFlag flag = Flags.Find(f => f.Name == flagName);
             if (flag == null)
                 return defaultValue;
 
             try
             {
-                return Convert.ToInt32(flag.value);
+                return Convert.ToInt32(flag.Value);
             }
             catch
             {
@@ -290,18 +293,18 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
 
         public string GetFlagString(FeatureFlagName flagName, string defaultValue)
         {
-            FeatureFlag flag = Flags.Find(f => f.name == flagName);
+            FeatureFlag flag = Flags.Find(f => f.Name == flagName);
             if (flag == null)
                 return defaultValue;
 
-            return (flag.value == null) ? string.Empty : flag.value;
+            return (flag.Value == null) ? string.Empty : flag.Value;
         }
     }
 
     public class FeatureFlag
     {
-        public FeatureFlagName name = FeatureFlagName.None;
-        public string value = string.Empty;
+        public FeatureFlagName Name { get; set; } = FeatureFlagName.None;
+        public string Value { get; set; } = string.Empty;
     }
 
     public enum FeatureFlagName
@@ -348,6 +351,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         UseOnlineSearch = 224,
         CurrencyCode = 225,
         AllowedPaymentToCustomerAccount = 226,
+        EnableNotifications = 227,
 
         //ScanPayGoPaymentFlags
         EnablePlatformPayment = 300,

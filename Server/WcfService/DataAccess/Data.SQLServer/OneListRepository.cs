@@ -574,7 +574,7 @@ namespace LSOmni.DataAccess.Dal
             return oneLineList;
         }
 
-        private List<OneListLink> OneListLinkGetById(string oneListId)
+        public List<OneListLink> OneListLinkGetById(string oneListId)
         {
             List<OneListLink> list = new List<OneListLink>();
             using (SqlConnection connection = new SqlConnection(sqlConnectionString))

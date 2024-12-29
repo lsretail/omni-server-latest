@@ -28,16 +28,6 @@ namespace LSOmni.BLL.Loyalty
             return new ClientToken();
         }
 
-        public virtual ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo, Statistics stat)
-        {
-            return BOLoyConnection.ScanPayGoProfileGet(profileId, storeNo, stat);
-        }
-
-        public virtual bool SecurityCheckProfile(string orderNo, string storeNo, Statistics stat)
-        {
-            return BOLoyConnection.SecurityCheckProfile(orderNo, storeNo, stat);
-        }
-
         public virtual bool SecurityCheckLogResponse(string orderNo, string validationError, bool validationSuccessful, Statistics stat)
         {
             return BOLoyConnection.SecurityCheckLogResponse(orderNo, validationError, validationSuccessful, stat);
@@ -82,6 +72,16 @@ namespace LSOmni.BLL.Loyalty
             {
                 return iRepository.SpgUnlockRodDeviceCheck(storeId);
             }
+        }
+
+        public virtual ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo, Statistics stat)
+        {
+            return BOLoyConnection.ScanPayGoProfileGet(profileId, storeNo, stat);
+        }
+
+        public virtual bool SecurityCheckProfile(string orderNo, string storeNo, Statistics stat)
+        {
+            return BOLoyConnection.SecurityCheckProfile(orderNo, storeNo, stat);
         }
 
         public virtual string GetAuthCodes()

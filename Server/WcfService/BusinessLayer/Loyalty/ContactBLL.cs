@@ -120,7 +120,8 @@ namespace LSOmni.BLL.Loyalty
                 if (Validation.IsValidUserName(contact.UserName) == false)
                     throw new LSOmniException(StatusCode.UserNameInvalid, "Validation of user name failed");
                 contact.UserName = contact.UserName.Trim();
-                contact.Password = contact.Password.Trim();
+                if (contact.Password != null)
+                    contact.Password = contact.Password.Trim();
             }
 
             if (string.IsNullOrEmpty(contact.Password) == false && Validation.IsValidPassword(contact.Password) == false)

@@ -36,7 +36,7 @@ namespace LSOmni.BLL.Loyalty
         public virtual void OrderMessageSave(string orderId, int status, string subject, string message, Statistics stat)
         {
             // Status: New = 0, InProcess = 1, Failed = 2, Processed = 3,
-            CreateNotificationsFromOrderMessage(orderId, status.ToString(), subject, message, stat);
+            CreateNotificationsFromOrderMessage(orderId, status, subject, message, stat);
             SendToEcom("orderstatus", new { document_id = orderId, status = status });
         }
 
@@ -289,7 +289,7 @@ namespace LSOmni.BLL.Loyalty
             }
         }
 
-        private void CreateNotificationsFromOrderMessage(string orderId, string orderStatus, string subject, string message, Statistics stat)
+        private void CreateNotificationsFromOrderMessage(string orderId, int orderStatus, string subject, string message, Statistics stat)
         {
             if (string.IsNullOrWhiteSpace(message))
                 return;     // nothing to save here
@@ -301,7 +301,7 @@ namespace LSOmni.BLL.Loyalty
             {
                 ContactBLL contactBLL = new ContactBLL(config, timeoutInSeconds);
                 XDocument doc = XDocument.Parse(message);
-                XElement elCardNo = doc.Element("OmniMessage").Element("Order").Element("MemberCardNo");
+                XElement elCardNo = doc.Element("OmniMessage")?.Element("Order")?.Element("MemberCardNo");
                 if (elCardNo == null)
                     throw new XmlException("MemberCardNo. node not found in message.Details XML");
 
@@ -320,7 +320,7 @@ namespace LSOmni.BLL.Loyalty
                 string detailsAsHtml = NotificationHtmlFromOrderMessageXml(message, contact);
                 string qrText = string.Empty;
                 //if status is ready 
-                if (orderStatus.StartsWith("REA"))
+                if (orderStatus == 1 || orderStatus == 3)
                 {
                     qrText = doc.Element("OmniMessage").Element("QRC").Element("CustomerOrder").ToString();
                     qrText = qrText.Replace("\r", "").Replace("\n", "");
@@ -330,7 +330,7 @@ namespace LSOmni.BLL.Loyalty
                 iPushRepository.SavePushNotification(contact.Id, notificationId, stat);
 
                 //if status is ready 
-                if (orderStatus.StartsWith("REA"))
+                if (orderStatus == 1 || orderStatus == 3)
                 {
                     //create qr image 
                     ImageView iv = new ImageView(notificationId)
@@ -343,10 +343,6 @@ namespace LSOmni.BLL.Loyalty
                     IImageRepository imgRepository = base.GetDbRepository<IImageRepository>(config);
                     imgRepository.SaveImageLink(iv, "Member Notification", "Member Notification: " + notificationId, notificationId, iv.Id, 0);
                 }
-            }
-            catch (XmlException)
-            {
-                // not valid XML order data, as we are missing contact card id, we cannot send message here.  Nav needs to use the new status update function
             }
             catch (Exception ex)
             {

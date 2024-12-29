@@ -75,7 +75,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         if (navCompanyName.EndsWith("$") == false)
                             navCompanyName += "$";
 
-                        SQLHelper.CheckForSQLInjection(navCompanyName);
+                        SQLHelper.CheckForSQLInjection(navCompanyName, 1);
                     }
 
                     if (builder.ContainsKey("Initial Catalog"))

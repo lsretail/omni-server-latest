@@ -697,9 +697,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             logger.StatisticStartSub(false, ref stat, out int index);
             StoreRepository rep = new StoreRepository(config, LSCVersion);
             AttributeValueRepository arep = new AttributeValueRepository(config);
+            ImageRepository irep = new ImageRepository(config, LSCVersion);
             Store store = rep.StoreLoyGetById(id, true);
             if (store != null)
             {
+                store.Images = irep.ImageGetByKey("LSC Store", store.Id, string.Empty, string.Empty, 0, false);
                 store.StoreHours = StoreHoursGetByStoreId(id, stat);
                 store.Attributes = arep.AttributesGet(id, AttributeLinkType.Store, stat);
             }
@@ -712,11 +714,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             logger.StatisticStartSub(false, ref stat, out int index);
             StoreRepository rep = new StoreRepository(config, LSCVersion);
             AttributeValueRepository arep = new AttributeValueRepository(config);
+            ImageRepository irep = new ImageRepository(config, LSCVersion);
             List<Store> stores = rep.StoreLoyGetAll(storeType, inclDetails);
             if (inclDetails)
             {
                 foreach (Store store in stores)
                 {
+                    store.Images = irep.ImageGetByKey("LSC Store", store.Id, string.Empty, string.Empty, 0, false);
                     store.StoreHours = StoreHoursGetByStoreId(store.Id, stat);
                     store.Attributes = arep.AttributesGet(store.Id, AttributeLinkType.Store, stat);
                 }

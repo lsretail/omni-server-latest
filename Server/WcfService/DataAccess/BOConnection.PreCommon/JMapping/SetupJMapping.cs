@@ -8,6 +8,7 @@ using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 using LSRetail.Omni.Domain.DataModel.Pos.Replication;
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
 {
@@ -334,6 +335,76 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
             return list;
         }
 
+        public List<ReplStoreTenderType> GetReplTenderTypeEx(string ret, string tenderMap, ref string lastKey, ref int recordsRemaining)
+        {
+            List<ReplStoreTenderType> list = new List<ReplStoreTenderType>();
+            ReplODataSet result = JsonToDataSet(ret, ref lastKey, ref recordsRemaining);
+            if (result == null)
+                return list;
+
+            // Insert update records
+            foreach (ReplODataRecord rec in result.DataSet.DataSetUpd.DynDataSet.DataSetRows)
+            {
+                ReplStoreTenderType line = new ReplStoreTenderType();
+                foreach (ReplODataField data in rec.Fields)
+                {
+                    ReplODataSetField fld = result.DataSet.DataSetUpd.DynDataSet.DataSetFields.Find(f => f.FieldIndex == data.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldName)
+                    {
+                        case "Code": line.TenderTypeId = data.FieldValue; break;
+                        case "Store No.": line.StoreID = data.FieldValue; break;
+                        case "Description": line.Name = data.FieldValue; break;
+                        case "Function": line.TenderFunction = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Valid on Mobile POS": line.ValidOnMobilePOS = XMLHelper.GetWebBoolInt(data.FieldValue); break;
+                        case "Change Tend. Code": line.ChangeTenderId = data.FieldValue; break;
+                        case "Above Min. Change Tender Type": line.AboveMinimumTenderId = data.FieldValue; break;
+                        case "Min. Change": line.MinimumChangeAmount = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "Rounding": line.RoundingMethode = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Rounding To": line.Rounding = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "Return/Minus Allowed": line.ReturnAllowed = XMLHelper.GetWebBoolInt(data.FieldValue); break;
+                        case "Foreign Currency": line.ForeignCurrency = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Undertender Allowed": line.AllowUnderTender = XMLHelper.GetWebBoolInt(data.FieldValue); break;
+                        case "Overtender Allowed": line.AllowOverTender = XMLHelper.GetWebBoolInt(data.FieldValue); break;
+                        case "Overtender Max. Amt.": line.MaximumOverTenderAmount = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "Counting Required": line.CountingRequired = XMLHelper.GetWebBoolInt(data.FieldValue); break;
+                        case "Drawer Opens": line.OpenDrawer = XMLHelper.GetWebBoolInt(data.FieldValue); break;
+                        case "DateEntryCodes": line.DataEntryCodes = data.FieldValue; break;
+                    };
+                }
+                list.Add(line);
+            }
+
+            if (result.DataSet.DataSetDel == null || result.DataSet.DataSetDel.DynDataSet == null)
+                return list;
+
+            // Deleted Action Records
+            foreach (ReplODataRecord rec in result.DataSet.DataSetDel.DynDataSet.DataSetRows)
+            {
+                ReplStoreTenderType line = new ReplStoreTenderType()
+                {
+                    IsDeleted = true
+                };
+
+                foreach (ReplODataField data in rec.Fields)
+                {
+                    ReplODataSetField fld = result.DataSet.DataSetUpd.DynDataSet.DataSetFields.Find(f => f.FieldIndex == data.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldName)
+                    {
+                        case "Code": line.TenderTypeId = data.FieldValue; break;
+                        case "Store No.": line.StoreID = data.FieldValue; break;
+                    }
+                }
+                list.Add(line);
+            }
+            return list;
+        }
+
         public List<ReplStoreTenderTypeCurrency> GetReplTenderTypeCurrency(string ret, ref string lastKey, ref int recordsRemaining)
         {
             List<ReplStoreTenderTypeCurrency> list = new List<ReplStoreTenderTypeCurrency>();
@@ -633,6 +704,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case "Functionality Profile": line.FunctionalityProfile = data.FieldValue; break;
                         case "Store VAT Bus. Post. Gr.": line.TaxGroup = data.FieldValue; break;
                         case "Click and Collect": line.ClickAndCollect = ConvertTo.SafeBoolean(data.FieldValue); break;
+                        case "Store Group Codes": line.StoreGroupCodes = data.FieldValue; break;
+                        case "Price Group Codes": line.PriceGroupCodes = data.FieldValue; break;
                         case "LCY Code": lcy = data.FieldValue; break;
                     }
                 }
@@ -668,6 +741,343 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                 list.Add(line);
             }
             return list;
+        }
+
+        public List<Store> GetStores(string ret, int offset)
+        {
+            List<Store> list = new List<Store>();
+            WSODataCollection result = JsonToWSOData(ret, "StoreInfo");
+            if (result == null)
+                return list;
+
+            // get data
+            list = LoadStores(result.GetDataSet(99001470));
+            if (list == null)
+                return list;
+
+            List<LSKey> storeGroups = LoadFilters(result.GetDataSet(10000782));
+            List<LSKey> priceGroups = LoadFilters(result.GetDataSet(99001575));
+            List<SalesType> salesType = LoadSalesType(result.GetDataSet(10001439));
+            List<SourcingLocation> srcLocation = LoadSrcLocation(result.GetDataSet(10016664));
+            List<ReplAttribute> attributes = LoadAttributes(result.GetDataSet(10000784));
+            List<ReplAttributeValue> attrValue = LoadAttrValues(result.GetDataSet(10000786));
+            List<StoreHours> storeHr = LoadHours(result.GetDataSet(99009052));
+            List<ImageView> images = LoadImage(result.GetDataSet(99009064));
+
+            foreach (Store store in list)
+            {
+                store.PriceGroupCodes = GetFilterString(priceGroups, store.Id);
+                store.StoreGroupCodes = GetFilterString(storeGroups, store.Id);
+                store.SourcingLocations = srcLocation.FindAll(x => x.StoreNo == store.Id);
+                store.Images = images.FindAll(x => x.Location == store.Id);
+
+                string[] stypes = store.SalesTypeCodes.Split('|');
+                foreach (string code in stypes)
+                {
+                    SalesType st = salesType.Find(x => x.Code == code);
+                    if (st != null)
+                        store.HospSalesTypes.Add(st);
+                }
+
+                store.StoreHours = storeHr.FindAll(x => x.StoreId == store.Id);
+                foreach (StoreHours sh in store.StoreHours)
+                {
+                    if (sh.DayOfWeek == 7)
+                        sh.DayOfWeek = 0; //NAV starts with Sunday as 1 but .Net Sunday=0
+
+                    if (string.IsNullOrEmpty(sh.Description))
+                        sh.Description =  sh.NameOfDay;
+
+                    sh.OpenFrom = ConvertTo.SafeDateTime(sh.OpenFrom.AddHours(offset));
+                    sh.OpenTo = ConvertTo.SafeDateTime(sh.OpenTo.AddHours(offset));
+                    sh.StartDate = ConvertTo.SafeDateTime(sh.StartDate.AddHours(offset));
+                    sh.EndDate = ConvertTo.SafeDateTime(sh.EndDate.AddHours(offset));
+                }
+
+                List<ReplAttributeValue> aValue = attrValue.FindAll(x => x.LinkField1 == store.Id);
+                foreach (ReplAttributeValue v in aValue)
+                {
+                    ReplAttribute at = attributes.Find(x => x.Code == v.Code);
+                    store.Attributes.Add(new RetailAttribute()
+                    {
+                        Code = v.Code,
+                        Value = v.Value,
+                        NumericValue = v.NumbericValue,
+                        LinkType = (AttributeLinkType)v.LinkType,
+                        LinkField1 = v.LinkField1,
+                        LinkField2 = v.LinkField2,
+                        LinkField3 = v.LinkField3,
+                        Sequence = v.Sequence,
+                        DefaultValue = at.DefaultValue,
+                        Description = at.Description,
+                        ValueType = (AttributeValueType)at.ValueType
+                    });
+                }
+
+            }
+
+            List<WSODataFlowField> flowfields = LoadFlowFields(result.GetDataSet(99001649));
+            return list;
+        }
+
+        private List<Store> LoadStores(ReplODataSetRecRef dynDataSet)
+        {
+            List<Store> list = new List<Store>();
+            if (dynDataSet == null || dynDataSet.DataSetRows.Count == 0)
+                return list;
+
+            foreach (ReplODataRecord row in dynDataSet.DataSetRows)
+            {
+                Store rec = new Store();
+                rec.Address.Type = AddressType.Store;
+                foreach (ReplODataField col in row.Fields)
+                {
+                    ReplODataSetField fld = dynDataSet.DataSetFields.Find(f => f.FieldIndex == col.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldName)
+                    {
+                        case "No.": rec.Id = col.FieldValue; break;
+                        case "Name": rec.Description = col.FieldValue; break;
+                        case "Address": rec.Address.Address1 = col.FieldValue; break;
+                        case "Address 2": rec.Address.Address2 = col.FieldValue; break;
+                        case "Post Code": rec.Address.PostCode = col.FieldValue; break;
+                        case "City": rec.Address.City = col.FieldValue; break;
+                        case "County": rec.Address.Country = col.FieldValue; break;
+                        case "Country Code": rec.Address.Country = col.FieldValue; break;
+                        case "Phone No.": rec.Phone = col.FieldValue; break;
+                        case "Latitude": rec.Latitude = ConvertTo.SafeDouble(col.FieldValue); break;
+                        case "Longitude": rec.Longitude = ConvertTo.SafeDouble(col.FieldValue); break;
+                        case "Currency Code": rec.Currency = new Currency(col.FieldValue); break;
+                        case "Functionality Profile": rec.FunctionalityProfileId = col.FieldValue; break;
+                        case "Store VAT Bus. Post. Gr.": rec.TaxGroupId = col.FieldValue; break;
+                        case "Click and Collect": rec.IsClickAndCollect = ConvertTo.SafeBoolean(col.FieldValue); break;
+                        case "Loyalty": rec.IsLoyalty = ConvertTo.SafeBoolean(col.FieldValue); break;
+                        case "Web Store": rec.IsWebStore = ConvertTo.SafeBoolean(col.FieldValue); break;
+                        case "Web Store POS Terminal": rec.WebOmniTerminal = col.FieldValue; break;
+                        case "Web Store Staff ID": rec.WebOmniStaff = col.FieldValue; break;
+                        case "Calc Inv for Sourcing Location": rec.UseSourcingLocation = ConvertTo.SafeBoolean(col.FieldValue); break;
+                        case "Store Sales Type Filter": rec.SalesTypeCodes = col.FieldValue; break;
+                    }
+                }
+                list.Add(rec);
+            }
+            return list;
+        }
+
+        private List<SourcingLocation> LoadSrcLocation(ReplODataSetRecRef dynDataSet)
+        {
+            List<SourcingLocation> list = new List<SourcingLocation>();
+            if (dynDataSet == null || dynDataSet.DataSetRows.Count == 0)
+                return list;
+
+            foreach (ReplODataRecord row in dynDataSet.DataSetRows)
+            {
+                SourcingLocation rec = new SourcingLocation();
+                foreach (ReplODataField col in row.Fields)
+                {
+                    ReplODataSetField fld = dynDataSet.DataSetFields.Find(f => f.FieldIndex == col.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldName)
+                    {
+                        case "Delivery Store": rec.StoreNo = col.FieldValue; break;
+                        case "Sourcing Location": rec.Id = col.FieldValue; break;
+                        case "Priority": rec.Priority = ConvertTo.SafeInt(col.FieldValue); break;
+                        case "Will Ship Orders": rec.CanShip = ConvertTo.SafeBoolean(col.FieldValue); break;
+                        case "Orders can be Collected": rec.CanCollect = ConvertTo.SafeBoolean(col.FieldValue); break;
+                        case "Description": rec.Description = col.FieldValue; break;
+                    }
+                }
+                list.Add(rec);
+            }
+            return list;
+        }
+
+        private List<ReplAttribute> LoadAttributes(ReplODataSetRecRef dynDataSet)
+        {
+            List<ReplAttribute> list = new List<ReplAttribute>();
+            if (dynDataSet == null || dynDataSet.DataSetRows.Count == 0)
+                return list;
+
+            foreach (ReplODataRecord row in dynDataSet.DataSetRows)
+            {
+                ReplAttribute rec = new ReplAttribute();
+                foreach (ReplODataField col in row.Fields)
+                {
+                    ReplODataSetField fld = dynDataSet.DataSetFields.Find(f => f.FieldIndex == col.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldName)
+                    {
+                        case "Code": rec.Code = col.FieldValue; break;
+                        case "Description": rec.Description = col.FieldValue; break;
+                        case "Value Type": rec.ValueType = ConvertTo.SafeInt(col.FieldValue); break;
+                        case "Default Value": rec.DefaultValue = col.FieldValue; break;
+                    }
+                }
+                list.Add(rec);
+            }
+            return list;
+        }
+
+        private List<ReplAttributeValue> LoadAttrValues(ReplODataSetRecRef dynDataSet)
+        {
+            List<ReplAttributeValue> list = new List<ReplAttributeValue>();
+            if (dynDataSet == null || dynDataSet.DataSetRows.Count == 0)
+                return list;
+
+            foreach (ReplODataRecord row in dynDataSet.DataSetRows)
+            {
+                ReplAttributeValue rec = new ReplAttributeValue();
+                foreach (ReplODataField col in row.Fields)
+                {
+                    ReplODataSetField fld = dynDataSet.DataSetFields.Find(f => f.FieldIndex == col.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldName)
+                    {
+                        case "Link Type": rec.LinkType = ConvertTo.SafeInt(col.FieldValue); break;
+                        case "Link Field 1": rec.LinkField1 = col.FieldValue; break;
+                        case "Link Field 2": rec.LinkField2 = col.FieldValue; break;
+                        case "Link Field 3": rec.LinkField3 = col.FieldValue; break;
+                        case "Attribute Code": rec.Code = col.FieldValue; break;
+                        case "Attribute Value": rec.Value = col.FieldValue; break;
+                        case "Sequence": rec.Sequence = ConvertTo.SafeInt(col.FieldValue); break;
+                        case "Numeric Value": rec.NumbericValue = ConvertTo.SafeDecimal(col.FieldValue); break;
+                    }
+                }
+                list.Add(rec);
+            }
+            return list;
+        }
+
+        private List<StoreHours> LoadHours(ReplODataSetRecRef dynDataSet)
+        {
+            List<StoreHours> list = new List<StoreHours>();
+            if (dynDataSet == null || dynDataSet.DataSetRows.Count == 0)
+                return list;
+
+            foreach (ReplODataRecord row in dynDataSet.DataSetRows)
+            {
+                StoreHours rec = new StoreHours();
+                foreach (ReplODataField col in row.Fields)
+                {
+                    ReplODataSetField fld = dynDataSet.DataSetFields.Find(f => f.FieldIndex == col.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldName)
+                    {
+                        case "Calendar Type": rec.CalendarType = (StoreHourCalendarType)ConvertTo.SafeInt(col.FieldValue); break;
+                        case "Calendar ID": rec.StoreId = col.FieldValue; break;
+                        case "Time From": rec.OpenFrom = ConvertTo.SafeTime(col.FieldValue); break;
+                        case "Time To": rec.OpenTo = ConvertTo.SafeTime(col.FieldValue); break;
+                        case "Starting Date": rec.StartDate = ConvertTo.SafeDateTime(col.FieldValue); break;
+                        case "Ending Date": rec.EndDate = ConvertTo.SafeDateTime(col.FieldValue); break;
+                        case "Day No.": rec.DayOfWeek = ConvertTo.SafeInt(col.FieldValue); break;
+                        case "Day - Name": rec.NameOfDay = col.FieldValue; break;
+                        case "Reason Closed": rec.Description = col.FieldValue; break;
+                        case "Line Type": rec.Type = (StoreHourOpeningType)ConvertTo.SafeInt(col.FieldValue); break;
+                    }
+                }
+                list.Add(rec);
+            }
+            return list;
+        }
+
+        private List<SalesType> LoadSalesType(ReplODataSetRecRef dynDataSet)
+        {
+            List<SalesType> list = new List<SalesType>();
+            if (dynDataSet == null || dynDataSet.DataSetRows.Count == 0)
+                return list;
+
+            foreach (ReplODataRecord row in dynDataSet.DataSetRows)
+            {
+                SalesType rec = new SalesType();
+                foreach (ReplODataField col in row.Fields)
+                {
+                    ReplODataSetField fld = dynDataSet.DataSetFields.Find(f => f.FieldIndex == col.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldName)
+                    {
+                        case "Code": rec.Code = col.FieldValue; break;
+                        case "Description": rec.Description = col.FieldValue; break;
+                    }
+                }
+                list.Add(rec);
+            }
+            return list;
+        }
+
+        private List<ImageView> LoadImage(ReplODataSetRecRef dynDataSet)
+        {
+            List<ImageView> list = new List<ImageView>();
+            if (dynDataSet == null || dynDataSet.DataSetRows.Count == 0)
+                return list;
+
+            foreach (ReplODataRecord row in dynDataSet.DataSetRows)
+            {
+                ImageView rec = new ImageView();
+                foreach (ReplODataField col in row.Fields)
+                {
+                    ReplODataSetField fld = dynDataSet.DataSetFields.Find(f => f.FieldIndex == col.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldName)
+                    {
+                        case "Image Id": rec.Id = col.FieldValue; break;
+                        case "KeyValue": rec.Location = col.FieldValue; break;
+                        case "Display Order": rec.DisplayOrder = ConvertTo.SafeInt(col.FieldValue); break;
+                    }
+                }
+                list.Add(rec);
+            }
+            return list;
+        }
+
+        private List<LSKey> LoadFilters(ReplODataSetRecRef dynDataSet)
+        {
+            List<LSKey> list = new List<LSKey>();
+            if (dynDataSet == null || dynDataSet.DataSetRows.Count == 0)
+                return list;
+
+            foreach (ReplODataRecord row in dynDataSet.DataSetRows)
+            {
+                LSKey rec = new LSKey();
+                foreach (ReplODataField col in row.Fields)
+                {
+                    ReplODataSetField fld = dynDataSet.DataSetFields.Find(f => f.FieldIndex == col.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldName)
+                    {
+                        case "Store Code": rec.Key = col.FieldValue; break;
+                        case "Store Group": rec.Description = col.FieldValue; break;
+                        case "Store": rec.Key = col.FieldValue; break;
+                        case "Price Group Code": rec.Description = col.FieldValue; break;
+                    }
+                }
+                list.Add(rec);
+            }
+            return list;
+        }
+
+        private string GetFilterString(List<LSKey> list, string storeNo)
+        {
+            List<LSKey> items = list.FindAll(k => k.Key == storeNo);
+            string data = string.Empty;
+            foreach (LSKey rec in items)
+                data += rec.Description + ";";
+            return data;
         }
 
         public List<ReplStaffPermission> GetReplStaffPermission(string ret, ref string lastKey, ref int recordsRemaining)
@@ -1149,7 +1559,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     switch (fld.FieldName)
                     {
                         case "Hierarchy Code": line.HierarchyCode = data.FieldValue; break;
-                        case "Node ID": line.Id = data.FieldValue; break;
+                        case "Node ID": line.NodeId = data.FieldValue; break;
+                        case "Type": line.Type = (HierarchyLeafType)ConvertTo.SafeInt(data.FieldValue); break;
+                        case "No.": line.Id = data.FieldValue; break;
                     }
                 }
                 list.Add(line);

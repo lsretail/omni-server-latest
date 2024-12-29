@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
@@ -15,7 +16,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public StaffRepository(BOConfiguration config) : base(config)
+        public StaffRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlcolumns = "mt.[ID],mt.[First Name],mt.[Last Name],mt.[Name on Receipt],mt.[Store No_],mt.[Password]," +
                          "mt.[Change Password],mt.[Blocked],mt.[Date to Be Blocked],mt.[Inventory Main Menu],mt.[Inventory Active]";
@@ -119,6 +120,66 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return list;
         }
 
+        public List<ReplStaff> ReplicateStaffTM(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref int recordsRemaining)
+        {
+            ProcessLastKey(lastKey, out string mainKey, out string delKey);
+            List<JscKey> keys = GetPrimaryKeys("LSC Staff$5ecfc871-5d82-43f1-9c54-59685e82318d");
+
+            SQLHelper.CheckForSQLInjection(storeId);
+            string sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatement(true, keys, " AND (mt.[Store No_] = '" + storeId + "' OR mt.[Store No_] = '')", false);
+            recordsRemaining = GetRecordCountTM(mainKey, sql, keys);
+
+            List<JscActions> actions = LoadDeleteActions(fullReplication, TABLEID, "LSC Staff$5ecfc871-5d82-43f1-9c54-59685e82318d", keys, batchSize, ref delKey);
+            sql = GetSQL(fullReplication, 0) + sqlcolumns + sqlfrom +
+                        GetWhereStatement(true, keys, " AND (mt.[Store No_] = '" + storeId + "' OR mt.[Store No_] = '')", false) +
+                        " UNION " +
+                        GetSQL(fullReplication, 0) + sqlcolumns +
+                        " FROM [" + navCompanyName + "LSC STAFF Store Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl" +
+                        " LEFT JOIN [" + navCompanyName + "LSC Staff$5ecfc871-5d82-43f1-9c54-59685e82318d] mt ON sl.[Staff ID]=mt.[ID]" +
+                        GetWhereStatement(true, keys, " AND sl.[Store No_]='" + storeId + "'", false);
+
+            List<ReplStaff> list = new List<ReplStaff>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    JscActions actKey = new JscActions(mainKey);
+                    SetWhereValues(command, actKey, keys, true, true);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        int cnt = 0;
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToStaff(reader, out mainKey));
+                            cnt++;
+                        }
+                        reader.Close();
+                        recordsRemaining -= cnt;
+                    }
+
+                    foreach (JscActions act in actions)
+                    {
+                        list.Add(new ReplStaff()
+                        {
+                            Id = act.ParamValue,
+                            IsDeleted = true
+                        });
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            lastKey = $"R={mainKey};D={delKey};";
+            return list;
+        }
 
         private ReplStaff ReaderToStaff(SqlDataReader reader, out string timestamp)
         {

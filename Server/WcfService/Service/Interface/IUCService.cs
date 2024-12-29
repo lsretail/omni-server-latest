@@ -334,11 +334,12 @@ namespace LSOmni.Service
         /// </summary>
         /// <param name="oneListId">OneList Id</param>
         /// <param name="item">OneList Item to add or remove</param>
+        /// <param name="cardId">Card Id of the person making the changes</param>
         /// <param name="remove">true if remove item, else false</param>
         /// <param name="calculate">Recalculate OneList</param>
         /// <returns>Updated OneList</returns>
         [OperationContract]
-        OneList OneListItemModify(string oneListId, OneListItem item, bool remove, bool calculate);
+        OneList OneListItemModify(string oneListId, OneListItem item, string cardId, bool remove, bool calculate);
 
         /// <summary>
         /// Link or remove a Member to/from existing OneList
@@ -3539,6 +3540,23 @@ namespace LSOmni.Service
         /// <returns></returns>
         [OperationContract]
         string SpgUnlockRodDeviceCheck(string storeId);
+
+        /// <summary>
+        /// Register for Push Notifications when Wish list gets some updates, like new follower or items
+        /// </summary>
+        /// <param name="cardId"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        [OperationContract]
+        bool SpgRegisterNotification(string cardId, string token);
+
+        /// <summary>
+        /// Un-Register Push Notifications for Wish list updates
+        /// </summary>
+        /// <param name="cardId"></param>
+        /// <returns></returns>
+        [OperationContract]
+        bool SpgUnRegisterNotification(string cardId);
 
         /// <summary>
         /// Get codes

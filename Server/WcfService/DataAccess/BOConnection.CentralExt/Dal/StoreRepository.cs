@@ -135,6 +135,61 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return list;
         }
 
+        public List<ReplStore> ReplicateStoresTM(int batchSize, bool fullReplication, ref string lastKey, ref int recordsRemaining)
+        {
+            ProcessLastKey(lastKey, out string mainKey, out string delKey);
+            List<JscKey> keys = GetPrimaryKeys("LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d");
+
+            string where = " AND ([Loyalty]=1 OR [Mobile]=1)";
+            string sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatement(true, keys, where, false);
+            recordsRemaining = GetRecordCountTM(mainKey, sql, keys);
+
+            List<JscActions> actions = LoadDeleteActions(fullReplication, TABLEID, "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d", keys, batchSize, ref delKey);
+            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(true, keys, where, true);
+
+            List<ReplStore> list = new List<ReplStore>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    JscActions actKey = new JscActions(mainKey);
+                    SetWhereValues(command, actKey, keys, true, true);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        int cnt = 0;
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToStore(reader, false, out mainKey));
+                            cnt++;
+                        }
+                        reader.Close();
+                        recordsRemaining -= cnt;
+                    }
+
+                    foreach (JscActions act in actions)
+                    {
+                        list.Add(new ReplStore()
+                        {
+                            Id = act.ParamValue,
+                            IsDeleted = true
+                        });
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            lastKey = $"R={mainKey};D={delKey};";
+            return list;
+        }
+
         public List<ReplStore> ReplicateInvStores(string storeId, string terminalId)
         {
             List<JscKey> keys = GetPrimaryKeys("LSC Inventory Terminal-Store$5ecfc871-5d82-43f1-9c54-59685e82318d");
@@ -248,8 +303,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                             break;
                     }
 
-                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom + type +
-                                          " ORDER BY mt.[Name]";
+                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom + type;
                     TraceSqlCommand(command);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -463,6 +517,56 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return list;
         }
 
+        private string GetStoreGroups(string storeId)
+        {
+            string codes = string.Empty;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT [Store Group] FROM [" + navCompanyName + "LSC Store Group Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Store Code]=@id";
+                    command.Parameters.AddWithValue("@id", storeId);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            codes += SQLHelper.GetString(reader["Store Group"]) + ";";
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            return codes;
+        }
+
+        private string GetPriceGroups(string storeId)
+        {
+            string codes = string.Empty;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT [Price Group Code] FROM [" + navCompanyName + "LSC Store Price Group$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Store]=@id";
+                    command.Parameters.AddWithValue("@id", storeId);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            codes += SQLHelper.GetString(reader["Price Group Code"]) + ";";
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            return codes;
+        }
+
         private ReturnPolicy ReaderToPolicy(SqlDataReader reader)
         {
             return new ReturnPolicy()
@@ -522,6 +626,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                 Currency = SQLHelper.GetString(reader["Currency Code"])
             };
 
+            store.StoreGroupCodes = GetStoreGroups(store.Id);
+            store.PriceGroupCodes = GetPriceGroups(store.Id);
             if (string.IsNullOrWhiteSpace(store.Currency))
                 store.Currency = SQLHelper.GetString(reader["LCYCode"]);
 
@@ -549,6 +655,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                 WebOmniTerminal = SQLHelper.GetString(reader["Web Store POS Terminal"]),
                 WebOmniStaff = SQLHelper.GetString(reader["Web Store Staff ID"]),
                 HospSalesTypes = GetSalesTypes(SQLHelper.GetString(reader["Sales Type Filter"])),
+                TaxGroupId = SQLHelper.GetString(reader["Store VAT Bus_ Post_ Gr_"]),
+                FunctionalityProfileId = SQLHelper.GetString(reader["Functionality Profile"]),
 
                 Address = new Address()
                 {
@@ -561,6 +669,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                     Type = AddressType.Store
                 }
             };
+
+            store.StoreGroupCodes = GetStoreGroups(store.Id);
+            store.PriceGroupCodes = GetPriceGroups(store.Id);
 
             string cur = SQLHelper.GetString(reader["Currency Code"]);
             if (string.IsNullOrWhiteSpace(cur))

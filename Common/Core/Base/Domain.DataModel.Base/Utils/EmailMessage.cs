@@ -39,19 +39,19 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Utils
             RetryCounter = 0;
         }
 
-        public string Guid { get; set; } // 
-        public string EmailFrom { get; set; } //
-        public string EmailTo { get; set; } //
-        public string EmailCc { get; set; } //
-        public EmailStatus EmailStatus { get; set; } //
-        public EmailType EmailType { get; set; } //
-        public string Subject { get; set; } //
-        public string Body { get; set; } //
-        public string Attachments { get; set; } //
-        public string Error { get; set; } //
-        public string ExternalId { get; set; } //
-        public DateTime DateCreated { get; set; } //
-        public DateTime DateLastModified { get; set; } //
-        public int RetryCounter { get; set; } //
+        public string Guid { get; set; }
+        public string EmailFrom { get; set; }
+        public string EmailTo { get; set; }
+        public string EmailCc { get; set; }
+        public EmailStatus EmailStatus { get; set; }
+        public EmailType EmailType { get; set; }
+        public string Subject { get; set; }
+        public string Body { get; set; }
+        public string Attachments { get; set; }
+        public string Error { get; set; }
+        public string ExternalId { get; set; }
+        public DateTime DateCreated { get; set; }
+        public DateTime DateLastModified { get; set; }
+        public int RetryCounter { get; set; }
     }
 }

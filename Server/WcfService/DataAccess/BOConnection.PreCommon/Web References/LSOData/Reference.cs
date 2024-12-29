@@ -29,103 +29,51 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     [System.Web.Services.WebServiceBindingAttribute(Name="ODataRequest_Binding", Namespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest")]
     public partial class ODataRequest : MySoapHttpClientProtocol {
         
-        private System.Threading.SendOrPostCallback GetBarcodeMaskOperationCompleted;
+        private System.Threading.SendOrPostCallback GetAttributeOptionValuesOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetAttributeValuesOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetAttributeOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetBarcodeGS1SetupOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetBarcodeMaskSegmentOperationCompleted;
         
+        private System.Threading.SendOrPostCallback GetBarcodeMaskOperationCompleted;
+        
         private System.Threading.SendOrPostCallback GetBarcodeOperationCompleted;
         
-        private System.Threading.SendOrPostCallback GetCurrencyOperationCompleted;
+        private System.Threading.SendOrPostCallback GetCollectionOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetContact2OperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetContactOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetCountryCodeOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetCurrencyExchRateOperationCompleted;
         
+        private System.Threading.SendOrPostCallback GetCurrencyOperationCompleted;
+        
         private System.Threading.SendOrPostCallback GetCustomerOperationCompleted;
         
-        private System.Threading.SendOrPostCallback GetWIDiscountsOperationCompleted;
+        private System.Threading.SendOrPostCallback GetDataTranslationOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetDiscountSetupOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetExtdVariantValuesOperationCompleted;
         
-        private System.Threading.SendOrPostCallback GetHierarchyOperationCompleted;
+        private System.Threading.SendOrPostCallback GetHierarchyDealLineOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetHierarchyDealOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetHierarchyLeafOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetHierarchyNodesOperationCompleted;
         
-        private System.Threading.SendOrPostCallback GetItemCategoryOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetWIItemLocationBufferOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetWIItemBufferOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetItemUnitOfMeasureOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetVariantRegWithStatusOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetWIPriceOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetProductGroupOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetStaffOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetStaffPermissionOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetStoreBufferOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetTenderTypeOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetVATPostingSetupOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetUnitOfMeasureOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetVendorOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetAttributeOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetAttributeOptionValuesOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetAttributeValuesOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetSalesPriceOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetCollectionOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetCountryCodeOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetDataTranslationOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetOfferHTMLOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetDiscountSetupOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetValidationPeriodOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetHierarchyDealOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetHierarchyDealLineOperationCompleted;
+        private System.Threading.SendOrPostCallback GetHierarchyOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetImageLinkOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetWIImageBufferOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetInventoryStatusOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetItemHTMLOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetWIItemModifierOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetWIItemRecipeBufferOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetItemVariantOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetContact2OperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetWIMixMatchOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetVendorItemOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetBarcodeGS1SetupOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetContactOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetInvWorksheetBufferOperationCompleted;
         
@@ -133,19 +81,73 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         
         private System.Threading.SendOrPostCallback GetInventoryMenuOperationCompleted;
         
+        private System.Threading.SendOrPostCallback GetInventoryStatusOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetItemCategoryOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetItemHTMLOperationCompleted;
+        
         private System.Threading.SendOrPostCallback GetItemTrackingOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetItemUnitOfMeasureOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetItemVariantOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetOfferHTMLOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetPOSTerminalOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetPluBufferOperationCompleted;
         
+        private System.Threading.SendOrPostCallback GetProductGroupOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetSalesPriceOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetStaffPermissionOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetStaffOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetStoreBufferOperationCompleted;
+        
         private System.Threading.SendOrPostCallback GetStoreStaffOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetTenderTypeCurrencyOperationCompleted;
         
+        private System.Threading.SendOrPostCallback GetTenderTypeExOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetTenderTypeOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetUnitOfMeasureOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetVATPostingSetupOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetValidationPeriodOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetVariantRegWithStatusOperationCompleted;
+        
         private System.Threading.SendOrPostCallback GetVariantRegOperationCompleted;
         
+        private System.Threading.SendOrPostCallback GetVendorItemOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetVendorOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetWIDiscountsOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetWIImageBufferOperationCompleted;
+        
         private System.Threading.SendOrPostCallback GetWIInvLocationBufferOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetWIItemBufferOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetWIItemLocationBufferOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetWIItemModifierOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetWIItemRecipeBufferOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetWIMixMatchOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetWIPriceOperationCompleted;
         
         private bool useDefaultCredentialsSetExplicitly;
         
@@ -186,31 +188,61 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         }
         
         /// <remarks/>
-        public event GetBarcodeMaskCompletedEventHandler GetBarcodeMaskCompleted;
+        public event GetAttributeOptionValuesCompletedEventHandler GetAttributeOptionValuesCompleted;
+        
+        /// <remarks/>
+        public event GetAttributeValuesCompletedEventHandler GetAttributeValuesCompleted;
+        
+        /// <remarks/>
+        public event GetAttributeCompletedEventHandler GetAttributeCompleted;
+        
+        /// <remarks/>
+        public event GetBarcodeGS1SetupCompletedEventHandler GetBarcodeGS1SetupCompleted;
         
         /// <remarks/>
         public event GetBarcodeMaskSegmentCompletedEventHandler GetBarcodeMaskSegmentCompleted;
         
         /// <remarks/>
+        public event GetBarcodeMaskCompletedEventHandler GetBarcodeMaskCompleted;
+        
+        /// <remarks/>
         public event GetBarcodeCompletedEventHandler GetBarcodeCompleted;
         
         /// <remarks/>
-        public event GetCurrencyCompletedEventHandler GetCurrencyCompleted;
+        public event GetCollectionCompletedEventHandler GetCollectionCompleted;
+        
+        /// <remarks/>
+        public event GetContact2CompletedEventHandler GetContact2Completed;
+        
+        /// <remarks/>
+        public event GetContactCompletedEventHandler GetContactCompleted;
+        
+        /// <remarks/>
+        public event GetCountryCodeCompletedEventHandler GetCountryCodeCompleted;
         
         /// <remarks/>
         public event GetCurrencyExchRateCompletedEventHandler GetCurrencyExchRateCompleted;
         
         /// <remarks/>
+        public event GetCurrencyCompletedEventHandler GetCurrencyCompleted;
+        
+        /// <remarks/>
         public event GetCustomerCompletedEventHandler GetCustomerCompleted;
         
         /// <remarks/>
-        public event GetWIDiscountsCompletedEventHandler GetWIDiscountsCompleted;
+        public event GetDataTranslationCompletedEventHandler GetDataTranslationCompleted;
+        
+        /// <remarks/>
+        public event GetDiscountSetupCompletedEventHandler GetDiscountSetupCompleted;
         
         /// <remarks/>
         public event GetExtdVariantValuesCompletedEventHandler GetExtdVariantValuesCompleted;
         
         /// <remarks/>
-        public event GetHierarchyCompletedEventHandler GetHierarchyCompleted;
+        public event GetHierarchyDealLineCompletedEventHandler GetHierarchyDealLineCompleted;
+        
+        /// <remarks/>
+        public event GetHierarchyDealCompletedEventHandler GetHierarchyDealCompleted;
         
         /// <remarks/>
         public event GetHierarchyLeafCompletedEventHandler GetHierarchyLeafCompleted;
@@ -219,118 +251,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         public event GetHierarchyNodesCompletedEventHandler GetHierarchyNodesCompleted;
         
         /// <remarks/>
-        public event GetItemCategoryCompletedEventHandler GetItemCategoryCompleted;
-        
-        /// <remarks/>
-        public event GetWIItemLocationBufferCompletedEventHandler GetWIItemLocationBufferCompleted;
-        
-        /// <remarks/>
-        public event GetWIItemBufferCompletedEventHandler GetWIItemBufferCompleted;
-        
-        /// <remarks/>
-        public event GetItemUnitOfMeasureCompletedEventHandler GetItemUnitOfMeasureCompleted;
-        
-        /// <remarks/>
-        public event GetVariantRegWithStatusCompletedEventHandler GetVariantRegWithStatusCompleted;
-        
-        /// <remarks/>
-        public event GetWIPriceCompletedEventHandler GetWIPriceCompleted;
-        
-        /// <remarks/>
-        public event GetProductGroupCompletedEventHandler GetProductGroupCompleted;
-        
-        /// <remarks/>
-        public event GetStaffCompletedEventHandler GetStaffCompleted;
-        
-        /// <remarks/>
-        public event GetStaffPermissionCompletedEventHandler GetStaffPermissionCompleted;
-        
-        /// <remarks/>
-        public event GetStoreBufferCompletedEventHandler GetStoreBufferCompleted;
-        
-        /// <remarks/>
-        public event GetTenderTypeCompletedEventHandler GetTenderTypeCompleted;
-        
-        /// <remarks/>
-        public event GetVATPostingSetupCompletedEventHandler GetVATPostingSetupCompleted;
-        
-        /// <remarks/>
-        public event GetUnitOfMeasureCompletedEventHandler GetUnitOfMeasureCompleted;
-        
-        /// <remarks/>
-        public event GetVendorCompletedEventHandler GetVendorCompleted;
-        
-        /// <remarks/>
-        public event GetAttributeCompletedEventHandler GetAttributeCompleted;
-        
-        /// <remarks/>
-        public event GetAttributeOptionValuesCompletedEventHandler GetAttributeOptionValuesCompleted;
-        
-        /// <remarks/>
-        public event GetAttributeValuesCompletedEventHandler GetAttributeValuesCompleted;
-        
-        /// <remarks/>
-        public event GetSalesPriceCompletedEventHandler GetSalesPriceCompleted;
-        
-        /// <remarks/>
-        public event GetCollectionCompletedEventHandler GetCollectionCompleted;
-        
-        /// <remarks/>
-        public event GetCountryCodeCompletedEventHandler GetCountryCodeCompleted;
-        
-        /// <remarks/>
-        public event GetDataTranslationCompletedEventHandler GetDataTranslationCompleted;
-        
-        /// <remarks/>
-        public event GetOfferHTMLCompletedEventHandler GetOfferHTMLCompleted;
-        
-        /// <remarks/>
-        public event GetDiscountSetupCompletedEventHandler GetDiscountSetupCompleted;
-        
-        /// <remarks/>
-        public event GetValidationPeriodCompletedEventHandler GetValidationPeriodCompleted;
-        
-        /// <remarks/>
-        public event GetHierarchyDealCompletedEventHandler GetHierarchyDealCompleted;
-        
-        /// <remarks/>
-        public event GetHierarchyDealLineCompletedEventHandler GetHierarchyDealLineCompleted;
+        public event GetHierarchyCompletedEventHandler GetHierarchyCompleted;
         
         /// <remarks/>
         public event GetImageLinkCompletedEventHandler GetImageLinkCompleted;
-        
-        /// <remarks/>
-        public event GetWIImageBufferCompletedEventHandler GetWIImageBufferCompleted;
-        
-        /// <remarks/>
-        public event GetInventoryStatusCompletedEventHandler GetInventoryStatusCompleted;
-        
-        /// <remarks/>
-        public event GetItemHTMLCompletedEventHandler GetItemHTMLCompleted;
-        
-        /// <remarks/>
-        public event GetWIItemModifierCompletedEventHandler GetWIItemModifierCompleted;
-        
-        /// <remarks/>
-        public event GetWIItemRecipeBufferCompletedEventHandler GetWIItemRecipeBufferCompleted;
-        
-        /// <remarks/>
-        public event GetItemVariantCompletedEventHandler GetItemVariantCompleted;
-        
-        /// <remarks/>
-        public event GetContact2CompletedEventHandler GetContact2Completed;
-        
-        /// <remarks/>
-        public event GetWIMixMatchCompletedEventHandler GetWIMixMatchCompleted;
-        
-        /// <remarks/>
-        public event GetVendorItemCompletedEventHandler GetVendorItemCompleted;
-        
-        /// <remarks/>
-        public event GetBarcodeGS1SetupCompletedEventHandler GetBarcodeGS1SetupCompleted;
-        
-        /// <remarks/>
-        public event GetContactCompletedEventHandler GetContactCompleted;
         
         /// <remarks/>
         public event GetInvWorksheetBufferCompletedEventHandler GetInvWorksheetBufferCompleted;
@@ -342,7 +266,25 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         public event GetInventoryMenuCompletedEventHandler GetInventoryMenuCompleted;
         
         /// <remarks/>
+        public event GetInventoryStatusCompletedEventHandler GetInventoryStatusCompleted;
+        
+        /// <remarks/>
+        public event GetItemCategoryCompletedEventHandler GetItemCategoryCompleted;
+        
+        /// <remarks/>
+        public event GetItemHTMLCompletedEventHandler GetItemHTMLCompleted;
+        
+        /// <remarks/>
         public event GetItemTrackingCompletedEventHandler GetItemTrackingCompleted;
+        
+        /// <remarks/>
+        public event GetItemUnitOfMeasureCompletedEventHandler GetItemUnitOfMeasureCompleted;
+        
+        /// <remarks/>
+        public event GetItemVariantCompletedEventHandler GetItemVariantCompleted;
+        
+        /// <remarks/>
+        public event GetOfferHTMLCompletedEventHandler GetOfferHTMLCompleted;
         
         /// <remarks/>
         public event GetPOSTerminalCompletedEventHandler GetPOSTerminalCompleted;
@@ -351,22 +293,85 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         public event GetPluBufferCompletedEventHandler GetPluBufferCompleted;
         
         /// <remarks/>
+        public event GetProductGroupCompletedEventHandler GetProductGroupCompleted;
+        
+        /// <remarks/>
+        public event GetSalesPriceCompletedEventHandler GetSalesPriceCompleted;
+        
+        /// <remarks/>
+        public event GetStaffPermissionCompletedEventHandler GetStaffPermissionCompleted;
+        
+        /// <remarks/>
+        public event GetStaffCompletedEventHandler GetStaffCompleted;
+        
+        /// <remarks/>
+        public event GetStoreBufferCompletedEventHandler GetStoreBufferCompleted;
+        
+        /// <remarks/>
         public event GetStoreStaffCompletedEventHandler GetStoreStaffCompleted;
         
         /// <remarks/>
         public event GetTenderTypeCurrencyCompletedEventHandler GetTenderTypeCurrencyCompleted;
         
         /// <remarks/>
+        public event GetTenderTypeExCompletedEventHandler GetTenderTypeExCompleted;
+        
+        /// <remarks/>
+        public event GetTenderTypeCompletedEventHandler GetTenderTypeCompleted;
+        
+        /// <remarks/>
+        public event GetUnitOfMeasureCompletedEventHandler GetUnitOfMeasureCompleted;
+        
+        /// <remarks/>
+        public event GetVATPostingSetupCompletedEventHandler GetVATPostingSetupCompleted;
+        
+        /// <remarks/>
+        public event GetValidationPeriodCompletedEventHandler GetValidationPeriodCompleted;
+        
+        /// <remarks/>
+        public event GetVariantRegWithStatusCompletedEventHandler GetVariantRegWithStatusCompleted;
+        
+        /// <remarks/>
         public event GetVariantRegCompletedEventHandler GetVariantRegCompleted;
+        
+        /// <remarks/>
+        public event GetVendorItemCompletedEventHandler GetVendorItemCompleted;
+        
+        /// <remarks/>
+        public event GetVendorCompletedEventHandler GetVendorCompleted;
+        
+        /// <remarks/>
+        public event GetWIDiscountsCompletedEventHandler GetWIDiscountsCompleted;
+        
+        /// <remarks/>
+        public event GetWIImageBufferCompletedEventHandler GetWIImageBufferCompleted;
         
         /// <remarks/>
         public event GetWIInvLocationBufferCompletedEventHandler GetWIInvLocationBufferCompleted;
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetBarcodeMask", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetBarcodeMask_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public event GetWIItemBufferCompletedEventHandler GetWIItemBufferCompleted;
+        
+        /// <remarks/>
+        public event GetWIItemLocationBufferCompletedEventHandler GetWIItemLocationBufferCompleted;
+        
+        /// <remarks/>
+        public event GetWIItemModifierCompletedEventHandler GetWIItemModifierCompleted;
+        
+        /// <remarks/>
+        public event GetWIItemRecipeBufferCompletedEventHandler GetWIItemRecipeBufferCompleted;
+        
+        /// <remarks/>
+        public event GetWIMixMatchCompletedEventHandler GetWIMixMatchCompleted;
+        
+        /// <remarks/>
+        public event GetWIPriceCompletedEventHandler GetWIPriceCompleted;
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetAttributeOptionValues", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetAttributeOptionValues_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetBarcodeMask(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetBarcodeMask", new object[] {
+        public string GetAttributeOptionValues(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetAttributeOptionValues", new object[] {
                         batchSize,
                         fullRepl,
                         lastKey,
@@ -375,26 +380,134 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         }
         
         /// <remarks/>
-        public void GetBarcodeMaskAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetBarcodeMaskAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
+        public void GetAttributeOptionValuesAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetAttributeOptionValuesAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
         }
         
         /// <remarks/>
-        public void GetBarcodeMaskAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetBarcodeMaskOperationCompleted == null)) {
-                this.GetBarcodeMaskOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBarcodeMaskOperationCompleted);
+        public void GetAttributeOptionValuesAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetAttributeOptionValuesOperationCompleted == null)) {
+                this.GetAttributeOptionValuesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetAttributeOptionValuesOperationCompleted);
             }
-            this.InvokeAsync("GetBarcodeMask", new object[] {
+            this.InvokeAsync("GetAttributeOptionValues", new object[] {
                         batchSize,
                         fullRepl,
                         lastKey,
-                        lastEntryNo}, this.GetBarcodeMaskOperationCompleted, userState);
+                        lastEntryNo}, this.GetAttributeOptionValuesOperationCompleted, userState);
         }
         
-        private void OnGetBarcodeMaskOperationCompleted(object arg) {
-            if ((this.GetBarcodeMaskCompleted != null)) {
+        private void OnGetAttributeOptionValuesOperationCompleted(object arg) {
+            if ((this.GetAttributeOptionValuesCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetBarcodeMaskCompleted(this, new GetBarcodeMaskCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+                this.GetAttributeOptionValuesCompleted(this, new GetAttributeOptionValuesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetAttributeValues", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetAttributeValues_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetAttributeValues(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetAttributeValues", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetAttributeValuesAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetAttributeValuesAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetAttributeValuesAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetAttributeValuesOperationCompleted == null)) {
+                this.GetAttributeValuesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetAttributeValuesOperationCompleted);
+            }
+            this.InvokeAsync("GetAttributeValues", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetAttributeValuesOperationCompleted, userState);
+        }
+        
+        private void OnGetAttributeValuesOperationCompleted(object arg) {
+            if ((this.GetAttributeValuesCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetAttributeValuesCompleted(this, new GetAttributeValuesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetAttribute", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetAttribute_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetAttribute(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetAttribute", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetAttributeAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetAttributeAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetAttributeAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetAttributeOperationCompleted == null)) {
+                this.GetAttributeOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetAttributeOperationCompleted);
+            }
+            this.InvokeAsync("GetAttribute", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetAttributeOperationCompleted, userState);
+        }
+        
+        private void OnGetAttributeOperationCompleted(object arg) {
+            if ((this.GetAttributeCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetAttributeCompleted(this, new GetAttributeCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetBarcodeGS1Setup", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetBarcodeGS1Setup_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetBarcodeGS1Setup(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetBarcodeGS1Setup", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetBarcodeGS1SetupAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetBarcodeGS1SetupAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetBarcodeGS1SetupAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetBarcodeGS1SetupOperationCompleted == null)) {
+                this.GetBarcodeGS1SetupOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBarcodeGS1SetupOperationCompleted);
+            }
+            this.InvokeAsync("GetBarcodeGS1Setup", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetBarcodeGS1SetupOperationCompleted, userState);
+        }
+        
+        private void OnGetBarcodeGS1SetupOperationCompleted(object arg) {
+            if ((this.GetBarcodeGS1SetupCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetBarcodeGS1SetupCompleted(this, new GetBarcodeGS1SetupCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -431,6 +544,42 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
             if ((this.GetBarcodeMaskSegmentCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetBarcodeMaskSegmentCompleted(this, new GetBarcodeMaskSegmentCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetBarcodeMask", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetBarcodeMask_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetBarcodeMask(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetBarcodeMask", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetBarcodeMaskAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetBarcodeMaskAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetBarcodeMaskAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetBarcodeMaskOperationCompleted == null)) {
+                this.GetBarcodeMaskOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBarcodeMaskOperationCompleted);
+            }
+            this.InvokeAsync("GetBarcodeMask", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetBarcodeMaskOperationCompleted, userState);
+        }
+        
+        private void OnGetBarcodeMaskOperationCompleted(object arg) {
+            if ((this.GetBarcodeMaskCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetBarcodeMaskCompleted(this, new GetBarcodeMaskCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -473,10 +622,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         }
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetCurrency", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetCurrency_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetCollection", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetCollection_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetCurrency(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetCurrency", new object[] {
+        public string GetCollection(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetCollection", new object[] {
+                        storeNo,
                         batchSize,
                         fullRepl,
                         lastKey,
@@ -485,26 +635,135 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         }
         
         /// <remarks/>
-        public void GetCurrencyAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetCurrencyAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
+        public void GetCollectionAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetCollectionAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
         }
         
         /// <remarks/>
-        public void GetCurrencyAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetCurrencyOperationCompleted == null)) {
-                this.GetCurrencyOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetCurrencyOperationCompleted);
+        public void GetCollectionAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetCollectionOperationCompleted == null)) {
+                this.GetCollectionOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetCollectionOperationCompleted);
             }
-            this.InvokeAsync("GetCurrency", new object[] {
+            this.InvokeAsync("GetCollection", new object[] {
+                        storeNo,
                         batchSize,
                         fullRepl,
                         lastKey,
-                        lastEntryNo}, this.GetCurrencyOperationCompleted, userState);
+                        lastEntryNo}, this.GetCollectionOperationCompleted, userState);
         }
         
-        private void OnGetCurrencyOperationCompleted(object arg) {
-            if ((this.GetCurrencyCompleted != null)) {
+        private void OnGetCollectionOperationCompleted(object arg) {
+            if ((this.GetCollectionCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetCurrencyCompleted(this, new GetCurrencyCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+                this.GetCollectionCompleted(this, new GetCollectionCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetContact2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetContact2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetContact2(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetContact2", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetContact2Async(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetContact2Async(batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetContact2Async(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetContact2OperationCompleted == null)) {
+                this.GetContact2OperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetContact2OperationCompleted);
+            }
+            this.InvokeAsync("GetContact2", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetContact2OperationCompleted, userState);
+        }
+        
+        private void OnGetContact2OperationCompleted(object arg) {
+            if ((this.GetContact2Completed != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetContact2Completed(this, new GetContact2CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetContact", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetContact_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetContact(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetContact", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetContactAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetContactAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetContactAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetContactOperationCompleted == null)) {
+                this.GetContactOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetContactOperationCompleted);
+            }
+            this.InvokeAsync("GetContact", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetContactOperationCompleted, userState);
+        }
+        
+        private void OnGetContactOperationCompleted(object arg) {
+            if ((this.GetContactCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetContactCompleted(this, new GetContactCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetCountryCode", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetCountryCode_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetCountryCode(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetCountryCode", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetCountryCodeAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetCountryCodeAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetCountryCodeAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetCountryCodeOperationCompleted == null)) {
+                this.GetCountryCodeOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetCountryCodeOperationCompleted);
+            }
+            this.InvokeAsync("GetCountryCode", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetCountryCodeOperationCompleted, userState);
+        }
+        
+        private void OnGetCountryCodeOperationCompleted(object arg) {
+            if ((this.GetCountryCodeCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetCountryCodeCompleted(this, new GetCountryCodeCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -545,6 +804,42 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetCurrency", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetCurrency_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetCurrency(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetCurrency", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetCurrencyAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetCurrencyAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetCurrencyAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetCurrencyOperationCompleted == null)) {
+                this.GetCurrencyOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetCurrencyOperationCompleted);
+            }
+            this.InvokeAsync("GetCurrency", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetCurrencyOperationCompleted, userState);
+        }
+        
+        private void OnGetCurrencyOperationCompleted(object arg) {
+            if ((this.GetCurrencyCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetCurrencyCompleted(this, new GetCurrencyCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetCustomer", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetCustomer_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
         public string GetCustomer(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
@@ -581,11 +876,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         }
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIDiscounts", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetWIDiscounts_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetDataTranslation", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetDataTranslation_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetWIDiscounts(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetWIDiscounts", new object[] {
-                        storeNo,
+        public string GetDataTranslation(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetDataTranslation", new object[] {
                         batchSize,
                         fullRepl,
                         lastKey,
@@ -594,27 +888,62 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         }
         
         /// <remarks/>
-        public void GetWIDiscountsAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetWIDiscountsAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
+        public void GetDataTranslationAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetDataTranslationAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
         }
         
         /// <remarks/>
-        public void GetWIDiscountsAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetWIDiscountsOperationCompleted == null)) {
-                this.GetWIDiscountsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetWIDiscountsOperationCompleted);
+        public void GetDataTranslationAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetDataTranslationOperationCompleted == null)) {
+                this.GetDataTranslationOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetDataTranslationOperationCompleted);
             }
-            this.InvokeAsync("GetWIDiscounts", new object[] {
-                        storeNo,
+            this.InvokeAsync("GetDataTranslation", new object[] {
                         batchSize,
                         fullRepl,
                         lastKey,
-                        lastEntryNo}, this.GetWIDiscountsOperationCompleted, userState);
+                        lastEntryNo}, this.GetDataTranslationOperationCompleted, userState);
         }
         
-        private void OnGetWIDiscountsOperationCompleted(object arg) {
-            if ((this.GetWIDiscountsCompleted != null)) {
+        private void OnGetDataTranslationOperationCompleted(object arg) {
+            if ((this.GetDataTranslationCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetWIDiscountsCompleted(this, new GetWIDiscountsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+                this.GetDataTranslationCompleted(this, new GetDataTranslationCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetDiscountSetup", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetDiscountSetup_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetDiscountSetup(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetDiscountSetup", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetDiscountSetupAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetDiscountSetupAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetDiscountSetupAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetDiscountSetupOperationCompleted == null)) {
+                this.GetDiscountSetupOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetDiscountSetupOperationCompleted);
+            }
+            this.InvokeAsync("GetDiscountSetup", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetDiscountSetupOperationCompleted, userState);
+        }
+        
+        private void OnGetDiscountSetupOperationCompleted(object arg) {
+            if ((this.GetDiscountSetupCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetDiscountSetupCompleted(this, new GetDiscountSetupCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -657,10 +986,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         }
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetHierarchy", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetHierarchy_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetHierarchyDealLine", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetHierarchyDealLine_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetHierarchy(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetHierarchy", new object[] {
+        public string GetHierarchyDealLine(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetHierarchyDealLine", new object[] {
                         storeNo,
                         batchSize,
                         fullRepl,
@@ -670,27 +999,65 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         }
         
         /// <remarks/>
-        public void GetHierarchyAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetHierarchyAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
+        public void GetHierarchyDealLineAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetHierarchyDealLineAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
         }
         
         /// <remarks/>
-        public void GetHierarchyAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetHierarchyOperationCompleted == null)) {
-                this.GetHierarchyOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetHierarchyOperationCompleted);
+        public void GetHierarchyDealLineAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetHierarchyDealLineOperationCompleted == null)) {
+                this.GetHierarchyDealLineOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetHierarchyDealLineOperationCompleted);
             }
-            this.InvokeAsync("GetHierarchy", new object[] {
+            this.InvokeAsync("GetHierarchyDealLine", new object[] {
                         storeNo,
                         batchSize,
                         fullRepl,
                         lastKey,
-                        lastEntryNo}, this.GetHierarchyOperationCompleted, userState);
+                        lastEntryNo}, this.GetHierarchyDealLineOperationCompleted, userState);
         }
         
-        private void OnGetHierarchyOperationCompleted(object arg) {
-            if ((this.GetHierarchyCompleted != null)) {
+        private void OnGetHierarchyDealLineOperationCompleted(object arg) {
+            if ((this.GetHierarchyDealLineCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetHierarchyCompleted(this, new GetHierarchyCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+                this.GetHierarchyDealLineCompleted(this, new GetHierarchyDealLineCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetHierarchyDeal", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetHierarchyDeal_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetHierarchyDeal(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetHierarchyDeal", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetHierarchyDealAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetHierarchyDealAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetHierarchyDealAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetHierarchyDealOperationCompleted == null)) {
+                this.GetHierarchyDealOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetHierarchyDealOperationCompleted);
+            }
+            this.InvokeAsync("GetHierarchyDeal", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetHierarchyDealOperationCompleted, userState);
+        }
+        
+        private void OnGetHierarchyDealOperationCompleted(object arg) {
+            if ((this.GetHierarchyDealCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetHierarchyDealCompleted(this, new GetHierarchyDealCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -771,46 +1138,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         }
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetItemCategory", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetItemCategory_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetHierarchy", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetHierarchy_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetItemCategory(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetItemCategory", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetItemCategoryAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetItemCategoryAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetItemCategoryAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetItemCategoryOperationCompleted == null)) {
-                this.GetItemCategoryOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetItemCategoryOperationCompleted);
-            }
-            this.InvokeAsync("GetItemCategory", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetItemCategoryOperationCompleted, userState);
-        }
-        
-        private void OnGetItemCategoryOperationCompleted(object arg) {
-            if ((this.GetItemCategoryCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetItemCategoryCompleted(this, new GetItemCategoryCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIItemLocationBuffer", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetWIItemLocationBuffer_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetWIItemLocationBuffer(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetWIItemLocationBuffer", new object[] {
+        public string GetHierarchy(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetHierarchy", new object[] {
                         storeNo,
                         batchSize,
                         fullRepl,
@@ -820,913 +1151,27 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         }
         
         /// <remarks/>
-        public void GetWIItemLocationBufferAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetWIItemLocationBufferAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
+        public void GetHierarchyAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetHierarchyAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
         }
         
         /// <remarks/>
-        public void GetWIItemLocationBufferAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetWIItemLocationBufferOperationCompleted == null)) {
-                this.GetWIItemLocationBufferOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetWIItemLocationBufferOperationCompleted);
+        public void GetHierarchyAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetHierarchyOperationCompleted == null)) {
+                this.GetHierarchyOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetHierarchyOperationCompleted);
             }
-            this.InvokeAsync("GetWIItemLocationBuffer", new object[] {
+            this.InvokeAsync("GetHierarchy", new object[] {
                         storeNo,
                         batchSize,
                         fullRepl,
                         lastKey,
-                        lastEntryNo}, this.GetWIItemLocationBufferOperationCompleted, userState);
+                        lastEntryNo}, this.GetHierarchyOperationCompleted, userState);
         }
         
-        private void OnGetWIItemLocationBufferOperationCompleted(object arg) {
-            if ((this.GetWIItemLocationBufferCompleted != null)) {
+        private void OnGetHierarchyOperationCompleted(object arg) {
+            if ((this.GetHierarchyCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetWIItemLocationBufferCompleted(this, new GetWIItemLocationBufferCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIItemBuffer", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetWIItemBuffer_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetWIItemBuffer(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetWIItemBuffer", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetWIItemBufferAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetWIItemBufferAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetWIItemBufferAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetWIItemBufferOperationCompleted == null)) {
-                this.GetWIItemBufferOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetWIItemBufferOperationCompleted);
-            }
-            this.InvokeAsync("GetWIItemBuffer", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetWIItemBufferOperationCompleted, userState);
-        }
-        
-        private void OnGetWIItemBufferOperationCompleted(object arg) {
-            if ((this.GetWIItemBufferCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetWIItemBufferCompleted(this, new GetWIItemBufferCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetItemUnitOfMeasure", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetItemUnitOfMeasure_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetItemUnitOfMeasure(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetItemUnitOfMeasure", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetItemUnitOfMeasureAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetItemUnitOfMeasureAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetItemUnitOfMeasureAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetItemUnitOfMeasureOperationCompleted == null)) {
-                this.GetItemUnitOfMeasureOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetItemUnitOfMeasureOperationCompleted);
-            }
-            this.InvokeAsync("GetItemUnitOfMeasure", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetItemUnitOfMeasureOperationCompleted, userState);
-        }
-        
-        private void OnGetItemUnitOfMeasureOperationCompleted(object arg) {
-            if ((this.GetItemUnitOfMeasureCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetItemUnitOfMeasureCompleted(this, new GetItemUnitOfMeasureCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetVariantRegWithStatus", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetVariantRegWithStatus_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetVariantRegWithStatus(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetVariantRegWithStatus", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetVariantRegWithStatusAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetVariantRegWithStatusAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetVariantRegWithStatusAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetVariantRegWithStatusOperationCompleted == null)) {
-                this.GetVariantRegWithStatusOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVariantRegWithStatusOperationCompleted);
-            }
-            this.InvokeAsync("GetVariantRegWithStatus", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetVariantRegWithStatusOperationCompleted, userState);
-        }
-        
-        private void OnGetVariantRegWithStatusOperationCompleted(object arg) {
-            if ((this.GetVariantRegWithStatusCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetVariantRegWithStatusCompleted(this, new GetVariantRegWithStatusCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIPrice", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetWIPrice_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetWIPrice(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetWIPrice", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetWIPriceAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetWIPriceAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetWIPriceAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetWIPriceOperationCompleted == null)) {
-                this.GetWIPriceOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetWIPriceOperationCompleted);
-            }
-            this.InvokeAsync("GetWIPrice", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetWIPriceOperationCompleted, userState);
-        }
-        
-        private void OnGetWIPriceOperationCompleted(object arg) {
-            if ((this.GetWIPriceCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetWIPriceCompleted(this, new GetWIPriceCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetProductGroup", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetProductGroup_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetProductGroup(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetProductGroup", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetProductGroupAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetProductGroupAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetProductGroupAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetProductGroupOperationCompleted == null)) {
-                this.GetProductGroupOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetProductGroupOperationCompleted);
-            }
-            this.InvokeAsync("GetProductGroup", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetProductGroupOperationCompleted, userState);
-        }
-        
-        private void OnGetProductGroupOperationCompleted(object arg) {
-            if ((this.GetProductGroupCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetProductGroupCompleted(this, new GetProductGroupCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetStaff", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetStaff_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetStaff(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetStaff", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetStaffAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetStaffAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetStaffAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetStaffOperationCompleted == null)) {
-                this.GetStaffOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetStaffOperationCompleted);
-            }
-            this.InvokeAsync("GetStaff", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetStaffOperationCompleted, userState);
-        }
-        
-        private void OnGetStaffOperationCompleted(object arg) {
-            if ((this.GetStaffCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetStaffCompleted(this, new GetStaffCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetStaffPermission", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetStaffPermission_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetStaffPermission(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetStaffPermission", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetStaffPermissionAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetStaffPermissionAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetStaffPermissionAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetStaffPermissionOperationCompleted == null)) {
-                this.GetStaffPermissionOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetStaffPermissionOperationCompleted);
-            }
-            this.InvokeAsync("GetStaffPermission", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetStaffPermissionOperationCompleted, userState);
-        }
-        
-        private void OnGetStaffPermissionOperationCompleted(object arg) {
-            if ((this.GetStaffPermissionCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetStaffPermissionCompleted(this, new GetStaffPermissionCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetStoreBuffer", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetStoreBuffer_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetStoreBuffer(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetStoreBuffer", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetStoreBufferAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetStoreBufferAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetStoreBufferAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetStoreBufferOperationCompleted == null)) {
-                this.GetStoreBufferOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetStoreBufferOperationCompleted);
-            }
-            this.InvokeAsync("GetStoreBuffer", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetStoreBufferOperationCompleted, userState);
-        }
-        
-        private void OnGetStoreBufferOperationCompleted(object arg) {
-            if ((this.GetStoreBufferCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetStoreBufferCompleted(this, new GetStoreBufferCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetTenderType", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetTenderType_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetTenderType(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetTenderType", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetTenderTypeAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetTenderTypeAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetTenderTypeAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetTenderTypeOperationCompleted == null)) {
-                this.GetTenderTypeOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetTenderTypeOperationCompleted);
-            }
-            this.InvokeAsync("GetTenderType", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetTenderTypeOperationCompleted, userState);
-        }
-        
-        private void OnGetTenderTypeOperationCompleted(object arg) {
-            if ((this.GetTenderTypeCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetTenderTypeCompleted(this, new GetTenderTypeCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetVATPostingSetup", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetVATPostingSetup_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetVATPostingSetup(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetVATPostingSetup", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetVATPostingSetupAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetVATPostingSetupAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetVATPostingSetupAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetVATPostingSetupOperationCompleted == null)) {
-                this.GetVATPostingSetupOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVATPostingSetupOperationCompleted);
-            }
-            this.InvokeAsync("GetVATPostingSetup", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetVATPostingSetupOperationCompleted, userState);
-        }
-        
-        private void OnGetVATPostingSetupOperationCompleted(object arg) {
-            if ((this.GetVATPostingSetupCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetVATPostingSetupCompleted(this, new GetVATPostingSetupCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetUnitOfMeasure", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetUnitOfMeasure_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetUnitOfMeasure(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetUnitOfMeasure", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetUnitOfMeasureAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetUnitOfMeasureAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetUnitOfMeasureAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetUnitOfMeasureOperationCompleted == null)) {
-                this.GetUnitOfMeasureOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetUnitOfMeasureOperationCompleted);
-            }
-            this.InvokeAsync("GetUnitOfMeasure", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetUnitOfMeasureOperationCompleted, userState);
-        }
-        
-        private void OnGetUnitOfMeasureOperationCompleted(object arg) {
-            if ((this.GetUnitOfMeasureCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetUnitOfMeasureCompleted(this, new GetUnitOfMeasureCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetVendor", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetVendor_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetVendor(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetVendor", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetVendorAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetVendorAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetVendorAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetVendorOperationCompleted == null)) {
-                this.GetVendorOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVendorOperationCompleted);
-            }
-            this.InvokeAsync("GetVendor", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetVendorOperationCompleted, userState);
-        }
-        
-        private void OnGetVendorOperationCompleted(object arg) {
-            if ((this.GetVendorCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetVendorCompleted(this, new GetVendorCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetAttribute", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetAttribute_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetAttribute(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetAttribute", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetAttributeAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetAttributeAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetAttributeAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetAttributeOperationCompleted == null)) {
-                this.GetAttributeOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetAttributeOperationCompleted);
-            }
-            this.InvokeAsync("GetAttribute", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetAttributeOperationCompleted, userState);
-        }
-        
-        private void OnGetAttributeOperationCompleted(object arg) {
-            if ((this.GetAttributeCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetAttributeCompleted(this, new GetAttributeCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetAttributeOptionValues", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetAttributeOptionValues_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetAttributeOptionValues(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetAttributeOptionValues", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetAttributeOptionValuesAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetAttributeOptionValuesAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetAttributeOptionValuesAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetAttributeOptionValuesOperationCompleted == null)) {
-                this.GetAttributeOptionValuesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetAttributeOptionValuesOperationCompleted);
-            }
-            this.InvokeAsync("GetAttributeOptionValues", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetAttributeOptionValuesOperationCompleted, userState);
-        }
-        
-        private void OnGetAttributeOptionValuesOperationCompleted(object arg) {
-            if ((this.GetAttributeOptionValuesCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetAttributeOptionValuesCompleted(this, new GetAttributeOptionValuesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetAttributeValues", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetAttributeValues_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetAttributeValues(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetAttributeValues", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetAttributeValuesAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetAttributeValuesAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetAttributeValuesAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetAttributeValuesOperationCompleted == null)) {
-                this.GetAttributeValuesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetAttributeValuesOperationCompleted);
-            }
-            this.InvokeAsync("GetAttributeValues", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetAttributeValuesOperationCompleted, userState);
-        }
-        
-        private void OnGetAttributeValuesOperationCompleted(object arg) {
-            if ((this.GetAttributeValuesCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetAttributeValuesCompleted(this, new GetAttributeValuesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetSalesPrice", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetSalesPrice_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetSalesPrice(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetSalesPrice", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetSalesPriceAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetSalesPriceAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetSalesPriceAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetSalesPriceOperationCompleted == null)) {
-                this.GetSalesPriceOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetSalesPriceOperationCompleted);
-            }
-            this.InvokeAsync("GetSalesPrice", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetSalesPriceOperationCompleted, userState);
-        }
-        
-        private void OnGetSalesPriceOperationCompleted(object arg) {
-            if ((this.GetSalesPriceCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetSalesPriceCompleted(this, new GetSalesPriceCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetCollection", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetCollection_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetCollection(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetCollection", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetCollectionAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetCollectionAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetCollectionAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetCollectionOperationCompleted == null)) {
-                this.GetCollectionOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetCollectionOperationCompleted);
-            }
-            this.InvokeAsync("GetCollection", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetCollectionOperationCompleted, userState);
-        }
-        
-        private void OnGetCollectionOperationCompleted(object arg) {
-            if ((this.GetCollectionCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetCollectionCompleted(this, new GetCollectionCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetCountryCode", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetCountryCode_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetCountryCode(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetCountryCode", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetCountryCodeAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetCountryCodeAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetCountryCodeAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetCountryCodeOperationCompleted == null)) {
-                this.GetCountryCodeOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetCountryCodeOperationCompleted);
-            }
-            this.InvokeAsync("GetCountryCode", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetCountryCodeOperationCompleted, userState);
-        }
-        
-        private void OnGetCountryCodeOperationCompleted(object arg) {
-            if ((this.GetCountryCodeCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetCountryCodeCompleted(this, new GetCountryCodeCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetDataTranslation", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetDataTranslation_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetDataTranslation(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetDataTranslation", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetDataTranslationAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetDataTranslationAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetDataTranslationAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetDataTranslationOperationCompleted == null)) {
-                this.GetDataTranslationOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetDataTranslationOperationCompleted);
-            }
-            this.InvokeAsync("GetDataTranslation", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetDataTranslationOperationCompleted, userState);
-        }
-        
-        private void OnGetDataTranslationOperationCompleted(object arg) {
-            if ((this.GetDataTranslationCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetDataTranslationCompleted(this, new GetDataTranslationCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetOfferHTML", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetOfferHTML_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetOfferHTML(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetOfferHTML", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetOfferHTMLAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetOfferHTMLAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetOfferHTMLAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetOfferHTMLOperationCompleted == null)) {
-                this.GetOfferHTMLOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetOfferHTMLOperationCompleted);
-            }
-            this.InvokeAsync("GetOfferHTML", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetOfferHTMLOperationCompleted, userState);
-        }
-        
-        private void OnGetOfferHTMLOperationCompleted(object arg) {
-            if ((this.GetOfferHTMLCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetOfferHTMLCompleted(this, new GetOfferHTMLCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetDiscountSetup", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetDiscountSetup_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetDiscountSetup(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetDiscountSetup", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetDiscountSetupAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetDiscountSetupAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetDiscountSetupAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetDiscountSetupOperationCompleted == null)) {
-                this.GetDiscountSetupOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetDiscountSetupOperationCompleted);
-            }
-            this.InvokeAsync("GetDiscountSetup", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetDiscountSetupOperationCompleted, userState);
-        }
-        
-        private void OnGetDiscountSetupOperationCompleted(object arg) {
-            if ((this.GetDiscountSetupCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetDiscountSetupCompleted(this, new GetDiscountSetupCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetValidationPeriod", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetValidationPeriod_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetValidationPeriod(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetValidationPeriod", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetValidationPeriodAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetValidationPeriodAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetValidationPeriodAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetValidationPeriodOperationCompleted == null)) {
-                this.GetValidationPeriodOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetValidationPeriodOperationCompleted);
-            }
-            this.InvokeAsync("GetValidationPeriod", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetValidationPeriodOperationCompleted, userState);
-        }
-        
-        private void OnGetValidationPeriodOperationCompleted(object arg) {
-            if ((this.GetValidationPeriodCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetValidationPeriodCompleted(this, new GetValidationPeriodCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetHierarchyDeal", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetHierarchyDeal_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetHierarchyDeal(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetHierarchyDeal", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetHierarchyDealAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetHierarchyDealAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetHierarchyDealAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetHierarchyDealOperationCompleted == null)) {
-                this.GetHierarchyDealOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetHierarchyDealOperationCompleted);
-            }
-            this.InvokeAsync("GetHierarchyDeal", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetHierarchyDealOperationCompleted, userState);
-        }
-        
-        private void OnGetHierarchyDealOperationCompleted(object arg) {
-            if ((this.GetHierarchyDealCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetHierarchyDealCompleted(this, new GetHierarchyDealCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetHierarchyDealLine", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetHierarchyDealLine_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetHierarchyDealLine(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetHierarchyDealLine", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetHierarchyDealLineAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetHierarchyDealLineAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetHierarchyDealLineAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetHierarchyDealLineOperationCompleted == null)) {
-                this.GetHierarchyDealLineOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetHierarchyDealLineOperationCompleted);
-            }
-            this.InvokeAsync("GetHierarchyDealLine", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetHierarchyDealLineOperationCompleted, userState);
-        }
-        
-        private void OnGetHierarchyDealLineOperationCompleted(object arg) {
-            if ((this.GetHierarchyDealLineCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetHierarchyDealLineCompleted(this, new GetHierarchyDealLineCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+                this.GetHierarchyCompleted(this, new GetHierarchyCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -1763,416 +1208,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
             if ((this.GetImageLinkCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetImageLinkCompleted(this, new GetImageLinkCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIImageBuffer", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetWIImageBuffer_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetWIImageBuffer(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetWIImageBuffer", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetWIImageBufferAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetWIImageBufferAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetWIImageBufferAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetWIImageBufferOperationCompleted == null)) {
-                this.GetWIImageBufferOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetWIImageBufferOperationCompleted);
-            }
-            this.InvokeAsync("GetWIImageBuffer", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetWIImageBufferOperationCompleted, userState);
-        }
-        
-        private void OnGetWIImageBufferOperationCompleted(object arg) {
-            if ((this.GetWIImageBufferCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetWIImageBufferCompleted(this, new GetWIImageBufferCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetInventoryStatus", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetInventoryStatus_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetInventoryStatus(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetInventoryStatus", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetInventoryStatusAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetInventoryStatusAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetInventoryStatusAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetInventoryStatusOperationCompleted == null)) {
-                this.GetInventoryStatusOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetInventoryStatusOperationCompleted);
-            }
-            this.InvokeAsync("GetInventoryStatus", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetInventoryStatusOperationCompleted, userState);
-        }
-        
-        private void OnGetInventoryStatusOperationCompleted(object arg) {
-            if ((this.GetInventoryStatusCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetInventoryStatusCompleted(this, new GetInventoryStatusCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetItemHTML", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetItemHTML_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetItemHTML(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetItemHTML", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetItemHTMLAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetItemHTMLAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetItemHTMLAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetItemHTMLOperationCompleted == null)) {
-                this.GetItemHTMLOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetItemHTMLOperationCompleted);
-            }
-            this.InvokeAsync("GetItemHTML", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetItemHTMLOperationCompleted, userState);
-        }
-        
-        private void OnGetItemHTMLOperationCompleted(object arg) {
-            if ((this.GetItemHTMLCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetItemHTMLCompleted(this, new GetItemHTMLCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIItemModifier", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetWIItemModifier_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetWIItemModifier(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetWIItemModifier", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetWIItemModifierAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetWIItemModifierAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetWIItemModifierAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetWIItemModifierOperationCompleted == null)) {
-                this.GetWIItemModifierOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetWIItemModifierOperationCompleted);
-            }
-            this.InvokeAsync("GetWIItemModifier", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetWIItemModifierOperationCompleted, userState);
-        }
-        
-        private void OnGetWIItemModifierOperationCompleted(object arg) {
-            if ((this.GetWIItemModifierCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetWIItemModifierCompleted(this, new GetWIItemModifierCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIItemRecipeBuffer", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetWIItemRecipeBuffer_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetWIItemRecipeBuffer(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetWIItemRecipeBuffer", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetWIItemRecipeBufferAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetWIItemRecipeBufferAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetWIItemRecipeBufferAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetWIItemRecipeBufferOperationCompleted == null)) {
-                this.GetWIItemRecipeBufferOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetWIItemRecipeBufferOperationCompleted);
-            }
-            this.InvokeAsync("GetWIItemRecipeBuffer", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetWIItemRecipeBufferOperationCompleted, userState);
-        }
-        
-        private void OnGetWIItemRecipeBufferOperationCompleted(object arg) {
-            if ((this.GetWIItemRecipeBufferCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetWIItemRecipeBufferCompleted(this, new GetWIItemRecipeBufferCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetItemVariant", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetItemVariant_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetItemVariant(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetItemVariant", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetItemVariantAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetItemVariantAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetItemVariantAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetItemVariantOperationCompleted == null)) {
-                this.GetItemVariantOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetItemVariantOperationCompleted);
-            }
-            this.InvokeAsync("GetItemVariant", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetItemVariantOperationCompleted, userState);
-        }
-        
-        private void OnGetItemVariantOperationCompleted(object arg) {
-            if ((this.GetItemVariantCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetItemVariantCompleted(this, new GetItemVariantCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetContact2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetContact2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetContact2(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetContact2", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetContact2Async(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetContact2Async(batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetContact2Async(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetContact2OperationCompleted == null)) {
-                this.GetContact2OperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetContact2OperationCompleted);
-            }
-            this.InvokeAsync("GetContact2", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetContact2OperationCompleted, userState);
-        }
-        
-        private void OnGetContact2OperationCompleted(object arg) {
-            if ((this.GetContact2Completed != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetContact2Completed(this, new GetContact2CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIMixMatch", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetWIMixMatch_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetWIMixMatch(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetWIMixMatch", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetWIMixMatchAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetWIMixMatchAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetWIMixMatchAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetWIMixMatchOperationCompleted == null)) {
-                this.GetWIMixMatchOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetWIMixMatchOperationCompleted);
-            }
-            this.InvokeAsync("GetWIMixMatch", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetWIMixMatchOperationCompleted, userState);
-        }
-        
-        private void OnGetWIMixMatchOperationCompleted(object arg) {
-            if ((this.GetWIMixMatchCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetWIMixMatchCompleted(this, new GetWIMixMatchCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetVendorItem", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetVendorItem_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetVendorItem(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetVendorItem", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetVendorItemAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetVendorItemAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetVendorItemAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetVendorItemOperationCompleted == null)) {
-                this.GetVendorItemOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVendorItemOperationCompleted);
-            }
-            this.InvokeAsync("GetVendorItem", new object[] {
-                        storeNo,
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetVendorItemOperationCompleted, userState);
-        }
-        
-        private void OnGetVendorItemOperationCompleted(object arg) {
-            if ((this.GetVendorItemCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetVendorItemCompleted(this, new GetVendorItemCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetBarcodeGS1Setup", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetBarcodeGS1Setup_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetBarcodeGS1Setup(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetBarcodeGS1Setup", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetBarcodeGS1SetupAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetBarcodeGS1SetupAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetBarcodeGS1SetupAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetBarcodeGS1SetupOperationCompleted == null)) {
-                this.GetBarcodeGS1SetupOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBarcodeGS1SetupOperationCompleted);
-            }
-            this.InvokeAsync("GetBarcodeGS1Setup", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetBarcodeGS1SetupOperationCompleted, userState);
-        }
-        
-        private void OnGetBarcodeGS1SetupOperationCompleted(object arg) {
-            if ((this.GetBarcodeGS1SetupCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetBarcodeGS1SetupCompleted(this, new GetBarcodeGS1SetupCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetContact", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetContact_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public string GetContact(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            object[] results = this.Invoke("GetContact", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetContactAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
-            this.GetContactAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
-        }
-        
-        /// <remarks/>
-        public void GetContactAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
-            if ((this.GetContactOperationCompleted == null)) {
-                this.GetContactOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetContactOperationCompleted);
-            }
-            this.InvokeAsync("GetContact", new object[] {
-                        batchSize,
-                        fullRepl,
-                        lastKey,
-                        lastEntryNo}, this.GetContactOperationCompleted, userState);
-        }
-        
-        private void OnGetContactOperationCompleted(object arg) {
-            if ((this.GetContactCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetContactCompleted(this, new GetContactCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -2291,6 +1326,118 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetInventoryStatus", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetInventoryStatus_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetInventoryStatus(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetInventoryStatus", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetInventoryStatusAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetInventoryStatusAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetInventoryStatusAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetInventoryStatusOperationCompleted == null)) {
+                this.GetInventoryStatusOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetInventoryStatusOperationCompleted);
+            }
+            this.InvokeAsync("GetInventoryStatus", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetInventoryStatusOperationCompleted, userState);
+        }
+        
+        private void OnGetInventoryStatusOperationCompleted(object arg) {
+            if ((this.GetInventoryStatusCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetInventoryStatusCompleted(this, new GetInventoryStatusCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetItemCategory", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetItemCategory_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetItemCategory(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetItemCategory", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetItemCategoryAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetItemCategoryAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetItemCategoryAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetItemCategoryOperationCompleted == null)) {
+                this.GetItemCategoryOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetItemCategoryOperationCompleted);
+            }
+            this.InvokeAsync("GetItemCategory", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetItemCategoryOperationCompleted, userState);
+        }
+        
+        private void OnGetItemCategoryOperationCompleted(object arg) {
+            if ((this.GetItemCategoryCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetItemCategoryCompleted(this, new GetItemCategoryCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetItemHTML", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetItemHTML_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetItemHTML(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetItemHTML", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetItemHTMLAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetItemHTMLAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetItemHTMLAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetItemHTMLOperationCompleted == null)) {
+                this.GetItemHTMLOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetItemHTMLOperationCompleted);
+            }
+            this.InvokeAsync("GetItemHTML", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetItemHTMLOperationCompleted, userState);
+        }
+        
+        private void OnGetItemHTMLOperationCompleted(object arg) {
+            if ((this.GetItemHTMLCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetItemHTMLCompleted(this, new GetItemHTMLCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetItemTracking", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetItemTracking_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
         public string GetItemTracking(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
@@ -2323,6 +1470,120 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
             if ((this.GetItemTrackingCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetItemTrackingCompleted(this, new GetItemTrackingCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetItemUnitOfMeasure", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetItemUnitOfMeasure_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetItemUnitOfMeasure(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetItemUnitOfMeasure", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetItemUnitOfMeasureAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetItemUnitOfMeasureAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetItemUnitOfMeasureAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetItemUnitOfMeasureOperationCompleted == null)) {
+                this.GetItemUnitOfMeasureOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetItemUnitOfMeasureOperationCompleted);
+            }
+            this.InvokeAsync("GetItemUnitOfMeasure", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetItemUnitOfMeasureOperationCompleted, userState);
+        }
+        
+        private void OnGetItemUnitOfMeasureOperationCompleted(object arg) {
+            if ((this.GetItemUnitOfMeasureCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetItemUnitOfMeasureCompleted(this, new GetItemUnitOfMeasureCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetItemVariant", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetItemVariant_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetItemVariant(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetItemVariant", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetItemVariantAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetItemVariantAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetItemVariantAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetItemVariantOperationCompleted == null)) {
+                this.GetItemVariantOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetItemVariantOperationCompleted);
+            }
+            this.InvokeAsync("GetItemVariant", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetItemVariantOperationCompleted, userState);
+        }
+        
+        private void OnGetItemVariantOperationCompleted(object arg) {
+            if ((this.GetItemVariantCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetItemVariantCompleted(this, new GetItemVariantCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetOfferHTML", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetOfferHTML_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetOfferHTML(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetOfferHTML", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetOfferHTMLAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetOfferHTMLAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetOfferHTMLAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetOfferHTMLOperationCompleted == null)) {
+                this.GetOfferHTMLOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetOfferHTMLOperationCompleted);
+            }
+            this.InvokeAsync("GetOfferHTML", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetOfferHTMLOperationCompleted, userState);
+        }
+        
+        private void OnGetOfferHTMLOperationCompleted(object arg) {
+            if ((this.GetOfferHTMLCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetOfferHTMLCompleted(this, new GetOfferHTMLCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -2397,6 +1658,190 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
             if ((this.GetPluBufferCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetPluBufferCompleted(this, new GetPluBufferCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetProductGroup", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetProductGroup_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetProductGroup(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetProductGroup", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetProductGroupAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetProductGroupAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetProductGroupAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetProductGroupOperationCompleted == null)) {
+                this.GetProductGroupOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetProductGroupOperationCompleted);
+            }
+            this.InvokeAsync("GetProductGroup", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetProductGroupOperationCompleted, userState);
+        }
+        
+        private void OnGetProductGroupOperationCompleted(object arg) {
+            if ((this.GetProductGroupCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetProductGroupCompleted(this, new GetProductGroupCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetSalesPrice", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetSalesPrice_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetSalesPrice(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetSalesPrice", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetSalesPriceAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetSalesPriceAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetSalesPriceAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetSalesPriceOperationCompleted == null)) {
+                this.GetSalesPriceOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetSalesPriceOperationCompleted);
+            }
+            this.InvokeAsync("GetSalesPrice", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetSalesPriceOperationCompleted, userState);
+        }
+        
+        private void OnGetSalesPriceOperationCompleted(object arg) {
+            if ((this.GetSalesPriceCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetSalesPriceCompleted(this, new GetSalesPriceCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetStaffPermission", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetStaffPermission_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetStaffPermission(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetStaffPermission", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetStaffPermissionAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetStaffPermissionAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetStaffPermissionAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetStaffPermissionOperationCompleted == null)) {
+                this.GetStaffPermissionOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetStaffPermissionOperationCompleted);
+            }
+            this.InvokeAsync("GetStaffPermission", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetStaffPermissionOperationCompleted, userState);
+        }
+        
+        private void OnGetStaffPermissionOperationCompleted(object arg) {
+            if ((this.GetStaffPermissionCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetStaffPermissionCompleted(this, new GetStaffPermissionCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetStaff", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetStaff_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetStaff(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetStaff", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetStaffAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetStaffAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetStaffAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetStaffOperationCompleted == null)) {
+                this.GetStaffOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetStaffOperationCompleted);
+            }
+            this.InvokeAsync("GetStaff", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetStaffOperationCompleted, userState);
+        }
+        
+        private void OnGetStaffOperationCompleted(object arg) {
+            if ((this.GetStaffCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetStaffCompleted(this, new GetStaffCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetStoreBuffer", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetStoreBuffer_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetStoreBuffer(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetStoreBuffer", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetStoreBufferAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetStoreBufferAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetStoreBufferAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetStoreBufferOperationCompleted == null)) {
+                this.GetStoreBufferOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetStoreBufferOperationCompleted);
+            }
+            this.InvokeAsync("GetStoreBuffer", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetStoreBufferOperationCompleted, userState);
+        }
+        
+        private void OnGetStoreBufferOperationCompleted(object arg) {
+            if ((this.GetStoreBufferCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetStoreBufferCompleted(this, new GetStoreBufferCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -2477,6 +1922,228 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetTenderTypeEx", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetTenderTypeEx_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetTenderTypeEx(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetTenderTypeEx", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetTenderTypeExAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetTenderTypeExAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetTenderTypeExAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetTenderTypeExOperationCompleted == null)) {
+                this.GetTenderTypeExOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetTenderTypeExOperationCompleted);
+            }
+            this.InvokeAsync("GetTenderTypeEx", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetTenderTypeExOperationCompleted, userState);
+        }
+        
+        private void OnGetTenderTypeExOperationCompleted(object arg) {
+            if ((this.GetTenderTypeExCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetTenderTypeExCompleted(this, new GetTenderTypeExCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetTenderType", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetTenderType_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetTenderType(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetTenderType", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetTenderTypeAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetTenderTypeAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetTenderTypeAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetTenderTypeOperationCompleted == null)) {
+                this.GetTenderTypeOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetTenderTypeOperationCompleted);
+            }
+            this.InvokeAsync("GetTenderType", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetTenderTypeOperationCompleted, userState);
+        }
+        
+        private void OnGetTenderTypeOperationCompleted(object arg) {
+            if ((this.GetTenderTypeCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetTenderTypeCompleted(this, new GetTenderTypeCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetUnitOfMeasure", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetUnitOfMeasure_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetUnitOfMeasure(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetUnitOfMeasure", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetUnitOfMeasureAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetUnitOfMeasureAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetUnitOfMeasureAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetUnitOfMeasureOperationCompleted == null)) {
+                this.GetUnitOfMeasureOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetUnitOfMeasureOperationCompleted);
+            }
+            this.InvokeAsync("GetUnitOfMeasure", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetUnitOfMeasureOperationCompleted, userState);
+        }
+        
+        private void OnGetUnitOfMeasureOperationCompleted(object arg) {
+            if ((this.GetUnitOfMeasureCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetUnitOfMeasureCompleted(this, new GetUnitOfMeasureCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetVATPostingSetup", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetVATPostingSetup_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetVATPostingSetup(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetVATPostingSetup", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetVATPostingSetupAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetVATPostingSetupAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetVATPostingSetupAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetVATPostingSetupOperationCompleted == null)) {
+                this.GetVATPostingSetupOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVATPostingSetupOperationCompleted);
+            }
+            this.InvokeAsync("GetVATPostingSetup", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetVATPostingSetupOperationCompleted, userState);
+        }
+        
+        private void OnGetVATPostingSetupOperationCompleted(object arg) {
+            if ((this.GetVATPostingSetupCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetVATPostingSetupCompleted(this, new GetVATPostingSetupCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetValidationPeriod", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetValidationPeriod_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetValidationPeriod(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetValidationPeriod", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetValidationPeriodAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetValidationPeriodAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetValidationPeriodAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetValidationPeriodOperationCompleted == null)) {
+                this.GetValidationPeriodOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetValidationPeriodOperationCompleted);
+            }
+            this.InvokeAsync("GetValidationPeriod", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetValidationPeriodOperationCompleted, userState);
+        }
+        
+        private void OnGetValidationPeriodOperationCompleted(object arg) {
+            if ((this.GetValidationPeriodCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetValidationPeriodCompleted(this, new GetValidationPeriodCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetVariantRegWithStatus", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetVariantRegWithStatus_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetVariantRegWithStatus(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetVariantRegWithStatus", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetVariantRegWithStatusAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetVariantRegWithStatusAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetVariantRegWithStatusAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetVariantRegWithStatusOperationCompleted == null)) {
+                this.GetVariantRegWithStatusOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVariantRegWithStatusOperationCompleted);
+            }
+            this.InvokeAsync("GetVariantRegWithStatus", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetVariantRegWithStatusOperationCompleted, userState);
+        }
+        
+        private void OnGetVariantRegWithStatusOperationCompleted(object arg) {
+            if ((this.GetVariantRegWithStatusCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetVariantRegWithStatusCompleted(this, new GetVariantRegWithStatusCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetVariantReg", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetVariantReg_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
         public string GetVariantReg(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
@@ -2511,6 +2178,154 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
             if ((this.GetVariantRegCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetVariantRegCompleted(this, new GetVariantRegCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetVendorItem", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetVendorItem_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetVendorItem(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetVendorItem", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetVendorItemAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetVendorItemAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetVendorItemAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetVendorItemOperationCompleted == null)) {
+                this.GetVendorItemOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVendorItemOperationCompleted);
+            }
+            this.InvokeAsync("GetVendorItem", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetVendorItemOperationCompleted, userState);
+        }
+        
+        private void OnGetVendorItemOperationCompleted(object arg) {
+            if ((this.GetVendorItemCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetVendorItemCompleted(this, new GetVendorItemCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetVendor", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetVendor_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetVendor(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetVendor", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetVendorAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetVendorAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetVendorAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetVendorOperationCompleted == null)) {
+                this.GetVendorOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVendorOperationCompleted);
+            }
+            this.InvokeAsync("GetVendor", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetVendorOperationCompleted, userState);
+        }
+        
+        private void OnGetVendorOperationCompleted(object arg) {
+            if ((this.GetVendorCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetVendorCompleted(this, new GetVendorCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIDiscounts", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetWIDiscounts_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetWIDiscounts(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetWIDiscounts", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetWIDiscountsAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetWIDiscountsAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetWIDiscountsAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetWIDiscountsOperationCompleted == null)) {
+                this.GetWIDiscountsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetWIDiscountsOperationCompleted);
+            }
+            this.InvokeAsync("GetWIDiscounts", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetWIDiscountsOperationCompleted, userState);
+        }
+        
+        private void OnGetWIDiscountsOperationCompleted(object arg) {
+            if ((this.GetWIDiscountsCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetWIDiscountsCompleted(this, new GetWIDiscountsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIImageBuffer", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetWIImageBuffer_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetWIImageBuffer(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetWIImageBuffer", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetWIImageBufferAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetWIImageBufferAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetWIImageBufferAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetWIImageBufferOperationCompleted == null)) {
+                this.GetWIImageBufferOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetWIImageBufferOperationCompleted);
+            }
+            this.InvokeAsync("GetWIImageBuffer", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetWIImageBufferOperationCompleted, userState);
+        }
+        
+        private void OnGetWIImageBufferOperationCompleted(object arg) {
+            if ((this.GetWIImageBufferCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetWIImageBufferCompleted(this, new GetWIImageBufferCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -2553,6 +2368,234 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIItemBuffer", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetWIItemBuffer_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetWIItemBuffer(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetWIItemBuffer", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetWIItemBufferAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetWIItemBufferAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetWIItemBufferAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetWIItemBufferOperationCompleted == null)) {
+                this.GetWIItemBufferOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetWIItemBufferOperationCompleted);
+            }
+            this.InvokeAsync("GetWIItemBuffer", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetWIItemBufferOperationCompleted, userState);
+        }
+        
+        private void OnGetWIItemBufferOperationCompleted(object arg) {
+            if ((this.GetWIItemBufferCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetWIItemBufferCompleted(this, new GetWIItemBufferCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIItemLocationBuffer", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetWIItemLocationBuffer_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetWIItemLocationBuffer(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetWIItemLocationBuffer", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetWIItemLocationBufferAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetWIItemLocationBufferAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetWIItemLocationBufferAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetWIItemLocationBufferOperationCompleted == null)) {
+                this.GetWIItemLocationBufferOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetWIItemLocationBufferOperationCompleted);
+            }
+            this.InvokeAsync("GetWIItemLocationBuffer", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetWIItemLocationBufferOperationCompleted, userState);
+        }
+        
+        private void OnGetWIItemLocationBufferOperationCompleted(object arg) {
+            if ((this.GetWIItemLocationBufferCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetWIItemLocationBufferCompleted(this, new GetWIItemLocationBufferCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIItemModifier", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetWIItemModifier_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetWIItemModifier(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetWIItemModifier", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetWIItemModifierAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetWIItemModifierAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetWIItemModifierAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetWIItemModifierOperationCompleted == null)) {
+                this.GetWIItemModifierOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetWIItemModifierOperationCompleted);
+            }
+            this.InvokeAsync("GetWIItemModifier", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetWIItemModifierOperationCompleted, userState);
+        }
+        
+        private void OnGetWIItemModifierOperationCompleted(object arg) {
+            if ((this.GetWIItemModifierCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetWIItemModifierCompleted(this, new GetWIItemModifierCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIItemRecipeBuffer", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetWIItemRecipeBuffer_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetWIItemRecipeBuffer(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetWIItemRecipeBuffer", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetWIItemRecipeBufferAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetWIItemRecipeBufferAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetWIItemRecipeBufferAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetWIItemRecipeBufferOperationCompleted == null)) {
+                this.GetWIItemRecipeBufferOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetWIItemRecipeBufferOperationCompleted);
+            }
+            this.InvokeAsync("GetWIItemRecipeBuffer", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetWIItemRecipeBufferOperationCompleted, userState);
+        }
+        
+        private void OnGetWIItemRecipeBufferOperationCompleted(object arg) {
+            if ((this.GetWIItemRecipeBufferCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetWIItemRecipeBufferCompleted(this, new GetWIItemRecipeBufferCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIMixMatch", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetWIMixMatch_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetWIMixMatch(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetWIMixMatch", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetWIMixMatchAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetWIMixMatchAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetWIMixMatchAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetWIMixMatchOperationCompleted == null)) {
+                this.GetWIMixMatchOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetWIMixMatchOperationCompleted);
+            }
+            this.InvokeAsync("GetWIMixMatch", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetWIMixMatchOperationCompleted, userState);
+        }
+        
+        private void OnGetWIMixMatchOperationCompleted(object arg) {
+            if ((this.GetWIMixMatchCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetWIMixMatchCompleted(this, new GetWIMixMatchCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIPrice", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetWIPrice_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetWIPrice(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetWIPrice", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetWIPriceAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetWIPriceAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetWIPriceAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetWIPriceOperationCompleted == null)) {
+                this.GetWIPriceOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetWIPriceOperationCompleted);
+            }
+            this.InvokeAsync("GetWIPrice", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetWIPriceOperationCompleted, userState);
+        }
+        
+        private void OnGetWIPriceOperationCompleted(object arg) {
+            if ((this.GetWIPriceCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetWIPriceCompleted(this, new GetWIPriceCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         public new void CancelAsync(object userState) {
             base.CancelAsync(userState);
         }
@@ -2573,17 +2616,95 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetBarcodeMaskCompletedEventHandler(object sender, GetBarcodeMaskCompletedEventArgs e);
+    public delegate void GetAttributeOptionValuesCompletedEventHandler(object sender, GetAttributeOptionValuesCompletedEventArgs e);
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetBarcodeMaskCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class GetAttributeOptionValuesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        internal GetBarcodeMaskCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        internal GetAttributeOptionValuesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetAttributeValuesCompletedEventHandler(object sender, GetAttributeValuesCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetAttributeValuesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetAttributeValuesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetAttributeCompletedEventHandler(object sender, GetAttributeCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetAttributeCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetAttributeCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetBarcodeGS1SetupCompletedEventHandler(object sender, GetBarcodeGS1SetupCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetBarcodeGS1SetupCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetBarcodeGS1SetupCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -2625,6 +2746,32 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetBarcodeMaskCompletedEventHandler(object sender, GetBarcodeMaskCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetBarcodeMaskCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetBarcodeMaskCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
     public delegate void GetBarcodeCompletedEventHandler(object sender, GetBarcodeCompletedEventArgs e);
     
     /// <remarks/>
@@ -2651,17 +2798,95 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetCurrencyCompletedEventHandler(object sender, GetCurrencyCompletedEventArgs e);
+    public delegate void GetCollectionCompletedEventHandler(object sender, GetCollectionCompletedEventArgs e);
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetCurrencyCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class GetCollectionCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        internal GetCurrencyCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        internal GetCollectionCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetContact2CompletedEventHandler(object sender, GetContact2CompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetContact2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetContact2CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetContactCompletedEventHandler(object sender, GetContactCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetContactCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetContactCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetCountryCodeCompletedEventHandler(object sender, GetCountryCodeCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetCountryCodeCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetCountryCodeCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -2703,6 +2928,32 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetCurrencyCompletedEventHandler(object sender, GetCurrencyCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetCurrencyCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetCurrencyCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
     public delegate void GetCustomerCompletedEventHandler(object sender, GetCustomerCompletedEventArgs e);
     
     /// <remarks/>
@@ -2729,17 +2980,43 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetWIDiscountsCompletedEventHandler(object sender, GetWIDiscountsCompletedEventArgs e);
+    public delegate void GetDataTranslationCompletedEventHandler(object sender, GetDataTranslationCompletedEventArgs e);
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetWIDiscountsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class GetDataTranslationCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        internal GetWIDiscountsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        internal GetDataTranslationCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetDiscountSetupCompletedEventHandler(object sender, GetDiscountSetupCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetDiscountSetupCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetDiscountSetupCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -2781,17 +3058,43 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetHierarchyCompletedEventHandler(object sender, GetHierarchyCompletedEventArgs e);
+    public delegate void GetHierarchyDealLineCompletedEventHandler(object sender, GetHierarchyDealLineCompletedEventArgs e);
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetHierarchyCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class GetHierarchyDealLineCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        internal GetHierarchyCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        internal GetHierarchyDealLineCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetHierarchyDealCompletedEventHandler(object sender, GetHierarchyDealCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetHierarchyDealCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetHierarchyDealCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -2859,667 +3162,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetItemCategoryCompletedEventHandler(object sender, GetItemCategoryCompletedEventArgs e);
+    public delegate void GetHierarchyCompletedEventHandler(object sender, GetHierarchyCompletedEventArgs e);
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetItemCategoryCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class GetHierarchyCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        internal GetItemCategoryCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetWIItemLocationBufferCompletedEventHandler(object sender, GetWIItemLocationBufferCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetWIItemLocationBufferCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetWIItemLocationBufferCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetWIItemBufferCompletedEventHandler(object sender, GetWIItemBufferCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetWIItemBufferCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetWIItemBufferCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetItemUnitOfMeasureCompletedEventHandler(object sender, GetItemUnitOfMeasureCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetItemUnitOfMeasureCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetItemUnitOfMeasureCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetVariantRegWithStatusCompletedEventHandler(object sender, GetVariantRegWithStatusCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetVariantRegWithStatusCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetVariantRegWithStatusCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetWIPriceCompletedEventHandler(object sender, GetWIPriceCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetWIPriceCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetWIPriceCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetProductGroupCompletedEventHandler(object sender, GetProductGroupCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetProductGroupCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetProductGroupCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetStaffCompletedEventHandler(object sender, GetStaffCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetStaffCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetStaffCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetStaffPermissionCompletedEventHandler(object sender, GetStaffPermissionCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetStaffPermissionCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetStaffPermissionCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetStoreBufferCompletedEventHandler(object sender, GetStoreBufferCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetStoreBufferCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetStoreBufferCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetTenderTypeCompletedEventHandler(object sender, GetTenderTypeCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetTenderTypeCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetTenderTypeCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetVATPostingSetupCompletedEventHandler(object sender, GetVATPostingSetupCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetVATPostingSetupCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetVATPostingSetupCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetUnitOfMeasureCompletedEventHandler(object sender, GetUnitOfMeasureCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetUnitOfMeasureCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetUnitOfMeasureCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetVendorCompletedEventHandler(object sender, GetVendorCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetVendorCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetVendorCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetAttributeCompletedEventHandler(object sender, GetAttributeCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetAttributeCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetAttributeCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetAttributeOptionValuesCompletedEventHandler(object sender, GetAttributeOptionValuesCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetAttributeOptionValuesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetAttributeOptionValuesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetAttributeValuesCompletedEventHandler(object sender, GetAttributeValuesCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetAttributeValuesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetAttributeValuesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetSalesPriceCompletedEventHandler(object sender, GetSalesPriceCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetSalesPriceCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetSalesPriceCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetCollectionCompletedEventHandler(object sender, GetCollectionCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetCollectionCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetCollectionCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetCountryCodeCompletedEventHandler(object sender, GetCountryCodeCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetCountryCodeCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetCountryCodeCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetDataTranslationCompletedEventHandler(object sender, GetDataTranslationCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetDataTranslationCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetDataTranslationCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetOfferHTMLCompletedEventHandler(object sender, GetOfferHTMLCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetOfferHTMLCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetOfferHTMLCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetDiscountSetupCompletedEventHandler(object sender, GetDiscountSetupCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetDiscountSetupCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetDiscountSetupCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetValidationPeriodCompletedEventHandler(object sender, GetValidationPeriodCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetValidationPeriodCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetValidationPeriodCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetHierarchyDealCompletedEventHandler(object sender, GetHierarchyDealCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetHierarchyDealCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetHierarchyDealCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetHierarchyDealLineCompletedEventHandler(object sender, GetHierarchyDealLineCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetHierarchyDealLineCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetHierarchyDealLineCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        internal GetHierarchyCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -3546,292 +3199,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         private object[] results;
         
         internal GetImageLinkCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetWIImageBufferCompletedEventHandler(object sender, GetWIImageBufferCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetWIImageBufferCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetWIImageBufferCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetInventoryStatusCompletedEventHandler(object sender, GetInventoryStatusCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetInventoryStatusCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetInventoryStatusCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetItemHTMLCompletedEventHandler(object sender, GetItemHTMLCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetItemHTMLCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetItemHTMLCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetWIItemModifierCompletedEventHandler(object sender, GetWIItemModifierCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetWIItemModifierCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetWIItemModifierCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetWIItemRecipeBufferCompletedEventHandler(object sender, GetWIItemRecipeBufferCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetWIItemRecipeBufferCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetWIItemRecipeBufferCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetItemVariantCompletedEventHandler(object sender, GetItemVariantCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetItemVariantCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetItemVariantCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetContact2CompletedEventHandler(object sender, GetContact2CompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetContact2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetContact2CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetWIMixMatchCompletedEventHandler(object sender, GetWIMixMatchCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetWIMixMatchCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetWIMixMatchCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetVendorItemCompletedEventHandler(object sender, GetVendorItemCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetVendorItemCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetVendorItemCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetBarcodeGS1SetupCompletedEventHandler(object sender, GetBarcodeGS1SetupCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetBarcodeGS1SetupCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetBarcodeGS1SetupCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void GetContactCompletedEventHandler(object sender, GetContactCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetContactCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetContactCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -3925,6 +3292,84 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetInventoryStatusCompletedEventHandler(object sender, GetInventoryStatusCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetInventoryStatusCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetInventoryStatusCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetItemCategoryCompletedEventHandler(object sender, GetItemCategoryCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetItemCategoryCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetItemCategoryCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetItemHTMLCompletedEventHandler(object sender, GetItemHTMLCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetItemHTMLCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetItemHTMLCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
     public delegate void GetItemTrackingCompletedEventHandler(object sender, GetItemTrackingCompletedEventArgs e);
     
     /// <remarks/>
@@ -3936,6 +3381,84 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         private object[] results;
         
         internal GetItemTrackingCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetItemUnitOfMeasureCompletedEventHandler(object sender, GetItemUnitOfMeasureCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetItemUnitOfMeasureCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetItemUnitOfMeasureCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetItemVariantCompletedEventHandler(object sender, GetItemVariantCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetItemVariantCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetItemVariantCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetOfferHTMLCompletedEventHandler(object sender, GetOfferHTMLCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetOfferHTMLCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetOfferHTMLCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -4003,6 +3526,136 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetProductGroupCompletedEventHandler(object sender, GetProductGroupCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetProductGroupCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetProductGroupCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetSalesPriceCompletedEventHandler(object sender, GetSalesPriceCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetSalesPriceCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetSalesPriceCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetStaffPermissionCompletedEventHandler(object sender, GetStaffPermissionCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetStaffPermissionCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetStaffPermissionCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetStaffCompletedEventHandler(object sender, GetStaffCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetStaffCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetStaffCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetStoreBufferCompletedEventHandler(object sender, GetStoreBufferCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetStoreBufferCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetStoreBufferCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
     public delegate void GetStoreStaffCompletedEventHandler(object sender, GetStoreStaffCompletedEventArgs e);
     
     /// <remarks/>
@@ -4055,6 +3708,162 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetTenderTypeExCompletedEventHandler(object sender, GetTenderTypeExCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetTenderTypeExCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetTenderTypeExCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetTenderTypeCompletedEventHandler(object sender, GetTenderTypeCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetTenderTypeCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetTenderTypeCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetUnitOfMeasureCompletedEventHandler(object sender, GetUnitOfMeasureCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetUnitOfMeasureCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetUnitOfMeasureCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetVATPostingSetupCompletedEventHandler(object sender, GetVATPostingSetupCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetVATPostingSetupCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetVATPostingSetupCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetValidationPeriodCompletedEventHandler(object sender, GetValidationPeriodCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetValidationPeriodCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetValidationPeriodCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetVariantRegWithStatusCompletedEventHandler(object sender, GetVariantRegWithStatusCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetVariantRegWithStatusCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetVariantRegWithStatusCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
     public delegate void GetVariantRegCompletedEventHandler(object sender, GetVariantRegCompletedEventArgs e);
     
     /// <remarks/>
@@ -4081,6 +3890,110 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetVendorItemCompletedEventHandler(object sender, GetVendorItemCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetVendorItemCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetVendorItemCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetVendorCompletedEventHandler(object sender, GetVendorCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetVendorCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetVendorCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetWIDiscountsCompletedEventHandler(object sender, GetWIDiscountsCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetWIDiscountsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetWIDiscountsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetWIImageBufferCompletedEventHandler(object sender, GetWIImageBufferCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetWIImageBufferCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetWIImageBufferCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
     public delegate void GetWIInvLocationBufferCompletedEventHandler(object sender, GetWIInvLocationBufferCompletedEventArgs e);
     
     /// <remarks/>
@@ -4092,6 +4005,162 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         private object[] results;
         
         internal GetWIInvLocationBufferCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetWIItemBufferCompletedEventHandler(object sender, GetWIItemBufferCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetWIItemBufferCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetWIItemBufferCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetWIItemLocationBufferCompletedEventHandler(object sender, GetWIItemLocationBufferCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetWIItemLocationBufferCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetWIItemLocationBufferCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetWIItemModifierCompletedEventHandler(object sender, GetWIItemModifierCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetWIItemModifierCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetWIItemModifierCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetWIItemRecipeBufferCompletedEventHandler(object sender, GetWIItemRecipeBufferCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetWIItemRecipeBufferCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetWIItemRecipeBufferCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetWIMixMatchCompletedEventHandler(object sender, GetWIMixMatchCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetWIMixMatchCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetWIMixMatchCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetWIPriceCompletedEventHandler(object sender, GetWIPriceCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetWIPriceCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetWIPriceCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }

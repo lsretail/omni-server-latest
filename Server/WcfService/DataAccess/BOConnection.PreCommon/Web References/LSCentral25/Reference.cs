@@ -11881,6 +11881,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         
         private bool benefitItemField;
         
+        private bool fuelitemField;
+        
         private bool retailSpecialOrderField;
         
         private string deliveringMethodField;
@@ -12067,6 +12069,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
             this.origTransLineNoField = 0;
             this.remainingQuantityField = ((decimal)(0m));
             this.benefitItemField = false;
+            this.fuelitemField = false;
             this.retailSpecialOrderField = false;
             this.setLimitAmountField = ((decimal)(0m));
             this.sPOPrepaymentField = ((decimal)(0m));
@@ -13740,6 +13743,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
             }
             set {
                 this.benefitItemField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool Fuelitem {
+            get {
+                return this.fuelitemField;
+            }
+            set {
+                this.fuelitemField = value;
             }
         }
         
@@ -19676,6 +19690,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         
         private decimal startingPointBalanceField;
         
+        private bool containsForecourtItemsField;
+        
         private string applytoDocNoField;
         
         private string sourceTypeField;
@@ -19707,6 +19723,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         private System.DateTime overrideDateTimeField;
         
         private bool restrictedFlagField;
+        
+        private bool retrievedFromSuspendedTransField;
         
         private string taxAreaCodeField;
         
@@ -19755,6 +19773,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
             this.noofCoversField = ((decimal)(0m));
             this.splitNumberField = 0;
             this.startingPointBalanceField = ((decimal)(0m));
+            this.containsForecourtItemsField = false;
             this.openDrawerField = false;
             this.replicatedField = false;
             this.replicationCounterField = 0;
@@ -19763,6 +19782,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
             this.overridePLBItemField = false;
             this.overrideDateTimeField = new System.DateTime(0);
             this.restrictedFlagField = false;
+            this.retrievedFromSuspendedTransField = false;
             this.wICTransactionField = false;
             this.taxLiableField = false;
             this.netIncExpAmountField = ((decimal)(0m));
@@ -20412,6 +20432,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool ContainsForecourtItems {
+            get {
+                return this.containsForecourtItemsField;
+            }
+            set {
+                this.containsForecourtItemsField = value;
+            }
+        }
+        
+        /// <remarks/>
         public string ApplytoDocNo {
             get {
                 return this.applytoDocNoField;
@@ -20578,6 +20609,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
             }
             set {
                 this.restrictedFlagField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool RetrievedFromSuspendedTrans {
+            get {
+                return this.retrievedFromSuspendedTransField;
+            }
+            set {
+                this.retrievedFromSuspendedTransField = value;
             }
         }
         
@@ -21130,6 +21172,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         
         private decimal startingPointBalanceField;
         
+        private bool containsForecourtItemsField;
+        
         private string applytoDocNoField;
         
         private bool openDrawerField;
@@ -21159,6 +21203,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         private System.DateTime overrideDateTimeField;
         
         private bool restrictedFlagField;
+        
+        private bool retrievedFromSuspendedTransField;
         
         private string taxAreaCodeField;
         
@@ -21206,6 +21252,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
             this.tableNoField = 0;
             this.noofCoversField = ((decimal)(0m));
             this.startingPointBalanceField = ((decimal)(0m));
+            this.containsForecourtItemsField = false;
             this.openDrawerField = false;
             this.replicatedField = false;
             this.replicationCounterField = 0;
@@ -21213,6 +21260,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
             this.overridePLBItemField = false;
             this.overrideDateTimeField = new System.DateTime(0);
             this.restrictedFlagField = false;
+            this.retrievedFromSuspendedTransField = false;
             this.wICTransactionField = false;
             this.taxLiableField = false;
             this.netIncExpAmountField = ((decimal)(0m));
@@ -21831,6 +21879,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool ContainsForecourtItems {
+            get {
+                return this.containsForecourtItemsField;
+            }
+            set {
+                this.containsForecourtItemsField = value;
+            }
+        }
+        
+        /// <remarks/>
         public string ApplytoDocNo {
             get {
                 return this.applytoDocNoField;
@@ -21985,6 +22044,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
             }
             set {
                 this.restrictedFlagField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool RetrievedFromSuspendedTrans {
+            get {
+                return this.retrievedFromSuspendedTransField;
+            }
+            set {
+                this.retrievedFromSuspendedTransField = value;
             }
         }
         
@@ -27750,6 +27820,230 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="MemberAccount", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033215")]
+    public partial class MemberAccount2 {
+        
+        private string accountNoField;
+        
+        private string statusField;
+        
+        private string accountTypeField;
+        
+        private string descriptionField;
+        
+        private string mainContactField;
+        
+        private string mainContactNameField;
+        
+        private string customerNoField;
+        
+        private string clubCodeField;
+        
+        private string schemeCodeField;
+        
+        private string priceGroupField;
+        
+        private string custDiscGroupField;
+        
+        private string languageCodeField;
+        
+        private string createdByField;
+        
+        private System.DateTime createdDateField;
+        
+        private bool blockedField;
+        
+        private string blockedByField;
+        
+        private System.DateTime dateBlockedField;
+        
+        public MemberAccount2() {
+            this.createdDateField = new System.DateTime(0);
+            this.blockedField = false;
+            this.dateBlockedField = new System.DateTime(0);
+        }
+        
+        /// <remarks/>
+        public string AccountNo {
+            get {
+                return this.accountNoField;
+            }
+            set {
+                this.accountNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Status {
+            get {
+                return this.statusField;
+            }
+            set {
+                this.statusField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AccountType {
+            get {
+                return this.accountTypeField;
+            }
+            set {
+                this.accountTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Description {
+            get {
+                return this.descriptionField;
+            }
+            set {
+                this.descriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MainContact {
+            get {
+                return this.mainContactField;
+            }
+            set {
+                this.mainContactField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MainContactName {
+            get {
+                return this.mainContactNameField;
+            }
+            set {
+                this.mainContactNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CustomerNo {
+            get {
+                return this.customerNoField;
+            }
+            set {
+                this.customerNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ClubCode {
+            get {
+                return this.clubCodeField;
+            }
+            set {
+                this.clubCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SchemeCode {
+            get {
+                return this.schemeCodeField;
+            }
+            set {
+                this.schemeCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PriceGroup {
+            get {
+                return this.priceGroupField;
+            }
+            set {
+                this.priceGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CustDiscGroup {
+            get {
+                return this.custDiscGroupField;
+            }
+            set {
+                this.custDiscGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string LanguageCode {
+            get {
+                return this.languageCodeField;
+            }
+            set {
+                this.languageCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CreatedBy {
+            get {
+                return this.createdByField;
+            }
+            set {
+                this.createdByField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime CreatedDate {
+            get {
+                return this.createdDateField;
+            }
+            set {
+                this.createdDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool Blocked {
+            get {
+                return this.blockedField;
+            }
+            set {
+                this.blockedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string BlockedBy {
+            get {
+                return this.blockedByField;
+            }
+            set {
+                this.blockedByField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime DateBlocked {
+            get {
+                return this.dateBlockedField;
+            }
+            set {
+                this.dateBlockedField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(TypeName="MembershipCard", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033215")]
     public partial class MembershipCard4 {
         
@@ -28127,6 +28421,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         
         private MembershipCard4[] membershipCardField;
         
+        private MemberAccount2[] memberAccountField;
+        
         private MemberContact3[] memberContactField;
         
         private MemberClub3[] memberClubField;
@@ -28165,6 +28461,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
             }
             set {
                 this.membershipCardField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("MemberAccount")]
+        public MemberAccount2[] MemberAccount {
+            get {
+                return this.memberAccountField;
+            }
+            set {
+                this.memberAccountField = value;
             }
         }
         
@@ -30154,6 +30461,230 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="MemberAccount", Namespace="urn:microsoft-dynamics-nav/xmlports/x10032990")]
+    public partial class MemberAccount1 {
+        
+        private string accountNoField;
+        
+        private string statusField;
+        
+        private string accountTypeField;
+        
+        private string descriptionField;
+        
+        private string mainContactField;
+        
+        private string mainContactNameField;
+        
+        private string customerNoField;
+        
+        private string clubCodeField;
+        
+        private string schemeCodeField;
+        
+        private string priceGroupField;
+        
+        private string custDiscGroupField;
+        
+        private string languageCodeField;
+        
+        private string createdByField;
+        
+        private System.DateTime createdDateField;
+        
+        private bool blockedField;
+        
+        private string blockedByField;
+        
+        private System.DateTime dateBlockedField;
+        
+        public MemberAccount1() {
+            this.createdDateField = new System.DateTime(0);
+            this.blockedField = false;
+            this.dateBlockedField = new System.DateTime(0);
+        }
+        
+        /// <remarks/>
+        public string AccountNo {
+            get {
+                return this.accountNoField;
+            }
+            set {
+                this.accountNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Status {
+            get {
+                return this.statusField;
+            }
+            set {
+                this.statusField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AccountType {
+            get {
+                return this.accountTypeField;
+            }
+            set {
+                this.accountTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Description {
+            get {
+                return this.descriptionField;
+            }
+            set {
+                this.descriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MainContact {
+            get {
+                return this.mainContactField;
+            }
+            set {
+                this.mainContactField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MainContactName {
+            get {
+                return this.mainContactNameField;
+            }
+            set {
+                this.mainContactNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CustomerNo {
+            get {
+                return this.customerNoField;
+            }
+            set {
+                this.customerNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ClubCode {
+            get {
+                return this.clubCodeField;
+            }
+            set {
+                this.clubCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SchemeCode {
+            get {
+                return this.schemeCodeField;
+            }
+            set {
+                this.schemeCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PriceGroup {
+            get {
+                return this.priceGroupField;
+            }
+            set {
+                this.priceGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CustDiscGroup {
+            get {
+                return this.custDiscGroupField;
+            }
+            set {
+                this.custDiscGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string LanguageCode {
+            get {
+                return this.languageCodeField;
+            }
+            set {
+                this.languageCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CreatedBy {
+            get {
+                return this.createdByField;
+            }
+            set {
+                this.createdByField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime CreatedDate {
+            get {
+                return this.createdDateField;
+            }
+            set {
+                this.createdDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool Blocked {
+            get {
+                return this.blockedField;
+            }
+            set {
+                this.blockedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string BlockedBy {
+            get {
+                return this.blockedByField;
+            }
+            set {
+                this.blockedByField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime DateBlocked {
+            get {
+                return this.dateBlockedField;
+            }
+            set {
+                this.dateBlockedField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(TypeName="MembershipCard", Namespace="urn:microsoft-dynamics-nav/xmlports/x10032990")]
     public partial class MembershipCard3 {
         
@@ -30531,6 +31062,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         
         private MembershipCard3[] membershipCardField;
         
+        private MemberAccount1[] memberAccountField;
+        
         private MemberContact2[] memberContactField;
         
         private MemberClub2[] memberClubField;
@@ -30569,6 +31102,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
             }
             set {
                 this.membershipCardField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("MemberAccount")]
+        public MemberAccount1[] MemberAccount {
+            get {
+                return this.memberAccountField;
+            }
+            set {
+                this.memberAccountField = value;
             }
         }
         
@@ -31588,6 +32132,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int TransactionNo {
             get {
                 return this.transactionNoField;
@@ -31828,6 +32373,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int TransactionNo {
             get {
                 return this.transactionNoField;
@@ -31838,6 +32384,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int LineNo {
             get {
                 return this.lineNoField;
@@ -32059,6 +32606,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int TransactionNo {
             get {
                 return this.transactionNoField;
@@ -32190,6 +32738,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int TransactionNo {
             get {
                 return this.transactionNoField;
@@ -32200,6 +32749,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int LineNo {
             get {
                 return this.lineNoField;
@@ -32358,6 +32908,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int TransactionNo {
             get {
                 return this.transactionNoField;
@@ -32368,6 +32919,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int LineNo {
             get {
                 return this.lineNoField;
@@ -32679,6 +33231,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int TransactionNo {
             get {
                 return this.transactionNoField;
@@ -32689,6 +33242,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int LineNo {
             get {
                 return this.lineNoField;
@@ -33242,6 +33796,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int TransactionNo {
             get {
                 return this.transactionNoField;
@@ -33252,6 +33807,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int LineNo {
             get {
                 return this.lineNoField;
@@ -33647,6 +34203,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int TransactionNo {
             get {
                 return this.transactionNoField;
@@ -33657,6 +34214,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int LineNo {
             get {
                 return this.lineNoField;
@@ -34057,6 +34615,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int TransactionNo {
             get {
                 return this.transactionNoField;
@@ -34077,6 +34636,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int LineNo {
             get {
                 return this.lineNoField;
@@ -34434,6 +34994,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int TransactionNo {
             get {
                 return this.transactionNoField;
@@ -34444,6 +35005,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int LineNo {
             get {
                 return this.lineNoField;
@@ -34850,6 +35412,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int TransactionNo {
             get {
                 return this.transactionNoField;
@@ -34860,6 +35423,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int LineNo {
             get {
                 return this.lineNoField;
@@ -35442,6 +36006,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         
         private string createdbyStaffIDField;
         
+        private System.DateTime bITimestampField;
+        
         private string genBusPostingGroupField;
         
         private string vATBusPostingGroup1Field;
@@ -35530,6 +36096,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
             this.refundQtyField = ((decimal)(0m));
             this.refundedLineNoField = 0;
             this.refundedTransNoField = 0;
+            this.bITimestampField = new System.DateTime(0);
             this.pLBItemField = false;
             this.salesTaxRoundingField = ((decimal)(0m));
             this.limitationField = false;
@@ -35538,6 +36105,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int TransactionNo {
             get {
                 return this.transactionNoField;
@@ -35549,6 +36117,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int LineNo {
             get {
                 return this.lineNoField;
@@ -36767,6 +37336,18 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=106)]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
+        public System.DateTime BITimestamp {
+            get {
+                return this.bITimestampField;
+            }
+            set {
+                this.bITimestampField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=107)]
         public string GenBusPostingGroup {
             get {
                 return this.genBusPostingGroupField;
@@ -36777,7 +37358,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("VATBusPostingGroup", Order=107)]
+        [System.Xml.Serialization.XmlElementAttribute("VATBusPostingGroup", Order=108)]
         public string VATBusPostingGroup1 {
             get {
                 return this.vATBusPostingGroup1Field;
@@ -36788,7 +37369,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=108)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=109)]
         public string GenProdPostingGroup {
             get {
                 return this.genProdPostingGroupField;
@@ -36799,7 +37380,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=109)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=110)]
         public string VATProdPostingGroup {
             get {
                 return this.vATProdPostingGroupField;
@@ -36810,7 +37391,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=110)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=111)]
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool PLBItem {
             get {
@@ -36822,7 +37403,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=111)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=112)]
         public string TaxGroupCode {
             get {
                 return this.taxGroupCodeField;
@@ -36833,7 +37414,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=112)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=113)]
         public string TaxCalculationType {
             get {
                 return this.taxCalculationTypeField;
@@ -36844,7 +37425,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=113)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=114)]
         [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal SalesTaxRounding {
             get {
@@ -36856,7 +37437,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=114)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=115)]
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool Limitation {
             get {
@@ -36868,7 +37449,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=115)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=116)]
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool LimitationTaxExempted {
             get {
@@ -36880,7 +37461,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=116)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=117)]
         public string DivisionCode {
             get {
                 return this.divisionCodeField;
@@ -36965,6 +37546,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         
         private string statementCodeField;
         
+        private string statementNoNOTUSEDField;
+        
         private string refundReceiptNoField;
         
         private decimal incomeExpAmountField;
@@ -37017,6 +37600,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         
         private decimal startingPointBalanceField;
         
+        private bool containsForecourtItemsField;
+        
         private string applytoDocNoField;
         
         private string sourceTypeField;
@@ -37039,6 +37624,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         
         private int playbackEntryNoField;
         
+        private System.DateTime bITimestampField;
+        
         private bool customerOrderField;
         
         private string genBusPostingGroupField;
@@ -37060,6 +37647,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         private string taxExemptionNoField;
         
         private decimal netIncExpAmountField;
+        
+        private bool retrievedFromSuspendedTransField;
         
         public TransactionHeader() {
             this.transactionNoField = 0;
@@ -37098,10 +37687,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
             this.noofCoversField = ((decimal)(0m));
             this.splitNumberField = 0;
             this.startingPointBalanceField = ((decimal)(0m));
+            this.containsForecourtItemsField = false;
             this.openDrawerField = false;
             this.replicatedField = false;
             this.replicationCounterField = 0;
             this.playbackEntryNoField = 0;
+            this.bITimestampField = new System.DateTime(0);
             this.customerOrderField = false;
             this.overridePLBItemField = false;
             this.overrideDateTimeField = new System.DateTime(0);
@@ -37109,9 +37700,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
             this.wICTransactionField = false;
             this.taxLiableField = false;
             this.netIncExpAmountField = ((decimal)(0m));
+            this.retrievedFromSuspendedTransField = false;
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int TransactionNo {
             get {
                 return this.transactionNoField;
@@ -37464,6 +38057,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("StatementNo-NOTUSED")]
+        public string StatementNoNOTUSED {
+            get {
+                return this.statementNoNOTUSEDField;
+            }
+            set {
+                this.statementNoNOTUSEDField = value;
+            }
+        }
+        
+        /// <remarks/>
         public string RefundReceiptNo {
             get {
                 return this.refundReceiptNoField;
@@ -37744,6 +38348,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool ContainsForecourtItems {
+            get {
+                return this.containsForecourtItemsField;
+            }
+            set {
+                this.containsForecourtItemsField = value;
+            }
+        }
+        
+        /// <remarks/>
         public string ApplytoDocNo {
             get {
                 return this.applytoDocNoField;
@@ -37856,6 +38471,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
             }
             set {
                 this.playbackEntryNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
+        public System.DateTime BITimestamp {
+            get {
+                return this.bITimestampField;
+            }
+            set {
+                this.bITimestampField = value;
             }
         }
         
@@ -37973,6 +38599,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
             }
             set {
                 this.netIncExpAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool RetrievedFromSuspendedTrans {
+            get {
+                return this.retrievedFromSuspendedTransField;
+            }
+            set {
+                this.retrievedFromSuspendedTransField = value;
             }
         }
     }
@@ -39837,6 +40474,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         
         private string suspendSalesTypeField;
         
+        private bool containsForecourtItemsField;
+        
         private string indexFieldField;
         
         private string applytoDocNoField;
@@ -39896,6 +40535,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
             this.orderLimitField = ((decimal)(0m));
             this.tenderDeclWarningCounterField = 0;
             this.startFloatEntryField = false;
+            this.containsForecourtItemsField = false;
             this.overridePLBItemField = false;
             this.overrideDateTimeField = new System.DateTime(0);
             this.restrictedFlagField = false;
@@ -40591,6 +41231,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
             }
             set {
                 this.suspendSalesTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool ContainsForecourtItems {
+            get {
+                return this.containsForecourtItemsField;
+            }
+            set {
+                this.containsForecourtItemsField = value;
             }
         }
         
@@ -53257,6 +53908,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         
         private bool clickAndCollectLineField;
         
+        private string shippingAgentCodeField;
+        
+        private string shippingAgentServiceCodeField;
+        
         private string sourcingOrderTypeField;
         
         private System.DateTime requestedDeliveryDateField;
@@ -53666,6 +54321,26 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        public string ShippingAgentCode {
+            get {
+                return this.shippingAgentCodeField;
+            }
+            set {
+                this.shippingAgentCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShippingAgentServiceCode {
+            get {
+                return this.shippingAgentServiceCodeField;
+            }
+            set {
+                this.shippingAgentServiceCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
         public string SourcingOrderType {
             get {
                 return this.sourcingOrderTypeField;
@@ -53896,6 +54571,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         
         private string salesPersonCodeField;
         
+        private bool clickandCollectOrderField;
+        
         private string collectShelfsField;
         
         private bool collectionbyExclusionField;
@@ -53914,6 +54591,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
             this.totalPaymentIntField = ((decimal)(0m));
             this.totalPreAuthorizationIntField = ((decimal)(0m));
             this.requestedDeliveryDateField = new System.DateTime(0);
+            this.clickandCollectOrderField = false;
             this.collectionbyExclusionField = false;
         }
         
@@ -54388,6 +55066,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
             }
             set {
                 this.salesPersonCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool ClickandCollectOrder {
+            get {
+                return this.clickandCollectOrderField;
+            }
+            set {
+                this.clickandCollectOrderField = value;
             }
         }
         
@@ -55215,6 +55904,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         
         private bool clickAndCollectLineField;
         
+        private string shippingAgentCodeField;
+        
+        private string shippingAgentServiceCodeField;
+        
         private string sourcingOrderTypeField;
         
         private System.DateTime requestedDeliveryDateField;
@@ -55617,6 +56310,26 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
             }
             set {
                 this.clickAndCollectLineField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShippingAgentCode {
+            get {
+                return this.shippingAgentCodeField;
+            }
+            set {
+                this.shippingAgentCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShippingAgentServiceCode {
+            get {
+                return this.shippingAgentServiceCodeField;
+            }
+            set {
+                this.shippingAgentServiceCodeField = value;
             }
         }
         
@@ -57021,6 +57734,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         
         private string terminalNoField;
         
+        private bool inventoryTransfer1Field;
+        
+        private string sourcingLocation1Field;
+        
+        private bool vendorSourcing1Field;
+        
         private bool shipOrderField;
         
         private System.DateTime requestedDeliveryDateField;
@@ -57049,6 +57768,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
             this.vendorSourcingField = false;
             this.prepaymentAmountField = ((decimal)(0m));
             this.clickAndCollectField = false;
+            this.inventoryTransfer1Field = false;
+            this.vendorSourcing1Field = false;
             this.shipOrderField = false;
             this.requestedDeliveryDateField = new System.DateTime(0);
             this.validateTaxParameterField = false;
@@ -57056,6 +57777,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string DocumentID {
             get {
                 return this.documentIDField;
@@ -57066,6 +57788,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
         [System.ComponentModel.DefaultValueAttribute(0)]
         public int LineNo {
             get {
@@ -57077,6 +57800,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
         public string Status {
             get {
                 return this.statusField;
@@ -57087,6 +57811,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
         public string LineType {
             get {
                 return this.lineTypeField;
@@ -57097,6 +57822,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
         public string Number {
             get {
                 return this.numberField;
@@ -57107,6 +57833,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
         public string VariantCode {
             get {
                 return this.variantCodeField;
@@ -57117,6 +57844,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
         public string UnitofMeasureCode {
             get {
                 return this.unitofMeasureCodeField;
@@ -57127,6 +57855,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
         [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal NetPrice {
             get {
@@ -57138,6 +57867,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
         [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal Price {
             get {
@@ -57149,6 +57879,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
         [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal Quantity {
             get {
@@ -57160,6 +57891,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
         [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal DiscountAmount {
             get {
@@ -57171,6 +57903,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
         [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal DiscountPercent {
             get {
@@ -57182,6 +57915,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
         [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal NetAmount {
             get {
@@ -57193,6 +57927,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
         [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal VatAmount {
             get {
@@ -57204,6 +57939,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=14)]
         [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal Amount {
             get {
@@ -57215,6 +57951,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=15)]
         public string SourcingLocation {
             get {
                 return this.sourcingLocationField;
@@ -57225,6 +57962,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=16)]
         public string OrderReference {
             get {
                 return this.orderReferenceField;
@@ -57235,7 +57973,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(false)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=17)]
         public bool InventoryTransfer {
             get {
                 return this.inventoryTransferField;
@@ -57246,7 +57984,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(false)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=18)]
         public bool VendorSourcing {
             get {
                 return this.vendorSourcingField;
@@ -57257,6 +57995,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=19)]
         public string LeadTimeCalculation {
             get {
                 return this.leadTimeCalculationField;
@@ -57267,6 +58006,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=20)]
         [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal PrepaymentAmount {
             get {
@@ -57278,6 +58018,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=21)]
         public string PurchaseOrderNo {
             get {
                 return this.purchaseOrderNoField;
@@ -57288,6 +58029,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=22)]
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool ClickAndCollect {
             get {
@@ -57299,6 +58041,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=23)]
         public string StoreNo {
             get {
                 return this.storeNoField;
@@ -57309,6 +58052,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=24)]
         public string TerminalNo {
             get {
                 return this.terminalNoField;
@@ -57319,6 +58063,40 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("InventoryTransfer", Order=25)]
+        public bool InventoryTransfer1 {
+            get {
+                return this.inventoryTransfer1Field;
+            }
+            set {
+                this.inventoryTransfer1Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("SourcingLocation", Order=26)]
+        public string SourcingLocation1 {
+            get {
+                return this.sourcingLocation1Field;
+            }
+            set {
+                this.sourcingLocation1Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("VendorSourcing", Order=27)]
+        public bool VendorSourcing1 {
+            get {
+                return this.vendorSourcing1Field;
+            }
+            set {
+                this.vendorSourcing1Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=28)]
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool ShipOrder {
             get {
@@ -57330,7 +58108,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=29)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime RequestedDeliveryDate {
             get {
@@ -57342,6 +58120,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=30)]
         public string ExternalID {
             get {
                 return this.externalIDField;
@@ -57352,6 +58131,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=31)]
         public string TaxGroupCode {
             get {
                 return this.taxGroupCodeField;
@@ -57362,6 +58142,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=32)]
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool ValidateTaxParameter {
             get {
@@ -57373,6 +58154,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=33)]
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool ServiceItem {
             get {
@@ -57384,6 +58166,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=34)]
         public string CreatedByReceiptNo {
             get {
                 return this.createdByReceiptNoField;

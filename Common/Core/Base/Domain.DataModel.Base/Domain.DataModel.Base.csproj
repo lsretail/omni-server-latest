@@ -8,9 +8,6 @@
 		<RootNamespace>LSRetail.Omni.Domain.DataModel.Base</RootNamespace>
 		<AssemblyName>LSRetail.Omni.Domain.DataModel.Base</AssemblyName>
 	</PropertyGroup>
-	<!--<PropertyGroup Condition="$(TargetFramework.Contains('-windows'))">
-		<RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
-	</PropertyGroup>-->
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<DefineConstants>TRACE;WCFSERVER;DEBUG;NETSTANDARD2_0</DefineConstants>
 		<TreatWarningsAsErrors>False</TreatWarningsAsErrors>

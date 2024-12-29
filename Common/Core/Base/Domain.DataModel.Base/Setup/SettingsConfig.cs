@@ -27,6 +27,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         ExternalApplication = 1,
         Folder = 2,
         PowerShell = 3,
+        RemoteConfiguration = 4,
     }
 
     public enum SettingsConfigServiceStatus
@@ -365,6 +366,12 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         private static SettingsConfig emptyConfig;
         private string otherParameters;
 
+        private string lsCentralOdataUrl = string.Empty;
+        private string lsCentralTenantId = string.Empty;
+        private string lsCentralClientId = string.Empty;
+        private string lsCentralClientSecret = string.Empty;
+        private int lsCentralTimeout;
+
         public SettingsConfig(string id) : base(id)
         {
             Init();
@@ -447,6 +454,11 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             serviceTierComputer = config.serviceTierComputer;
             serviceTierUsername = config.serviceTierUsername;
             serviceTierPassword = config.serviceTierPassword;
+
+            lsCentralOdataUrl = config.lsCentralOdataUrl;
+            lsCentralTenantId = config.lsCentralTenantId;
+            lsCentralClientId = config.lsCentralClientId;
+            lsCentralClientSecret = config.lsCentralClientSecret;
         }
 
         private void Init()
@@ -1109,6 +1121,62 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
 
         [System.Xml.Serialization.XmlElementAttribute("EnableCache")]
         public bool EnableCache { get; set; }
+
+        //RemoteConfiguration
+        [XmlElementAttribute("LsCentralOdataUrl")]
+        public string LsCentralOdataUrl
+        {
+            get => lsCentralOdataUrl;
+            set
+            {
+                lsCentralOdataUrl = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        [XmlElementAttribute("LsCentralTenantId")]
+        public string LsCentralTenantId
+        {
+            get => lsCentralTenantId;
+            set
+            {
+                lsCentralTenantId = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        [XmlElementAttribute("LsCentralClientId")]
+        public string LsCentralClientId
+        {
+            get => lsCentralClientId;
+            set
+            {
+                lsCentralClientId = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        [XmlElementAttribute("LsCentralClientSecret")]
+        public string LsCentralClientSecret
+        {
+            get => lsCentralClientSecret;
+            set
+            {
+                lsCentralClientSecret = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        [XmlElementAttribute("LsCentralTimeout")]
+        public int LsCentralTimeout
+        {
+            get => lsCentralTimeout;
+            set
+            {
+                lsCentralTimeout = value;
+                NotifyPropertyChanged();
+            }
+        }
 
         [System.Xml.Serialization.XmlIgnore]
         public int Level

@@ -558,7 +558,7 @@
     <schema xmlns:tns="urn:microsoft-dynamics-nav/xmlports/x10033069" elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-nav/xmlports/x10033069" xmlns="http://www.w3.org/2001/XMLSchema">
       <complexType name="CustomerOrderCreateCOHeaderV5">
         <sequence>
-          <element minOccurs="1" maxOccurs="1" name="DocumentID" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="DocumentID" type="string" />
           <element minOccurs="0" maxOccurs="1" name="MemberCardNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="SourceType" type="string" />
           <element minOccurs="0" maxOccurs="1" name="CustomerNo" type="string" />
@@ -618,16 +618,19 @@
           <element minOccurs="0" maxOccurs="1" default="0" name="NetAmount" type="decimal" />
           <element minOccurs="0" maxOccurs="1" default="0" name="VatAmount" type="decimal" />
           <element minOccurs="0" maxOccurs="1" default="0" name="Amount" type="decimal" />
-          <element minOccurs="0" maxOccurs="1" name="SourcingLocation" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="SourcingLocation" type="string" />
           <element minOccurs="0" maxOccurs="1" name="OrderReference" type="string" />
-          <element minOccurs="0" maxOccurs="1" default="false" name="InventoryTransfer" type="boolean" />
-          <element minOccurs="0" maxOccurs="1" default="false" name="VendorSourcing" type="boolean" />
+          <element minOccurs="1" maxOccurs="1" default="false" name="InventoryTransfer" type="boolean" />
+          <element minOccurs="1" maxOccurs="1" default="false" name="VendorSourcing" type="boolean" />
           <element minOccurs="0" maxOccurs="1" name="LeadTimeCalculation" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0" name="PrepaymentAmount" type="decimal" />
           <element minOccurs="0" maxOccurs="1" name="PurchaseOrderNo" type="string" />
           <element minOccurs="0" maxOccurs="1" default="false" name="ClickAndCollect" type="boolean" />
           <element minOccurs="0" maxOccurs="1" name="StoreNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="TerminalNo" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="false" name="InventoryTransfer" type="boolean" />
+          <element minOccurs="1" maxOccurs="1" name="SourcingLocation" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="false" name="VendorSourcing" type="boolean" />
           <element minOccurs="0" maxOccurs="1" default="false" name="ShipOrder" type="boolean" />
           <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="RequestedDeliveryDate" type="date" />
           <element minOccurs="0" maxOccurs="1" name="ExternalID" type="string" />
@@ -783,6 +786,8 @@
           <element minOccurs="0" maxOccurs="1" name="TerminalNo" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="CollectTimeLimit" type="dateTime" />
           <element minOccurs="0" maxOccurs="1" default="false" name="ClickAndCollectLine" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" name="ShippingAgentCode" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="ShippingAgentServiceCode" type="string" />
           <element minOccurs="0" maxOccurs="1" name="SourcingOrderType" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="RequestedDeliveryDate" type="date" />
           <element minOccurs="0" maxOccurs="1" name="ExternalID" type="string" />
@@ -915,6 +920,7 @@
           <element minOccurs="0" maxOccurs="1" name="ShippingAgentCode" type="string" />
           <element minOccurs="0" maxOccurs="1" name="ShippingAgentServiceCode" type="string" />
           <element minOccurs="0" maxOccurs="1" name="SalesPersonCode" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="ClickandCollectOrder" type="boolean" />
           <element minOccurs="0" maxOccurs="1" name="CollectShelfs" type="string" />
           <element minOccurs="0" maxOccurs="1" default="false" name="CollectionbyExclusion" type="boolean" />
         </sequence>
@@ -955,6 +961,8 @@
           <element minOccurs="0" maxOccurs="1" name="TerminalNo" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="CollectTimeLimit" type="dateTime" />
           <element minOccurs="0" maxOccurs="1" default="false" name="ClickAndCollectLine" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" name="ShippingAgentCode" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="ShippingAgentServiceCode" type="string" />
           <element minOccurs="0" maxOccurs="1" name="SourcingOrderType" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="RequestedDeliveryDate" type="date" />
           <element minOccurs="0" maxOccurs="1" name="ExternalID" type="string" />
@@ -2371,6 +2379,7 @@
           <element minOccurs="0" maxOccurs="1" default="0" name="TenderDeclWarningCounter" type="int" />
           <element minOccurs="0" maxOccurs="1" default="false" name="StartFloatEntry" type="boolean" />
           <element minOccurs="0" maxOccurs="1" name="SuspendSalesType" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="ContainsForecourtItems" type="boolean" />
           <element minOccurs="0" maxOccurs="1" name="IndexField" type="string" />
           <element minOccurs="0" maxOccurs="1" name="ApplytoDocNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="SearchKey" type="string" />
@@ -2543,12 +2552,12 @@
     <schema xmlns:tns="urn:microsoft-dynamics-nav/xmlports/x10032999" elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-nav/xmlports/x10032999" xmlns="http://www.w3.org/2001/XMLSchema">
       <complexType name="TransactionHeader">
         <sequence>
-          <element minOccurs="1" maxOccurs="1" default="0" name="TransactionNo" type="int" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="TransactionNo" type="int" />
           <element minOccurs="0" maxOccurs="1" name="TransactionType" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="ReceiptNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="ReceiptNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="VATBusPostingGroup" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="StoreNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="POSTerminalNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="StoreNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="POSTerminalNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="CreatedonPOSTerminal" type="string" />
           <element minOccurs="0" maxOccurs="1" name="StaffID" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="Date" type="date" />
@@ -2576,6 +2585,7 @@
           <element minOccurs="0" maxOccurs="1" default="0" name="NoofInvoices" type="int" />
           <element minOccurs="0" maxOccurs="1" default="0" name="NoofItemLines" type="decimal" />
           <element minOccurs="0" maxOccurs="1" name="StatementCode" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="StatementNo-NOTUSED" type="string" />
           <element minOccurs="0" maxOccurs="1" name="RefundReceiptNo" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0" name="IncomeExpAmount" type="decimal" />
           <element minOccurs="0" maxOccurs="1" default="false" name="ToAccount" type="boolean" />
@@ -2602,6 +2612,7 @@
           <element minOccurs="0" maxOccurs="1" name="MemberCardNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="SalesType" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0" name="StartingPointBalance" type="decimal" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="ContainsForecourtItems" type="boolean" />
           <element minOccurs="0" maxOccurs="1" name="ApplytoDocNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="SourceType" type="string" />
           <element minOccurs="0" maxOccurs="1" default="false" name="OpenDrawer" type="boolean" />
@@ -2613,24 +2624,26 @@
           <element minOccurs="0" maxOccurs="1" name="CustomerOrderNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="PlaybackRecordingID" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0" name="PlaybackEntryNo" type="int" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="BITimestamp" type="dateTime" />
           <element minOccurs="0" maxOccurs="1" default="false" name="CustomerOrder" type="boolean" />
           <element minOccurs="0" maxOccurs="1" name="GenBusPostingGroup" type="string" />
           <element minOccurs="0" maxOccurs="1" default="false" name="OverridePLBItem" type="boolean" />
           <element minOccurs="0" maxOccurs="1" name="OverrideStaffID" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="OverrideDateTime" type="dateTime" />
           <element minOccurs="0" maxOccurs="1" default="false" name="RestrictedFlag" type="boolean" />
-          <element minOccurs="0" maxOccurs="1" name="TaxAreaCode" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="TaxAreaCode" type="string" />
           <element minOccurs="0" maxOccurs="1" default="false" name="WICTransaction" type="boolean" />
           <element minOccurs="0" maxOccurs="1" default="false" name="TaxLiable" type="boolean" />
           <element minOccurs="0" maxOccurs="1" name="TaxExemptionNo" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0" name="NetIncExpAmount" type="decimal" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="RetrievedFromSuspendedTrans" type="boolean" />
         </sequence>
       </complexType>
       <complexType name="TransSalesEntry">
         <sequence>
-          <element minOccurs="1" maxOccurs="1" default="0" name="TransactionNo" type="int" />
-          <element minOccurs="1" maxOccurs="1" default="0" name="LineNo" type="int" />
-          <element minOccurs="1" maxOccurs="1" name="ReceiptNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="TransactionNo" type="int" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="LineNo" type="int" />
+          <element minOccurs="0" maxOccurs="1" name="ReceiptNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="BarcodeNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="ItemNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="SalesStaff" type="string" />
@@ -2640,7 +2653,7 @@
           <element minOccurs="0" maxOccurs="1" default="0" name="NetPrice" type="decimal" />
           <element minOccurs="0" maxOccurs="1" default="0" name="Quantity" type="decimal" />
           <element minOccurs="0" maxOccurs="1" name="PriceGroupCode" type="string" />
-          <element minOccurs="0" maxOccurs="1" name="VATBusPostingGroup" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="VATBusPostingGroup" type="string" />
           <element minOccurs="0" maxOccurs="1" name="VATCode" type="string" />
           <element minOccurs="0" maxOccurs="1" name="xTransactionStatus" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0" name="DiscountAmount" type="decimal" />
@@ -2661,7 +2674,7 @@
           <element minOccurs="0" maxOccurs="1" name="StatementCode" type="string" />
           <element minOccurs="0" maxOccurs="1" name="ItemDiscGroup" type="string" />
           <element minOccurs="0" maxOccurs="1" name="TransactionCode" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="StoreNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="StoreNo" type="string" />
           <element minOccurs="0" maxOccurs="1" default="false" name="ItemNumberScanned" type="boolean" />
           <element minOccurs="0" maxOccurs="1" default="false" name="RfidScanned" type="boolean" />
           <element minOccurs="0" maxOccurs="1" default="false" name="KeyboardItemEntry" type="boolean" />
@@ -2676,7 +2689,7 @@
           <element minOccurs="0" maxOccurs="1" name="TypeofSale" type="string" />
           <element minOccurs="0" maxOccurs="1" default="false" name="LinkedNonotOrig" type="boolean" />
           <element minOccurs="0" maxOccurs="1" default="false" name="OrigofaLinkedItemList" type="boolean" />
-          <element minOccurs="1" maxOccurs="1" name="POSTerminalNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="POSTerminalNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="StaffID" type="string" />
           <element minOccurs="0" maxOccurs="1" name="ItemPostingGroup" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0" name="TotalRoundedAmt" type="decimal" />
@@ -2734,8 +2747,9 @@
           <element minOccurs="0" maxOccurs="1" name="RefundedPOSNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="RefundedStoreNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="CreatedbyStaffID" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="BITimestamp" type="dateTime" />
           <element minOccurs="0" maxOccurs="1" name="GenBusPostingGroup" type="string" />
-          <element minOccurs="0" maxOccurs="1" name="VATBusPostingGroup" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="VATBusPostingGroup" type="string" />
           <element minOccurs="0" maxOccurs="1" name="GenProdPostingGroup" type="string" />
           <element minOccurs="0" maxOccurs="1" name="VATProdPostingGroup" type="string" />
           <element minOccurs="0" maxOccurs="1" default="false" name="PLBItem" type="boolean" />
@@ -2749,9 +2763,9 @@
       </complexType>
       <complexType name="TransPaymentEntry">
         <sequence>
-          <element minOccurs="1" maxOccurs="1" default="0" name="TransactionNo" type="int" />
-          <element minOccurs="1" maxOccurs="1" default="0" name="LineNo" type="int" />
-          <element minOccurs="1" maxOccurs="1" name="ReceiptNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="TransactionNo" type="int" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="LineNo" type="int" />
+          <element minOccurs="0" maxOccurs="1" name="ReceiptNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="StatementCode" type="string" />
           <element minOccurs="0" maxOccurs="1" name="CardNo" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0" name="ExchangeRate" type="decimal" />
@@ -2765,8 +2779,8 @@
           <element minOccurs="0" maxOccurs="1" name="ShiftNo" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="ShiftDate" type="date" />
           <element minOccurs="0" maxOccurs="1" name="StaffID" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="StoreNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="POSTerminalNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="StoreNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="POSTerminalNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="TransactionStatus" type="string" />
           <element minOccurs="0" maxOccurs="1" name="StatementNo" type="string" />
           <element minOccurs="0" maxOccurs="1" default="false" name="ManagersKeyLive" type="boolean" />
@@ -2788,12 +2802,12 @@
       </complexType>
       <complexType name="TransIncomeExpenseEntry">
         <sequence>
-          <element minOccurs="1" maxOccurs="1" default="0" name="TransactionNo" type="int" />
-          <element minOccurs="1" maxOccurs="1" default="0" name="LineNo" type="int" />
-          <element minOccurs="1" maxOccurs="1" name="ReceiptNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="TransactionNo" type="int" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="LineNo" type="int" />
+          <element minOccurs="0" maxOccurs="1" name="ReceiptNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="No" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="StoreNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="POSTerminalNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="StoreNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="POSTerminalNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="StaffID" type="string" />
           <element minOccurs="0" maxOccurs="1" name="TransactionStatus" type="string" />
           <element minOccurs="0" maxOccurs="1" name="VATCode" type="string" />
@@ -2822,17 +2836,17 @@
       </complexType>
       <complexType name="TransInfocodeEntry">
         <sequence>
-          <element minOccurs="1" maxOccurs="1" name="StoreNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" default="0" name="TransactionNo" type="int" />
+          <element minOccurs="0" maxOccurs="1" name="StoreNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="TransactionNo" type="int" />
           <element minOccurs="0" maxOccurs="1" name="TransactionType" type="string" />
-          <element minOccurs="1" maxOccurs="1" default="0" name="LineNo" type="int" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="LineNo" type="int" />
           <element minOccurs="0" maxOccurs="1" name="Infocode" type="string" />
           <element minOccurs="0" maxOccurs="1" name="Information" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0" name="InfoAmt" type="decimal" />
           <element minOccurs="0" maxOccurs="1" name="TextType" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="Date" type="date" />
           <element minOccurs="0" maxOccurs="1" default="00:00:00" name="Time" type="time" />
-          <element minOccurs="1" maxOccurs="1" name="POSTerminalNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="POSTerminalNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="StaffID" type="string" />
           <element minOccurs="0" maxOccurs="1" name="No" type="string" />
           <element minOccurs="0" maxOccurs="1" name="VariantCode" type="string" />
@@ -2855,8 +2869,8 @@
       </complexType>
       <complexType name="TransTenderDeclarEntry">
         <sequence>
-          <element minOccurs="1" maxOccurs="1" default="0" name="TransactionNo" type="int" />
-          <element minOccurs="1" maxOccurs="1" default="0" name="LineNo" type="int" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="TransactionNo" type="int" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="LineNo" type="int" />
           <element minOccurs="0" maxOccurs="1" name="SlipNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="StatementCode" type="string" />
           <element minOccurs="0" maxOccurs="1" name="POSCurrCode" type="string" />
@@ -2870,8 +2884,8 @@
           <element minOccurs="0" maxOccurs="1" name="ShiftNo" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="ShiftDate" type="date" />
           <element minOccurs="0" maxOccurs="1" name="StaffID" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="StoreNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="POSTerminalNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="StoreNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="POSTerminalNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="TransactionStatus" type="string" />
           <element minOccurs="0" maxOccurs="1" name="StatementNoNOTUSED" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0" name="BankAmountTendered" type="decimal" />
@@ -2889,9 +2903,9 @@
       </complexType>
       <complexType name="TransInventoryEntry">
         <sequence>
-          <element minOccurs="1" maxOccurs="1" default="0" name="TransactionNo" type="int" />
-          <element minOccurs="1" maxOccurs="1" default="0" name="LineNo" type="int" />
-          <element minOccurs="1" maxOccurs="1" name="ReceiptNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="TransactionNo" type="int" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="LineNo" type="int" />
+          <element minOccurs="0" maxOccurs="1" name="ReceiptNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="BarcodeNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="Epc" type="string" />
           <element minOccurs="0" maxOccurs="1" name="ItemNo" type="string" />
@@ -2900,14 +2914,14 @@
           <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="Date" type="date" />
           <element minOccurs="0" maxOccurs="1" default="00:00:00" name="Time" type="time" />
           <element minOccurs="0" maxOccurs="1" name="StatementNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="StoreNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="StoreNo" type="string" />
           <element minOccurs="0" maxOccurs="1" default="false" name="ItemNumberScanned" type="boolean" />
           <element minOccurs="0" maxOccurs="1" default="false" name="KeyboardItemEntry" type="boolean" />
           <element minOccurs="0" maxOccurs="1" default="false" name="PriceinBarcode" type="boolean" />
           <element minOccurs="0" maxOccurs="1" default="false" name="WeightManuallyEntered" type="boolean" />
           <element minOccurs="0" maxOccurs="1" default="false" name="ScaleItem" type="boolean" />
           <element minOccurs="0" maxOccurs="1" default="false" name="WeightItem" type="boolean" />
-          <element minOccurs="1" maxOccurs="1" name="POSTerminalNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="POSTerminalNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="StaffID" type="string" />
           <element minOccurs="0" maxOccurs="1" name="VariantCode" type="string" />
           <element minOccurs="0" maxOccurs="1" name="SerialNo" type="string" />
@@ -2923,12 +2937,12 @@
       </complexType>
       <complexType name="POSCardEntry">
         <sequence>
-          <element minOccurs="1" maxOccurs="1" name="StoreNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="POSTerminalNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="StoreNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="POSTerminalNo" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0" name="EntryNo" type="int" />
-          <element minOccurs="1" maxOccurs="1" default="0" name="TransactionNo" type="int" />
-          <element minOccurs="1" maxOccurs="1" default="0" name="LineNo" type="int" />
-          <element minOccurs="1" maxOccurs="1" name="ReceiptNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="TransactionNo" type="int" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="LineNo" type="int" />
+          <element minOccurs="0" maxOccurs="1" name="ReceiptNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="EFTPOSTerminalNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="TenderType" type="string" />
           <element minOccurs="0" maxOccurs="1" name="TransactionType" type="string" />
@@ -2976,11 +2990,11 @@
       </complexType>
       <complexType name="TransDiscountEntry">
         <sequence>
-          <element minOccurs="1" maxOccurs="1" default="0" name="TransactionNo" type="int" />
-          <element minOccurs="1" maxOccurs="1" default="0" name="LineNo" type="int" />
-          <element minOccurs="1" maxOccurs="1" name="ReceiptNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="StoreNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="POSTerminalNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="TransactionNo" type="int" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="LineNo" type="int" />
+          <element minOccurs="0" maxOccurs="1" name="ReceiptNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="StoreNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="POSTerminalNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="MemberAttribute" type="string" />
           <element minOccurs="0" maxOccurs="1" name="MemberAttributeValue" type="string" />
           <element minOccurs="0" maxOccurs="1" name="TrackingNo" type="string" />
@@ -2996,10 +3010,10 @@
       </complexType>
       <complexType name="TransDealEntry">
         <sequence>
-          <element minOccurs="1" maxOccurs="1" name="StoreNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="POSTerminalNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" default="0" name="TransactionNo" type="int" />
-          <element minOccurs="1" maxOccurs="1" default="0" name="LineNo" type="int" />
+          <element minOccurs="0" maxOccurs="1" name="StoreNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="POSTerminalNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="TransactionNo" type="int" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="LineNo" type="int" />
           <element minOccurs="0" maxOccurs="1" name="DealNo" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0" name="DealHeaderLineNo" type="int" />
           <element minOccurs="0" maxOccurs="1" default="0" name="Quantity" type="decimal" />
@@ -3016,11 +3030,11 @@
           <element minOccurs="0" maxOccurs="1" name="ReceiptNo" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0" name="Points" type="decimal" />
           <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="Date" type="date" />
-          <element minOccurs="1" maxOccurs="1" name="POSTerminalNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="POSTerminalNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="CardNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="EntryType" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="StoreNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" default="0" name="TransactionNo" type="int" />
+          <element minOccurs="0" maxOccurs="1" name="StoreNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="TransactionNo" type="int" />
           <element minOccurs="0" maxOccurs="1" name="PointType" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0" name="ValuePerPoint" type="decimal" />
           <element minOccurs="0" maxOccurs="1" default="0" name="DiscBenefitPoints" type="decimal" />
@@ -3030,11 +3044,11 @@
       </complexType>
       <complexType name="TransHospitalityEntry">
         <sequence>
-          <element minOccurs="1" maxOccurs="1" default="0" name="TransactionNo" type="int" />
-          <element minOccurs="1" maxOccurs="1" default="0" name="LineNo" type="int" />
-          <element minOccurs="1" maxOccurs="1" name="ReceiptNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="StoreNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="POSTerminalNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="TransactionNo" type="int" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="LineNo" type="int" />
+          <element minOccurs="0" maxOccurs="1" name="ReceiptNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="StoreNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="POSTerminalNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="ItemNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="RestaurantMenuTypeCode" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0" name="RestaurantMenuType" type="int" />
@@ -3045,11 +3059,11 @@
       </complexType>
       <complexType name="TransSalesTaxEntry">
         <sequence>
-          <element minOccurs="1" maxOccurs="1" name="StoreNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="POSTerminalNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" default="0" name="TransactionNo" type="int" />
+          <element minOccurs="0" maxOccurs="1" name="StoreNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="POSTerminalNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="TransactionNo" type="int" />
           <element minOccurs="0" maxOccurs="1" default="0" name="EntryNo" type="int" />
-          <element minOccurs="0" maxOccurs="1" name="TaxAreaCode" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="TaxAreaCode" type="string" />
           <element minOccurs="0" maxOccurs="1" name="TaxJurisdictionCode" type="string" />
           <element minOccurs="0" maxOccurs="1" name="TaxGroupCode" type="string" />
           <element minOccurs="0" maxOccurs="1" default="false" name="ExpenseCapitalize" type="boolean" />
@@ -3244,6 +3258,27 @@
           <element minOccurs="0" maxOccurs="1" name="Blockedby" type="string" />
         </sequence>
       </complexType>
+      <complexType name="MemberAccount">
+        <sequence>
+          <element minOccurs="1" maxOccurs="1" name="AccountNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="Status" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="AccountType" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="Description" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="MainContact" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="MainContactName" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="CustomerNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="ClubCode" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="SchemeCode" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="PriceGroup" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="CustDiscGroup" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="LanguageCode" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="CreatedBy" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="CreatedDate" type="date" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="Blocked" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" name="BlockedBy" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="DateBlocked" type="date" />
+        </sequence>
+      </complexType>
       <complexType name="MemberContact">
         <sequence>
           <element minOccurs="0" maxOccurs="1" name="AccountNo" type="string" />
@@ -3349,6 +3384,7 @@
           <element minOccurs="0" maxOccurs="unbounded" name="LoginCardBuffer" type="tns:LoginCardBuffer" />
           <element minOccurs="0" maxOccurs="unbounded" name="MemberDevice" type="tns:MemberDevice" />
           <element minOccurs="0" maxOccurs="unbounded" name="MembershipCard" type="tns:MembershipCard" />
+          <element minOccurs="0" maxOccurs="unbounded" name="MemberAccount" type="tns:MemberAccount" />
           <element minOccurs="0" maxOccurs="unbounded" name="MemberContact" type="tns:MemberContact" />
           <element minOccurs="0" maxOccurs="unbounded" name="MemberClub" type="tns:MemberClub" />
           <element minOccurs="0" maxOccurs="unbounded" name="MemberAttributeList" type="tns:MemberAttributeList" />
@@ -3485,6 +3521,27 @@
           <element minOccurs="0" maxOccurs="1" name="Blockedby" type="string" />
         </sequence>
       </complexType>
+      <complexType name="MemberAccount">
+        <sequence>
+          <element minOccurs="1" maxOccurs="1" name="AccountNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="Status" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="AccountType" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="Description" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="MainContact" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="MainContactName" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="CustomerNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="ClubCode" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="SchemeCode" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="PriceGroup" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="CustDiscGroup" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="LanguageCode" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="CreatedBy" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="CreatedDate" type="date" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="Blocked" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" name="BlockedBy" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="DateBlocked" type="date" />
+        </sequence>
+      </complexType>
       <complexType name="MemberContact">
         <sequence>
           <element minOccurs="0" maxOccurs="1" name="AccountNo" type="string" />
@@ -3590,6 +3647,7 @@
           <element minOccurs="0" maxOccurs="unbounded" name="LoginCardBuffer" type="tns:LoginCardBuffer" />
           <element minOccurs="0" maxOccurs="unbounded" name="MemberDevice" type="tns:MemberDevice" />
           <element minOccurs="0" maxOccurs="unbounded" name="MembershipCard" type="tns:MembershipCard" />
+          <element minOccurs="0" maxOccurs="unbounded" name="MemberAccount" type="tns:MemberAccount" />
           <element minOccurs="0" maxOccurs="unbounded" name="MemberContact" type="tns:MemberContact" />
           <element minOccurs="0" maxOccurs="unbounded" name="MemberClub" type="tns:MemberClub" />
           <element minOccurs="0" maxOccurs="unbounded" name="MemberAttributeList" type="tns:MemberAttributeList" />
@@ -4130,6 +4188,7 @@
           <element minOccurs="0" maxOccurs="1" name="MemberCardNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="SalesType" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0" name="StartingPointBalance" type="decimal" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="ContainsForecourtItems" type="boolean" />
           <element minOccurs="0" maxOccurs="1" name="ApplytoDocNo" type="string" />
           <element minOccurs="0" maxOccurs="1" default="false" name="OpenDrawer" type="boolean" />
           <element minOccurs="0" maxOccurs="1" default="false" name="Replicated" type="boolean" />
@@ -4145,6 +4204,7 @@
           <element minOccurs="0" maxOccurs="1" name="OverrideStaffID" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="OverrideDateTime" type="dateTime" />
           <element minOccurs="0" maxOccurs="1" default="false" name="RestrictedFlag" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="RetrievedFromSuspendedTrans" type="boolean" />
           <element minOccurs="0" maxOccurs="1" name="TaxAreaCode" type="string" />
           <element minOccurs="0" maxOccurs="1" default="false" name="WICTransaction" type="boolean" />
           <element minOccurs="0" maxOccurs="1" default="false" name="TaxLiable" type="boolean" />
@@ -4222,6 +4282,7 @@
           <element minOccurs="0" maxOccurs="1" name="MemberCardNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="SalesType" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0" name="StartingPointBalance" type="decimal" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="ContainsForecourtItems" type="boolean" />
           <element minOccurs="0" maxOccurs="1" name="ApplytoDocNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="SourceType" type="string" />
           <element minOccurs="0" maxOccurs="1" default="false" name="OpenDrawer" type="boolean" />
@@ -4238,6 +4299,7 @@
           <element minOccurs="0" maxOccurs="1" name="OverrideStaffID" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="OverrideDateTime" type="dateTime" />
           <element minOccurs="0" maxOccurs="1" default="false" name="RestrictedFlag" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="RetrievedFromSuspendedTrans" type="boolean" />
           <element minOccurs="0" maxOccurs="1" name="TaxAreaCode" type="string" />
           <element minOccurs="0" maxOccurs="1" default="false" name="WICTransaction" type="boolean" />
           <element minOccurs="0" maxOccurs="1" default="false" name="TaxLiable" type="boolean" />
@@ -4845,6 +4907,7 @@
           <element minOccurs="0" maxOccurs="1" name="OrigPerDiscGroup" type="string" />
           <element minOccurs="0" maxOccurs="1" name="SafeType" type="string" />
           <element minOccurs="0" maxOccurs="1" default="false" name="BenefitItem" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="Fuelitem" type="boolean" />
           <element minOccurs="0" maxOccurs="1" default="false" name="RetailSpecialOrder" type="boolean" />
           <element minOccurs="0" maxOccurs="1" name="DeliveringMethod" type="string" />
           <element minOccurs="0" maxOccurs="1" name="VendorDeliversto" type="string" />
@@ -9966,7 +10029,7 @@
   </binding>
   <service name="OmniWrapper">
     <port name="OmniWrapper_Port" binding="tns:OmniWrapper_Binding">
-      <address location="http://ishqr90q4tqm:9047/LSCentralDev/WS/CRONUS%20-%20LS%20Central/Codeunit/OmniWrapper" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <address location="http://dhqsrvomni010:9047/LSCentralMa/WS/ReplaceWithAPercentEncodedCompanyName/Codeunit/OmniWrapper" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
     </port>
   </service>
 </definitions>

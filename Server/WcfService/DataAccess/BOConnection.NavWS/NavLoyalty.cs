@@ -517,7 +517,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ItemGetById(id);
 
-            return LSCWSBase.ItemGetById(id, stat);
+            return LSCWSBase.ItemGetById(id, storeId, includeDetails, stat);
         }
 
         public virtual List<LoyItem> ItemsGetByPublishedOfferId(string pubOfferId, int numberOfItems, Statistics stat)
@@ -919,9 +919,12 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             }
             else
             {
-                store = LSCWSBase.StoreGetById(id, stat);
-                store.StoreHours = LSCWSBase.StoreHoursGetByStoreId(id, offset, stat);
-                store.Attributes = LSCWSBase.AttributeGet(id, AttributeLinkType.Store, stat);
+                store = LSCWSBase.StoreGetById(id, true, offset, stat);
+                if (NAVVersion < new Version("26.0"))
+                {
+                    store.StoreHours = LSCWSBase.StoreHoursGetByStoreId(id, offset, stat);
+                    store.Attributes = LSCWSBase.AttributeGet(id, AttributeLinkType.Store, stat);
+                }
             }
             return store;
         }
@@ -938,17 +941,19 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
                 {
                     foreach (Store store in stores)
                     {
+                        store.Images = NavWSBase.ImagesGetByLink("Store", store.Id, string.Empty, string.Empty);
                         store.StoreHours = NavWSBase.StoreHoursGetByStoreId(store.Id, offset);
                     }
                 }
             }
             else
             {
-                stores = LSCWSBase.StoresGet(storeType, inclDetails, stat);
-                if (inclDetails)
+                stores = LSCWSBase.StoresGet(storeType, inclDetails, offset, stat);
+                if (inclDetails && NAVVersion < new Version("26.0"))
                 {
                     foreach (Store store in stores)
                     {
+                        store.Images = LSCWSBase.ImagesGetByLink("LSC Store", store.Id, string.Empty, string.Empty, false, stat);
                         store.StoreHours = LSCWSBase.StoreHoursGetByStoreId(store.Id, offset, stat);
                         store.Attributes = LSCWSBase.AttributeGet(store.Id, AttributeLinkType.Store, stat);
                     }
