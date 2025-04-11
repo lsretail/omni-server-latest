@@ -17,15 +17,15 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         {
         }
 
-        public List<ProactiveDiscount> DiscountsGetByStoreAndItem(string storeId, string itemId)
+        public List<ProactiveDiscount> DiscountsGetByStoreAndItem(string storeId, List<string> itemIds)
         {
-            string sqlcolumns = "p.[No_], p.[Type],p.[Priority],p.[Description],p.[Pop-up Line 1],p.[Pop-up Line 2],mt.[Store No_],mt.[Item No_]," +
+            string sqlcolumns = "p.[No_], p.[Type],p.[Priority],p.[Description],p.[Pop-up Line 1],p.[Pop-up Line 2],p.[Pop-up Line 3],p.[Validation Period ID],mt.[Store No_],mt.[Item No_]," +
                                 "mt.[Variant Code],mt.[Customer Disc_ Group],mt.[Loyalty Scheme Code],mt.[Discount _],mt.[Minimum Quantity],mt.[Unit of Measure Code]";
 
             string sqlfrom = " FROM [" + navCompanyName + "WI Discounts$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
                              " INNER JOIN [" + navCompanyName + "Periodic Discount$5ecfc871-5d82-43f1-9c54-59685e82318d] p ON p.[No_]=mt.[Offer No_]";
 
-            string sqlMMcolumns = "p.[No_],p.[Type],p.[Priority],p.[Description],p.[Pop-up Line 1],p.[Pop-up Line 2],p.[Discount _ Value] AS [Discount _]," +
+            string sqlMMcolumns = "p.[No_],p.[Type],p.[Priority],p.[Description],p.[Pop-up Line 1],p.[Pop-up Line 2],p.[Pop-up Line 3],p.[Validation Period ID],p.[Discount _ Value] AS [Discount _]," +
                                   "mt.[Store No_],mt.[Item No_],mt.[Variant Code],mt.[Customer Disc_ Group],mt.[Loyalty Scheme Code], 0 AS [Minimum Quantity]," +
                                   "'' AS [Unit of Measure Code]";
 
@@ -38,9 +38,19 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom + " WHERE mt.[Store No_]=@sid AND mt.[Item No_]=@iid";
+                    string sql = "SELECT " + sqlcolumns + sqlfrom + " WHERE mt.[Store No_]=@sid AND mt.[Item No_] IN ({0})";
                     command.Parameters.AddWithValue("@sid", storeId);
-                    command.Parameters.AddWithValue("@iid", itemId);
+
+                    var idParameterList = new List<string>();
+                    var index = 0;
+                    foreach (string item in itemIds)
+                    {
+                        var paramName = "@idParam" + index;
+                        command.Parameters.AddWithValue(paramName, item);
+                        idParameterList.Add(paramName);
+                        index++;
+                    }
+                    command.CommandText = String.Format(sql, string.Join(",", idParameterList));
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -51,7 +61,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         reader.Close();
                     }
 
-                    command.CommandText = "SELECT " + sqlMMcolumns + sqlMMfrom + " WHERE mt.[Store No_]=@sid AND mt.[Item No_]=@iid";
+                    sql = "SELECT " + sqlMMcolumns + sqlMMfrom + " WHERE mt.[Store No_]=@sid AND mt.[Item No_] IN ({0})";
+                    command.CommandText = String.Format(sql, string.Join(",", idParameterList));
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -81,17 +92,15 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             }
         }
 
-        public DiscountValidation GetDiscountValidationByOfferId(string offerId)
+        public DiscountValidation GetDiscountValidationByOfferId(string periodId)
         {
             DiscountValidation discval = null;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT * FROM [" + navCompanyName + "Validation Period$5ecfc871-5d82-43f1-9c54-59685e82318d] mt WHERE [ID]=(" +
-                                          "SELECT [Validation Period ID] FROM [" + navCompanyName + "Periodic Discount$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [No_]=@id)";
-
-                    command.Parameters.AddWithValue("@id", offerId);
+                    command.CommandText = "SELECT * FROM [" + navCompanyName + "Validation Period$5ecfc871-5d82-43f1-9c54-59685e82318d] mt WHERE [ID]=@id";
+                    command.Parameters.AddWithValue("@id", periodId);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -203,33 +212,25 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         private ProactiveDiscount ReaderToDiscount(SqlDataReader reader)
         {
-            return new ProactiveDiscount()
+            ProactiveDiscount disc = new ProactiveDiscount()
             {
                 Id = SQLHelper.GetString(reader["No_"]),
                 Percentage = SQLHelper.GetDecimal(reader["Discount _"]),
                 Priority = SQLHelper.GetInt32(reader["Priority"]),
                 ItemId = SQLHelper.GetString(reader["Item No_"]),
-                Type = ToProactiveDiscountType(SQLHelper.GetInt32(reader["Type"])),
                 LoyaltySchemeCode = SQLHelper.GetString(reader["Loyalty Scheme Code"]),
                 MinimumQuantity = SQLHelper.GetDecimal(reader["Minimum Quantity"]),
                 Description = SQLHelper.GetString(reader["Description"]),
                 VariantId = SQLHelper.GetString(reader["Variant Code"]),
                 UnitOfMeasureId = SQLHelper.GetString(reader["Unit of Measure Code"]),
                 PopUpLine1 = SQLHelper.GetString(reader["Pop-up Line 1"]),
-                PopUpLine2 = SQLHelper.GetString(reader["Pop-up Line 2"])
+                PopUpLine2 = SQLHelper.GetString(reader["Pop-up Line 2"]),
+                PopUpLine3 = SQLHelper.GetString(reader["Pop-up Line 3"]),
+                PeriodId = SQLHelper.GetString(reader["Validation Period ID"])
             };
-        }
 
-        private ProactiveDiscountType ToProactiveDiscountType(int type)
-        {
-            //NAV Types: 0 - Multibuy, 1 - Mix&Match, 2 - Disc. Offer
-            switch (type)
-            {
-                case 0: return ProactiveDiscountType.Multibuy;
-                case 1: return ProactiveDiscountType.MixMatch;
-                case 2: return ProactiveDiscountType.DiscOffer;
-            }
-            return ProactiveDiscountType.Unknown;
+            disc.SetProactiveDiscountType(SQLHelper.GetInt32(reader["Type"]));
+            return disc;
         }
 
         private decimal PriceGetByItem(string storeId, string itemId, string variantId)

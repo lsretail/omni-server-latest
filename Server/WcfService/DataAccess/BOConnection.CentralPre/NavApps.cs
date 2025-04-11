@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using LSOmni.Common.Util;
@@ -25,30 +26,33 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
         {
         }
 
-        public virtual List<ProactiveDiscount> DiscountsGetByStoreAndItem(string storeId, string itemId, Statistics stat)
+        public virtual List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string schemeCode, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
             DiscountRepository rep = new DiscountRepository(config, LSCVersion);
-            List<ProactiveDiscount> list = rep.DiscountsGetByStoreAndItem(storeId, itemId);
+            List<ProactiveDiscount> discounts = rep.DiscountsGetByStoreAndItem(storeId, itemIds);
+
+            if (string.IsNullOrEmpty(schemeCode))
+            {
+                discounts = discounts.Where(disc => disc.LoyaltySchemeCode == string.Empty).ToList();
+            }
+            else
+            {
+                discounts = discounts.Where(disc => disc.LoyaltySchemeCode == string.Empty || disc.LoyaltySchemeCode == schemeCode).ToList();
+            }
+
+            List<ProactiveDiscount> list = new List<ProactiveDiscount>();
+            foreach (ProactiveDiscount disc in discounts)
+            {
+                DiscountValidation dValid = rep.GetDiscountValidationByOfferId(disc.PeriodId);
+                if (dValid.OfferIsValid())
+                {
+                    rep.LoadDiscountDetails(disc, storeId, schemeCode);
+                    list.Add(disc);
+                }
+            }
             logger.StatisticEndSub(ref stat, index);
             return list;
-        }
-
-        public virtual DiscountValidation GetDiscountValidationByOfferId(string offerId, Statistics stat)
-        {
-            logger.StatisticStartSub(false, ref stat, out int index);
-            DiscountRepository rep = new DiscountRepository(config, LSCVersion);
-            DiscountValidation valid = rep.GetDiscountValidationByOfferId(offerId);
-            logger.StatisticEndSub(ref stat, index);
-            return valid;
-        }
-
-        public virtual void LoadDiscountDetails(ProactiveDiscount disc, string storeId, string loyaltySchemeCode, Statistics stat)
-        {
-            logger.StatisticStartSub(false, ref stat, out int index);
-            DiscountRepository rep = new DiscountRepository(config, LSCVersion);
-            rep.LoadDiscountDetails(disc, storeId, loyaltySchemeCode);
-            logger.StatisticEndSub(ref stat, index);
         }
 
         public virtual Terminal TerminalGetById(string terminalId, Statistics stat)

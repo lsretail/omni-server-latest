@@ -74,45 +74,10 @@ namespace LSOmni.BLL.Loyalty
             if (string.IsNullOrEmpty(receiptNo))
                 throw new LSOmniException(StatusCode.TransacitionIdMissing, "receiptNo can not be empty");
 
-            List<SalesEntry> result = new List<SalesEntry>();
-            List<SalesEntryId> list = BOLoyConnection.SalesEntryGetReturnSales(receiptNo, stat);
-            foreach (SalesEntryId line in list)
-            {
-                SalesEntry en = SalesEntryGet(line.ReceiptId, DocumentIdType.Receipt, stat);
-                if (en == null)
-                    continue;
-
-                en.CustomerOrderNo = line.OrderId;
-                result.Add(en);
-            }
-            return result;
+            return BOLoyConnection.SalesEntryGetReturnSales(receiptNo, stat);
         }
 
-        public virtual List<SalesEntry> SalesEntryGetSalesByOrderId(string orderId, Statistics stat)
-        {
-            if (string.IsNullOrEmpty(orderId))
-                throw new LSOmniException(StatusCode.TransacitionIdMissing, "orderId can not be empty");
-
-            SalesEntryList data = BOLoyConnection.SalesEntryGetSalesByOrderId(orderId, stat);
-            if (data.SalesEntries == null)
-                return new List<SalesEntry>();
-
-            foreach (SalesEntry entry in data.SalesEntries)
-            {
-                entry.TotalAmount = 0;
-                entry.TotalDiscount = 0;
-                entry.TotalNetAmount = 0;
-                foreach (SalesEntryLine line in entry.Lines)
-                {
-                    entry.TotalAmount += line.Amount;
-                    entry.TotalDiscount += line.DiscountAmount;
-                    entry.TotalNetAmount += line.NetAmount;
-                }
-            }
-            return data.SalesEntries;
-        }
-
-        public virtual SalesEntryList SalesEntryGetSalesExtByOrderId(string orderId, Statistics stat)
+        public virtual SalesEntryList SalesEntryGetSalesByOrderId(string orderId, Statistics stat)
         {
             if (string.IsNullOrEmpty(orderId))
                 throw new LSOmniException(StatusCode.TransacitionIdMissing, "orderId can not be empty");

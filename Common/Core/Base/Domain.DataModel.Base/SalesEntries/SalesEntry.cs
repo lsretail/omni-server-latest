@@ -33,6 +33,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
             Status = SalesEntryStatus.Pending;
             ShippingStatus = ShippingStatus.ShippigNotRequired;
 
+            ContactAddress = new Address();
+            ShipToAddress = new Address();
             Lines = new List<SalesEntryLine>();
             DiscountLines = new List<SalesEntryDiscountLine>();
             Payments = new List<SalesEntryPayment>();

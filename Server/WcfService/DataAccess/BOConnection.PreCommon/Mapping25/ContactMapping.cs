@@ -36,7 +36,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                 LastName = XMLHelper.GetString(contact.LastName),
                 DateOfBirth = contact.BirthDay,
                 Email = contact.Email.ToLower(),
-                Gender = ((int)contact.Gender).ToString(),
+                Gender = contact.GetNewGender(LSCVersion),
 
                 Address1 = XMLHelper.GetString(addr.Address1),
                 Address2 = XMLHelper.GetString(addr.Address2),
@@ -105,7 +105,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                 LastName = XMLHelper.GetString(contact.LastName),
                 DateOfBirth = contact.BirthDay,
                 Email = XMLHelper.GetString(contact.Email),
-                Gender = ((int)contact.Gender).ToString(),
+                Gender = contact.GetNewGender(LSCVersion),
 
                 Address1 = XMLHelper.GetString(addr.Address1),
                 Address2 = XMLHelper.GetString(addr.Address2),
@@ -163,7 +163,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                 FirstName = contact.FirstName,
                 MiddleName = contact.MiddleName,
                 LastName = contact.Surname,
-                Gender = (Gender)Convert.ToInt32(contact.Gender),
                 MaritalStatus = (MaritalStatus)Convert.ToInt32(contact.MaritalStatus),
                 BirthDay = ConvertTo.SafeJsonDate(contact.DateofBirth, IsJson),
                 Account = new Account(contact.AccountNo),
@@ -173,7 +172,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                 BlockedReason = contact.ReasonBlocked,
                 DateBlocked = ConvertTo.SafeJsonDate(contact.DateBlocked, IsJson)
             };
-
+            
+            memberContact.SetNewGender(contact.Gender, LSCVersion);
             memberContact.Addresses = new List<Address>()
             {
                 new Address()
@@ -248,7 +248,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                 FirstName = contact.FirstName,
                 MiddleName = contact.MiddleName,
                 LastName = contact.Surname,
-                Gender = (Gender)Convert.ToInt32(contact.Gender),
                 MaritalStatus = (MaritalStatus)Convert.ToInt32(contact.MaritalStatus),
                 SendReceiptByEMail = (SendEmail)Convert.ToInt32(contact.SendReceiptbyEmail),
                 BirthDay = ConvertTo.SafeJsonDate(contact.DateofBirth, IsJson),
@@ -258,6 +257,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                 DateBlocked = ConvertTo.SafeJsonDate(contact.DateBlocked, IsJson)
             };
 
+            memberContact.SetNewGender(contact.Gender, LSCVersion);
             memberContact.Addresses = new List<Address>()
             {
                 new Address()
@@ -304,7 +304,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                 }
             }
 
-            /*
             if (root.MemberAccount != null)
             {
                 memberContact.Account.Blocked = root.MemberAccount[0].Blocked;
@@ -312,7 +311,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                 memberContact.Account.CustomerId = root.MemberAccount[0].CustomerNo;
                 memberContact.Account.Type = (AccountType)ConvertTo.SafeInt(root.MemberAccount[0].AccountType);
             }
-            */
 
             if (root.MemberAttributeList != null)
             {
@@ -353,7 +351,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                 FirstName = contact.FirstName,
                 MiddleName = contact.MiddleName,
                 LastName = contact.Surname,
-                Gender = (Gender)Convert.ToInt32(contact.Gender),
                 MaritalStatus = (MaritalStatus)Convert.ToInt32(contact.MaritalStatus),
                 SendReceiptByEMail = (SendEmail)Convert.ToInt32(contact.SendReceiptbyEmail),
                 BirthDay = ConvertTo.SafeJsonDate(contact.DateofBirth, IsJson),
@@ -363,6 +360,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                 DateBlocked = ConvertTo.SafeJsonDate(contact.DateBlocked, IsJson)
             };
 
+            memberContact.SetNewGender(contact.Gender, LSCVersion);
             memberContact.Addresses = new List<Address>()
             {
                 new Address()
@@ -409,7 +407,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                 }
             }
 
-            /*
             if (root.MemberAccount != null)
             {
                 memberContact.Account.Blocked = root.MemberAccount[0].Blocked;
@@ -417,7 +414,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                 memberContact.Account.CustomerId = root.MemberAccount[0].CustomerNo;
                 memberContact.Account.Type = (AccountType)ConvertTo.SafeInt(root.MemberAccount[0].AccountType);
             }
-            */
 
             if (root.MemberAttributeList != null)
             {

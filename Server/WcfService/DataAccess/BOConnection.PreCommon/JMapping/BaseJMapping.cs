@@ -12,7 +12,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
     {
         protected bool IsJson = false;
         protected static LSLogger logger = new LSLogger();
-        protected Version LSCVersion = new Version("19.0");
+        protected Version LSCVersion = new Version("26.0");
 
         public void SetKeys(bool fullRepl, ref string lastKey, out int lastEntry)
         {
@@ -37,7 +37,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
             ReplOTableData result = JsonConvert.DeserializeObject<ReplOTableData>(ret);
             if (result == null || result.TableData == null || result.TableData.TableDataUpd == null || result.TableData.TableDataUpd.RecRefJson == null)
             {
-                if (result.Status == "OnError")
+                if (result?.Status == "OnError")
                     throw new LSOmniServiceException(StatusCode.NavWSError, result.ErrorText);
                 return null;
             }
@@ -63,6 +63,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
             var token = parsed.SelectToken("value");
             parsed = JObject.Parse(token.ToString());
             token = parsed.SelectToken(valueMemberCode);
+            if (token == null)
+                throw new LSOmniServiceException(StatusCode.NavWSError, $"{valueMemberCode} element not found in result");
+
             string resCode = parsed.SelectToken("ResponseCode").Value<string>();
             string resErr = parsed.SelectToken("ErrorText").Value<string>();
 
@@ -73,6 +76,28 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     throw new LSOmniServiceException(StatusCode.NavWSError, resErr);
                 return null;
             }
+            return result;
+        }
+
+        public string JsonToWSODataValue(string ret, string valueCode)
+        {
+
+            JObject parsed;
+            try
+            {
+                parsed = JObject.Parse(ret);
+            }
+            catch (Exception)
+            {
+                throw new LSOmniServiceException(StatusCode.NavWSError, "OData4 Error:" + ret);
+            }
+
+            var token = parsed.SelectToken("value");
+            parsed = JObject.Parse(token.ToString());
+            string result = parsed.SelectToken(valueCode).Value<string>();
+            if (token == null)
+                return string.Empty;
+
             return result;
         }
 

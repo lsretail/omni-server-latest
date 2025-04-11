@@ -158,6 +158,9 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual MemberContact ContactGet(ContactSearchType searchType, string searchValue, Statistics stat)
         {
+            if (NAVVersion >= new Version("21.3"))
+                return LSCWSBase.ContactGetNew(searchType, searchValue, stat);
+
             if (NAVVersion < new Version("16.2"))
                 return NavWSBase.ContactGetByEmail(searchValue, false);
 
@@ -203,7 +206,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return ContactAddCard(contactId, accountId, cardId, stat);
         }
 
-        public virtual void ConatctBlock(string accountId, string cardId, Statistics stat)
+        public virtual void ContactBlock(string accountId, string cardId, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
             {
@@ -211,7 +214,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
                 return;
             }
 
-            LSCWSBase.ConatctBlock(accountId, cardId, stat);
+            LSCWSBase.ContactBlock(accountId, cardId, stat);
         }
 
         public virtual MemberContact Login(string userName, string password, string deviceID, string deviceName, Statistics stat)
@@ -321,6 +324,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         {
             List<MemberContact> list = new List<MemberContact>();
             bool exact = maxNumberOfRowsReturned == 1;
+
+            if (NAVVersion >= new Version("21.3"))
+                return LSCWSBase.ContactSearch(searchType, search, maxNumberOfRowsReturned, exact, stat);
+
             MemberContact cont;
             switch (searchType)
             {
@@ -343,11 +350,8 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
                         list.Add(cont);
                     break;
                 default:
-                    if (NAVVersion < new Version("21.3"))
-                    {
-                        if (exact == false)
-                            search = "*" + search + "*";
-                    }
+                    if (exact == false)
+                        search = "*" + search + "*";
 
                     if (NAVVersion < new Version("17.5"))
                     {
@@ -362,18 +366,11 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
                     else
                     {
                         List<MemberContact> tmplist = LSCWSBase.ContactSearch(searchType, search, maxNumberOfRowsReturned, exact, stat);
-                        if (NAVVersion < new Version("21.3"))
+                        foreach (MemberContact c in tmplist)
                         {
-                            foreach (MemberContact c in tmplist)
-                            {
-                                cont = LSCWSBase.ContactGet(c.Id, c.Account.Id, string.Empty, string.Empty, string.Empty, stat);
-                                if (cont != null)
-                                    list.Add(cont);
-                            }
-                        }
-                        else
-                        {
-                            list = tmplist;
+                            cont = LSCWSBase.ContactGet(c.Id, c.Account.Id, string.Empty, string.Empty, string.Empty, stat);
+                            if (cont != null)
+                                list.Add(cont);
                         }
                     }
                     break;
@@ -643,7 +640,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             }
             else if (NAVVersion >= new Version("21.3"))
             {
-                list = LSCWSBase.SalesEntryGetByCardId(cardId, maxNumberOfEntries, storeId, stat);
+                list = LSCWSBase.SalesEntryGetByCardId(cardId, maxNumberOfEntries, storeId, date, dateGreaterThan, stat);
                 return list;
             }
             else
@@ -684,16 +681,14 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return SalesEntryGet(entryId, 0, string.Empty, string.Empty, type, stat);
         }
 
-        public virtual List<SalesEntryId> SalesEntryGetReturnSales(string receiptNo, Statistics stat)
+        public virtual List<SalesEntry> SalesEntryGetReturnSales(string receiptNo, Statistics stat)
         {
-            logger.Warn(config.LSKey.Key, "Not supported by LS central version for SaaS");
-            return new List<SalesEntryId>();
+            return LSCWSBase.SalesEntryGetReturnSales(receiptNo, stat);
         }
 
         public virtual SalesEntryList SalesEntryGetSalesByOrderId(string orderId, Statistics stat)
         {
-            logger.Warn(config.LSKey.Key, "Not supported by LS central version for SaaS");
-            return new SalesEntryList();
+            return LSCWSBase.SalesEntryGetSalesByOrderId(orderId, stat);
         }
 
         public virtual SalesEntry SalesEntryGet(string docId, int transId, string storeId, string terminalId, DocumentIdType type, Statistics stat)
@@ -761,7 +756,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             LSCWSBase.HospOrderCancel(storeId, orderId, stat);
         }
 
-        public virtual OrderHospStatus HospOrderStatus(string storeId, string orderId, Statistics stat)
+        public virtual List<OrderHospStatus> HospOrderStatus(string storeId, string orderId, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.HospOrderStatus(storeId, orderId);

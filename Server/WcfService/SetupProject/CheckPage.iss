@@ -7,6 +7,8 @@ var
   CheckPage_NavSQLCheckBox: TCheckBox;
   CheckPage_IISCheckBox: TCheckBox;
   CheckPage_WSCheckBox: TCheckBox; 
+  CheckPage_MultiCheckBox: TCheckBox; 
+  CheckPage_SPGCheckBox: TCheckBox; 
 
   CheckPage_lblComment: TLabel;
   CheckPage_lblComment1: TLabel;
@@ -35,7 +37,7 @@ end;
 
 procedure OnClickWS(Sender: TObject);
 begin
-  if CheckPage_WSCheckBox.Checked then
+  if CheckPage_WSCheckBox.Checked OR CheckPage_MultiCheckBox.Checked then
   begin
     CheckPage_NavSQLCheckBox.Checked := False;
     CheckPage_NavSQLCheckBox.Enabled := False;
@@ -88,7 +90,7 @@ begin
   begin
     Width := CheckPage.SurfaceWidth;
     Height := ScaleY(22);
-    Caption := 'Create Commerce Service for LS Central Database';
+    Caption := 'Create Commerce Service';
     Hint := 'Create LS Commerce Database and set the Connection setting to access the Database. Needs SysAdmin right to be able to create the Database.';
     ShowHint := True;
     Checked := True;
@@ -113,6 +115,38 @@ begin
     OnClick := @OnClickWS;
   end;
 
+  { CheckPage_MultiCheckBox }
+  CheckPage_MultiCheckBox := TCheckBox.Create(CheckPage);
+  with CheckPage_MultiCheckBox do
+  begin
+    Width := CheckPage.SurfaceWidth;
+    Height := ScaleY(18);
+    Caption := 'Use Multi-Tenant Mode';
+    Hint := 'Used when Commerce Service for LS Central will connect to more than one instance of LS Central. This will install Portal Web files also.';
+    ShowHint := True;
+    Checked := False;
+    Parent := CheckPage.Surface;
+    Left := CheckPage_SQLCheckBox.Left + 15
+    Top := CheckPage_WSCheckBox.Top + CheckPage_WSCheckBox.Height;
+    OnClick := @OnClickWS;
+  end;
+
+  { CheckPage_SPGCheckBox }
+  CheckPage_SPGCheckBox := TCheckBox.Create(CheckPage);
+  with CheckPage_SPGCheckBox do
+  begin
+    Width := CheckPage.SurfaceWidth;
+    Height := ScaleY(18);
+    Caption := 'Add Firebase for SPG';
+    Hint := 'Install Firebase files to send Notifications with ScanPayGo App.';
+    ShowHint := True;
+    Checked := False;
+    Parent := CheckPage.Surface;
+    Left := CheckPage_SQLCheckBox.Left + 15
+    Top := CheckPage_MultiCheckBox.Top + CheckPage_MultiCheckBox.Height;
+    OnClick := @OnClickWS;
+  end;
+
   { CheckPage_NavSQLCheckBox }
   CheckPage_NavSQLCheckBox := TCheckBox.Create(CheckPage);
   with CheckPage_NavSQLCheckBox do
@@ -124,7 +158,7 @@ begin
     ShowHint := True;
     Checked := True;
     Parent := CheckPage.Surface;
-    Top := CheckPage_WSCheckBox.Top + CheckPage_WSCheckBox.Height;
+    Top := CheckPage_SPGCheckBox.Top + CheckPage_SPGCheckBox.Height;
   end;
 
   { CheckPage_IISCheckBox }

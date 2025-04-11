@@ -189,7 +189,7 @@ namespace LSOmni.BLL.Loyalty
             BOLoyConnection.HospOrderCancel(storeId, orderId, stat);
         }
 
-        public virtual OrderHospStatus HospOrderStatus(string storeId, string orderId, Statistics stat)
+        public virtual List<OrderHospStatus> HospOrderStatus(string storeId, string orderId, Statistics stat)
         {
             return BOLoyConnection.HospOrderStatus(storeId, orderId, stat);
         }

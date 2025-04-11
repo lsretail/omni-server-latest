@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
@@ -202,10 +203,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                                 if (par.Length < 8 || par.Length != keys.Count)
                                     continue;
 
-                                list.Add(new ReplPrice()
+                                ReplPrice price = new ReplPrice()
                                 {
                                     ItemId = par[0],
-                                    SaleType = Convert.ToInt32(par[1]),
                                     SaleCode = par[2],
                                     StartingDate = ConvertTo.GetDateTimeFromNav(par[3]),
                                     CurrencyCode = par[4],
@@ -213,7 +213,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                                     UnitOfMeasure = par[6],
                                     MinimumQuantity = Convert.ToDecimal(par[7]),
                                     IsDeleted = true
-                                });
+                                };
+                                price.SetOldPriceType(Convert.ToInt32(par[1]));
+                                list.Add(price);
                                 continue;
                             }
 
@@ -326,7 +328,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             ReplPrice price = new ReplPrice()
             {
                 ItemId = SQLHelper.GetString(reader["Item No_"]),
-                SaleType = SQLHelper.GetInt32(reader["Sales Type"]),
                 SaleCode = SQLHelper.GetString(reader["Sales Code"]),
                 VariantId = SQLHelper.GetString(reader["Variant Code"]),
                 UnitOfMeasure = SQLHelper.GetString(reader["Unit of Measure Code"]),
@@ -341,6 +342,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Priority = SQLHelper.GetInt32(reader["Priority"])
             };
 
+            price.SetOldPriceType(SQLHelper.GetInt32(reader["Sales Type"]));
             if (string.IsNullOrWhiteSpace(storeid) == false)
                 price.StoreId = storeid;
 

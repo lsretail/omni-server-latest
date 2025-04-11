@@ -153,5 +153,102 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
 
         [DataMember]
         public bool SundayEndAfterMidnight { get; set; }
+
+        public bool OfferIsValid()
+        {
+            bool withinBounds = true;
+            DateTime start = new DateTime();
+            DateTime end = new DateTime();
+            bool afterMidnight = false;
+
+            if (this != null)
+            {
+                switch (DateTime.Now.DayOfWeek)
+                {
+                    case DayOfWeek.Monday:
+                        {
+                            withinBounds = this.MondayWithinBounds;
+                            start = this.MondayStart;
+                            end = this.MondayEnd;
+                            afterMidnight = this.MondayEndAfterMidnight;
+                            break;
+                        }
+                    case DayOfWeek.Tuesday:
+                        {
+                            withinBounds = this.TuesdayWithinBounds;
+                            start = this.TuesdayStart;
+                            end = this.TuesdayEnd;
+                            afterMidnight = this.TuesdayEndAfterMidnight;
+                            break;
+                        }
+                    case DayOfWeek.Wednesday:
+                        {
+                            withinBounds = this.WednesdayWithinBounds;
+                            start = this.WednesdayStart;
+                            end = this.WednesdayEnd;
+                            afterMidnight = this.WednesdayEndAfterMidnight;
+                            break;
+                        }
+                    case DayOfWeek.Thursday:
+                        {
+                            withinBounds = this.ThursdayWithinBounds;
+                            start = this.ThursdayStart;
+                            end = this.ThursdayEnd;
+                            afterMidnight = this.ThursdayEndAfterMidnight;
+                            break;
+                        }
+                    case DayOfWeek.Friday:
+                        {
+                            withinBounds = this.FridayWithinBounds;
+                            start = this.FridayStart;
+                            end = this.FridayEnd;
+                            afterMidnight = this.FridayEndAfterMidnight;
+                            break;
+                        }
+                    case DayOfWeek.Saturday:
+                        {
+                            withinBounds = this.SaturdayWithinBounds;
+                            start = this.SaturdayStart;
+                            end = this.SaturdayEnd;
+                            afterMidnight = this.SaturdayEndAfterMidnight;
+                            break;
+                        }
+                    case DayOfWeek.Sunday:
+                        {
+                            withinBounds = this.SundayWithinBounds;
+                            start = this.SundayStart;
+                            end = this.SundayEnd;
+                            afterMidnight = this.SundayEndAfterMidnight;
+                            break;
+                        }
+                }
+
+                if (this.IsMinDate(start) && this.IsMinDate(end))
+                {
+                    withinBounds = this.TimeWithinBounds;
+                    start = this.StartTime;
+                    end = this.EndTime;
+                    afterMidnight = this.EndAfterMidnight;
+                }
+            }
+
+            if (this.IsMinDate(start) && this.IsMinDate(end))
+                return withinBounds;
+            if (DateTime.Now >= start && DateTime.Now <= end)
+                return withinBounds;
+            if (afterMidnight && (DateTime.Now >= start || DateTime.Now <= end))
+                return withinBounds;
+
+            return false;
+        }
+
+        private bool IsMinDate(DateTime date)
+        {
+            if (date == DateTime.MinValue)
+                return true;
+            if ((date.Year == 1754 || date.Year == 1753 || date.Year == 1900) && date.Month == 1 && date.Day == 1)
+                return true;
+            return false;
+        }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
@@ -175,6 +177,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
             // Insert update records
             foreach (ReplODataRecord rec in result.TableData.TableDataUpd.RecRefJson.Records)
             {
+                int pType = 0;
                 ReplPrice line = new ReplPrice();
                 foreach (ReplODataField data in rec.Fields)
                 {
@@ -191,7 +194,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case 5: line.UnitPrice = ConvertTo.SafeDecimal(data.FieldValue); break;
                         case 6: line.PriceInclVat = ConvertTo.SafeBoolean(data.FieldValue); break;
                         case 11: line.VATPostGroup = data.FieldValue; break;
-                        case 13: line.SaleType = ConvertTo.SafeInt(data.FieldValue); break;
+                        case 13: pType = ConvertTo.SafeInt(data.FieldValue); break;
                         case 14: line.MinimumQuantity = ConvertTo.SafeDecimal(data.FieldValue); break;
                         case 15: line.EndingDate = ConvertTo.SafeJsonDate(ConvertTo.SafeDateTime(data.FieldValue), IsJson); break;
                         case 5400: line.UnitOfMeasure = data.FieldValue; break;
@@ -199,8 +202,87 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case 99001450: line.UnitPriceInclVat = ConvertTo.SafeDecimal(data.FieldValue); break;
                     }
                 }
+                line.SetOldPriceType(pType);
                 line.StoreId = storeId;
                 list.Add(line);
+            }
+
+            if (result.TableData.TableDataDel == null || result.TableData.TableDataDel.RecRefJson == null)
+                return list;
+
+            // Deleted Action Records
+            foreach (ReplODataRecord rec in result.TableData.TableDataDel.RecRefJson.Records)
+            {
+                ReplPrice line = new ReplPrice()
+                {
+                    IsDeleted = true
+                };
+
+                int pType = 0;
+                foreach (ReplODataField data in rec.Fields)
+                {
+                    ReplODataRecordField fld = result.TableData.TableDataUpd.RecRefJson.RecordFields.Find(f => f.FieldIndex == data.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldNo)
+                    {
+                        case 1: line.ItemId = data.FieldValue; break;
+                        case 2: line.SaleCode = data.FieldValue; break;
+                        case 3: line.CurrencyCode = data.FieldValue; break;
+                        case 4: line.StartingDate = ConvertTo.SafeJsonDate(ConvertTo.SafeDateTime(data.FieldValue), IsJson); break;
+                        case 13: pType = ConvertTo.SafeInt(data.FieldValue); break;
+                        case 14: line.MinimumQuantity = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case 5400: line.UnitOfMeasure = data.FieldValue; break;
+                        case 5700: line.VariantId = data.FieldValue; break;
+                    }
+                }
+                line.SetOldPriceType(pType);
+                list.Add(line);
+            }
+            return list;
+        }
+
+        public List<ReplPrice> GetReplPriceListLine(string ret, string storeId, ref string lastKey, ref int recordsRemaining)
+        {
+            List<ReplPrice> list = new List<ReplPrice>();
+            ReplOTableData result = JsonToTableData(ret, ref lastKey, ref recordsRemaining);
+            if (result == null)
+                return list;
+
+            // Insert update records
+            foreach (ReplODataRecord rec in result.TableData.TableDataUpd.RecRefJson.Records)
+            {
+                ReplPrice line = new ReplPrice();
+                foreach (ReplODataField data in rec.Fields)
+                {
+                    ReplODataRecordField fld = result.TableData.TableDataUpd.RecRefJson.RecordFields.Find(f => f.FieldIndex == data.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldNo)
+                    {
+                        case 1: line.PriceListCode = data.FieldValue; break;
+                        case 2: line.LineNumber = ConvertTo.SafeInt(data.FieldValue); break;
+                        case 3: line.SaleType = (PriceType)ConvertTo.SafeInt(data.FieldValue); break;
+                        case 4: line.SaleCode = data.FieldValue; break;
+                        case 8: line.ItemId = data.FieldValue; break;
+                        case 9: line.VariantId = data.FieldValue; break;
+                        case 10: line.CurrencyCode = data.FieldValue; break;
+                        case 12: line.StartingDate = ConvertTo.SafeJsonDate(ConvertTo.SafeDateTime(data.FieldValue), IsJson); break;
+                        case 13: line.EndingDate = ConvertTo.SafeJsonDate(ConvertTo.SafeDateTime(data.FieldValue), IsJson); break;
+                        case 14: line.MinimumQuantity = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case 15: line.UnitOfMeasure = data.FieldValue; break;
+                        case 17: line.UnitPrice = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case 23: line.PriceInclVat = ConvertTo.SafeBoolean(data.FieldValue); break;
+                        case 24: line.VATPostGroup = data.FieldValue; break;
+                        case 30: line.Status = (PriceStatus)ConvertTo.SafeInt(data.FieldValue); break;
+                        case 41: line.UnitPriceInclVat = ConvertTo.SafeDecimal(data.FieldValue); break;
+                    }
+                }
+                line.StoreId = storeId;
+                if (string.IsNullOrEmpty(line.ItemId) == false)
+                    list.Add(line);
             }
 
             if (result.TableData.TableDataDel == null || result.TableData.TableDataDel.RecRefJson == null)
@@ -222,14 +304,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
 
                     switch (fld.FieldNo)
                     {
-                        case 1: line.ItemId = data.FieldValue; break;
-                        case 2: line.SaleCode = data.FieldValue; break;
-                        case 3: line.CurrencyCode = data.FieldValue; break;
-                        case 4: line.StartingDate = ConvertTo.SafeJsonDate(ConvertTo.SafeDateTime(data.FieldValue), IsJson); break;
-                        case 13: line.SaleType = ConvertTo.SafeInt(data.FieldValue); break;
-                        case 14: line.MinimumQuantity = ConvertTo.SafeDecimal(data.FieldValue); break;
-                        case 5400: line.UnitOfMeasure = data.FieldValue; break;
-                        case 5700: line.VariantId = data.FieldValue; break;
+                        case 1: line.PriceListCode = data.FieldValue; break;
+                        case 2: line.LineNumber = ConvertTo.SafeInt(data.FieldValue); break;
                     }
                 }
                 list.Add(line);
@@ -2479,6 +2555,173 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                 }
             }
             return string.Empty;
+        }
+
+        public List<ProactiveDiscount> GetDiscount(string ret, string storeId)
+        {
+            List<ProactiveDiscount> list = new List<ProactiveDiscount>();
+            WSODataCollection result = JsonToWSOData(ret, "DiscountInfo");
+            if (result == null)
+                return list;
+
+            // get data
+            list = LoadDiscount(result.GetDataSet(10012862));
+            List<ProactiveDiscount> mixmatch = LoadDiscount(result.GetDataSet(10012876));
+            List<LSKey> benefits = LoadBenefit(result.GetDataSet(99001650));
+
+            list.AddRange(mixmatch.FindAll(m => m.CustomerDiscGroup != "--EXT--"));
+            if (list == null)
+                return list;
+
+            List<ProactiveDiscount> perdis = LoadDiscount(result.GetDataSet(99001453));
+            List<ReplPrice> prices = LoadPrice(result.GetDataSet(10012861));
+
+            foreach (ProactiveDiscount disc in list)
+            {
+                ProactiveDiscount pDisc = perdis.Find(r => r.Id == disc.Id);
+                if (pDisc == null) 
+                    continue;
+
+                disc.PopUpLine1 = pDisc.PopUpLine1;
+                disc.PopUpLine2 = pDisc.PopUpLine2;
+                disc.PopUpLine3 = pDisc.PopUpLine3;
+                disc.Priority = pDisc.Priority;
+                disc.Description = pDisc.Description;
+
+                if (disc.Type == ProactiveDiscountType.MixMatch)
+                {
+                    disc.Percentage = pDisc.Percentage;
+                    
+                    List<LSKey> ben = benefits.FindAll(b => b.Key == disc.Id);
+                    disc.BenefitItemIds = new List<string>();
+                    foreach (LSKey key in ben)
+                    {
+                        disc.BenefitItemIds.Add(key.Description);
+                    }
+
+                    List<ProactiveDiscount> extItems = mixmatch.FindAll(e => e.Id == disc.Id && (e.LoyaltySchemeCode == string.Empty || e.LoyaltySchemeCode == disc.LoyaltySchemeCode) && e.CustomerDiscGroup == "--EXT--");
+                    disc.ItemIds = new List<string>();
+                    foreach (ProactiveDiscount d in extItems)
+                    {
+                        disc.ItemIds.Add(d.ItemId);
+                    }
+                    disc.ItemIds.Remove(disc.ItemId);
+                }
+
+                if (disc.Type == ProactiveDiscountType.DiscOffer)
+                {
+                    ReplPrice price = prices.Find(p => p.StoreId == storeId && p.ItemId == disc.ItemId && (p.VariantId == disc.VariantId || p.VariantId == string.Empty));
+                    if (price != null)
+                    {
+                        disc.Price = price.UnitPrice;
+                        disc.PriceWithDiscount = disc.Price * (1 - disc.Percentage / 100);
+                    }
+                }
+            }
+            return list;
+        }
+
+        private List<ProactiveDiscount> LoadDiscount(ReplODataSetRecRef dynDataSet)
+        {
+            List<ProactiveDiscount> list = new List<ProactiveDiscount>();
+            if (dynDataSet == null || dynDataSet.DataSetRows.Count == 0)
+                return list;
+
+            foreach (ReplODataRecord row in dynDataSet.DataSetRows)
+            {
+                ProactiveDiscount rec = new ProactiveDiscount();
+                int typevalue = 0;
+                foreach (ReplODataField col in row.Fields)
+                {
+                    ReplODataSetField fld = dynDataSet.DataSetFields.Find(f => f.FieldIndex == col.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldName)
+                    {
+                        case "No.": rec.Id = col.FieldValue; break;
+                        case "Offer No.": rec.Id = col.FieldValue; break;
+                        case "Item No.": rec.ItemId = col.FieldValue; break;
+                        case "Variant Code": rec.VariantId = col.FieldValue; break;
+                        case "Unit of Measure Code": rec.UnitOfMeasureId = col.FieldValue; break;
+                        case "Description": rec.Description = col.FieldValue; break;
+                        case "Type": typevalue = ConvertTo.SafeInt(col.FieldValue); break;
+                        case "Loyalty Scheme Code": rec.LoyaltySchemeCode = col.FieldValue; break;
+                        case "Discount %": rec.Percentage = ConvertTo.SafeDecimal(col.FieldValue); break;
+                        case "Discount % Value": rec.Percentage = ConvertTo.SafeDecimal(col.FieldValue); break;
+                        case "Discount Amount Value": rec.PriceWithDiscount = ConvertTo.SafeDecimal(col.FieldValue); break;
+                        case "Minimum Quantity": rec.MinimumQuantity = ConvertTo.SafeDecimal(col.FieldValue); break;
+                        case "Priority No.": rec.Priority = ConvertTo.SafeInt(col.FieldValue); break;
+                        case "Priority": rec.Priority = ConvertTo.SafeInt(col.FieldValue); break;
+                        case "Validation Period ID": rec.PeriodId = col.FieldValue; break;
+                        case "Customer Disc. Group": rec.CustomerDiscGroup = col.FieldValue; break;
+                        case "Pop-up Line 1": rec.PopUpLine1 = col.FieldValue; break;
+                        case "Pop-up Line 2": rec.PopUpLine2 = col.FieldValue; break;
+                        case "Pop-up Line 3": rec.PopUpLine3 = col.FieldValue; break;
+                    }
+                }
+
+                rec.SetProactiveDiscountType(typevalue);
+                list.Add(rec);
+            }
+            return list;
+        }
+
+        public List<ReplPrice> LoadPrice(ReplODataSetRecRef dynDataSet)
+        {
+            List<ReplPrice> list = new List<ReplPrice>();
+            if (dynDataSet == null || dynDataSet.DataSetRows.Count == 0)
+                return list;
+
+            foreach (ReplODataRecord row in dynDataSet.DataSetRows)
+            {
+                ReplPrice rec = new ReplPrice();
+                foreach (ReplODataField col in row.Fields)
+                {
+                    ReplODataSetField fld = dynDataSet.DataSetFields.Find(f => f.FieldIndex == col.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldName)
+                    {
+                        case "Store No.": rec.StoreId = col.FieldValue; break;
+                        case "Item No.": rec.ItemId = col.FieldValue; break;
+                        case "Variant Code": rec.VariantId = col.FieldValue; break;
+                        case "Unit of Measure Code": rec.UnitOfMeasure = col.FieldValue; break;
+                        case "Loyalty Scheme Code": rec.LoyaltySchemeCode = col.FieldValue; break;
+                        case "Unit Price": rec.UnitPrice = ConvertTo.SafeDecimal(col.FieldValue); break;
+                        case "Net Unit Price": rec.UnitPriceInclVat = ConvertTo.SafeDecimal(col.FieldValue); break;
+                    }
+                }
+                list.Add(rec);
+            }
+            return list;
+        }
+
+        private List<LSKey> LoadBenefit(ReplODataSetRecRef dynDataSet)
+        {
+            List<LSKey> list = new List<LSKey>();
+            if (dynDataSet == null || dynDataSet.DataSetRows.Count == 0)
+                return list;
+
+            foreach (ReplODataRecord row in dynDataSet.DataSetRows)
+            {
+                LSKey rec = new LSKey();
+                foreach (ReplODataField col in row.Fields)
+                {
+                    ReplODataSetField fld = dynDataSet.DataSetFields.Find(f => f.FieldIndex == col.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldName)
+                    {
+                        case "Offer No.": rec.Key = col.FieldValue; break;
+                        case "No.": rec.Description = col.FieldValue; break;
+                    }
+                }
+                list.Add(rec);
+            }
+            return list;
         }
     }
 }

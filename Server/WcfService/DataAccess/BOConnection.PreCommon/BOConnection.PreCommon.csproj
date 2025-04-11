@@ -229,6 +229,9 @@
     <None Include="Web References\LSCentral25\RootGetActionsFromRemoteDBXML.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
+    <None Include="Web References\LSCentral25\RootGetActiveDocValues.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
     <None Include="Web References\LSCentral25\RootGetCrossSelling.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
@@ -301,6 +304,9 @@
     <None Include="Web References\LSCentral25\RootGetTransaction.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
+    <None Include="Web References\LSCentral25\RootGetTransaction1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
     <None Include="Web References\LSCentral25\RootGetVoucherEntries.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
@@ -344,6 +350,9 @@
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\LSCentral25\RootSendTransaction.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral25\RootSendTransaction1.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\LSCentral25\RootSendTransactionHeader.datasource">

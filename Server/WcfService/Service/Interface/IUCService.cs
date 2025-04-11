@@ -74,6 +74,9 @@ namespace LSOmni.Service
         /// <summary>
         /// Get discounts for items. Send in empty string for loyaltySchemeCode if getting anonymously.
         /// </summary>
+        /// <remarks>
+        /// LS Central OData : GetDiscount
+        /// </remarks>
         /// <param name="storeId">Store Id</param>
         /// <param name="itemIds">List of item ids to check for discounts</param>
         /// <param name="loyaltySchemeCode">[OPTIONAL] Loyalty scheme code for a user</param>
@@ -765,7 +768,7 @@ namespace LSOmni.Service
         /// <param name="orderId"></param>
         /// <returns></returns>
         [OperationContract]
-        OrderHospStatus HospOrderStatus(string storeId, string orderId);
+        List<OrderHospStatus> HospOrderStatus(string storeId, string orderId);
 
         /// <summary>
         /// Check Status of a Customer Order
@@ -787,7 +790,7 @@ namespace LSOmni.Service
         /// <param name="orderId">Customer Order Id</param>
         /// <param name="storeId">Web Store Id</param>
         /// <param name="userId">User who cancels the order, use Contact ID for logged in user</param>
-        /// <param name="lineNo">list of Order Line numbers to cancel, if empty whole order will be canceled</param>
+        /// <param name="lineNo">List of Order Line numbers to cancel, if empty whole order will be canceled</param>
         /// <returns></returns>
         [OperationContract]
         bool OrderCancel(string orderId, string storeId, string userId, List<int> lineNo);
@@ -841,7 +844,7 @@ namespace LSOmni.Service
         /// Get All Sales Entries (Transactions and Orders) by Card Id and optional filter by Store Id and Registration Date
         /// </summary>
         /// <remarks>
-        /// LS Central OData: GetMemberContactSalesHistory
+        /// LS Central OData: GetMemContSalesHist
         /// </remarks>
         /// <param name="cardId">Card Id (Required)</param>
         /// <param name="storeId">Filter by Store Id</param>
@@ -886,6 +889,9 @@ namespace LSOmni.Service
         /// <summary>
         /// Get Return sales transactions based on orginal transaction with HasReturnSale = true
         /// </summary>
+        /// <remarks>
+        /// LS Central OData: GetSalesReturnById
+        /// </remarks>
         /// <param name="receiptNo"></param>
         /// <returns></returns>
         [OperationContract]
@@ -894,6 +900,9 @@ namespace LSOmni.Service
         /// <summary>
         /// Get Transaction and Sales Invoices for Customer order
         /// </summary>
+        /// <remarks>
+        /// LS Central OData: GetSalesInfoByOrderId
+        /// </remarks>
         /// <param name="orderId"></param>
         /// <returns></returns>
         [OperationContract]
@@ -902,6 +911,9 @@ namespace LSOmni.Service
         /// <summary>
         /// Get Transaction, Sales Invoices and Shipments for Customer order
         /// </summary>
+        /// <remarks>
+        /// LS Central OData: GetSalesInfoByOrderId
+        /// </remarks>
         /// <param name="orderId"></param>
         /// <returns></returns>
         [OperationContract]
@@ -1524,6 +1536,9 @@ namespace LSOmni.Service
         /// <summary>
         /// Search Items by Description
         /// </summary>
+        /// <remarks>
+        /// LS Central OData: GetItem
+        /// </remarks>
         /// <param name="search">Description search</param>
         /// <param name="maxNumberOfItems"></param>
         /// <param name="includeDetails"></param>
@@ -1534,6 +1549,9 @@ namespace LSOmni.Service
         /// <summary>
         /// Lookup Item
         /// </summary>
+        /// <remarks>
+        /// LS Central OData: GetItem
+        /// </remarks>
         /// <param name="itemId"></param>
         /// <param name="storeId"></param>
         /// <returns></returns>
@@ -1545,6 +1563,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central WS2 : GetItemWithBarcode
+        /// LS Central OData: GetItem
         /// </remarks>
         /// <param name="barcode"></param>
         /// <param name="storeId"></param>
@@ -1678,6 +1697,7 @@ namespace LSOmni.Service
         /// Get store by Store Id
         /// </summary>
         /// <remarks>
+        /// LS Central OData : GetStores<p/><p/>
         /// Data for Store Hours needs to be generated in LS Central by running COMMERCE_XXXX Scheduler Jobs
         /// </remarks>
         /// <param name="storeId">store Id</param>
@@ -1709,6 +1729,7 @@ namespace LSOmni.Service
         /// <param name="includeDetails">Include detail data, like store hours</param>
         /// <param name="includeImages">Include Image Blobs for stores</param>
         /// <remarks>
+        /// LS Central OData : GetStores<p/><p/>
         /// Data for Store Hours needs to be generated in LS Central by running COMMERCE_XXXX Scheduler Jobs
         /// </remarks>
         /// <returns>List of stores</returns>
@@ -1735,6 +1756,7 @@ namespace LSOmni.Service
         /// Get all stores
         /// </summary>
         /// <remarks>
+        /// LS Central OData : GetStores<p/><p/>
         /// Data for Store Hours needs to be generated in LS Central by running COMMERCE_XXXX Scheduler Jobs
         /// </remarks>
         /// <returns>List of stores</returns>
@@ -1786,6 +1808,9 @@ namespace LSOmni.Service
         /// <summary>
         /// Gets all Click and Collect stores, within maxDistance from current location (latitude,longitude), that have the item available
         /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : GetItemInventory
+        /// </remarks>
         /// <param name="itemId">item Id</param>
         /// <param name="variantId">variant Id</param>
         /// <param name="latitude">current latitude</param>
@@ -1814,6 +1839,9 @@ namespace LSOmni.Service
         /// <summary>
         /// Gets Return Policy
         /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : GetReturnPolicy
+        /// </remarks>
         /// <param name="storeId"></param>
         /// <param name="storeGroupCode"></param>
         /// <param name="itemCategory"></param>
@@ -2082,7 +2110,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 7002 - Sales Price
-        /// LS Central WS4 : GetSalesPrice
+        /// LS Central WS4 : GetSalesPrice, GetPriceListLine
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.

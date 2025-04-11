@@ -236,7 +236,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             };
         }
 
-        //TEMP thing, simply returns the cardIds found from the contact search so the CardIds can be used to call NAV ws and get data.
         public List<Customer> CustomerSearch(CustomerSearchType searchType, string search, int maxNumberOfRowsReturned)
         {
             if (maxNumberOfRowsReturned < 1)

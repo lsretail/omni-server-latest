@@ -223,8 +223,6 @@ begin
   dbLog := dbName + '_log';
   sql := 'USE [master]; IF NOT EXISTS (SELECT name FROM master.sys.databases WHERE name = ''' + dbName + ''')' + 
          ' CREATE DATABASE ['+ dbName + '] COLLATE Latin1_General_CI_AS; ' +
-         ' ALTER DATABASE [' + dbName + '] MODIFY FILE  ( NAME = N''' + dbName + ''', FILEGROWTH = 10% ); ' +
-         ' ALTER DATABASE [' + dbName + '] MODIFY FILE ( NAME = N''' + dbLog + ''' , FILEGROWTH = 10%); ' +
          ' USE [master]; '
 
   //Log('ADOCreateDb ' + sql);

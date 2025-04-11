@@ -85,6 +85,12 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         [EnumMember]
         Shipped,
         [EnumMember]
-        Collected
+        Collected,
+        [EnumMember]
+        Rounding,
+        [EnumMember]
+        RefundedOnPOS,
+        [EnumMember]
+        Voided
     }
 }

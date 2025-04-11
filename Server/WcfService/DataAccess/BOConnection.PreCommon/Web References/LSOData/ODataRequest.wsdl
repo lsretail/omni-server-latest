@@ -614,6 +614,24 @@
           </sequence>
         </complexType>
       </element>
+      <element name="GetPriceListLine">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetPriceListLine_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
       <element name="GetProductGroup">
         <complexType>
           <sequence>
@@ -1268,6 +1286,12 @@
   <message name="GetPluBuffer_Result">
     <part name="parameters" element="tns:GetPluBuffer_Result" />
   </message>
+  <message name="GetPriceListLine">
+    <part name="parameters" element="tns:GetPriceListLine" />
+  </message>
+  <message name="GetPriceListLine_Result">
+    <part name="parameters" element="tns:GetPriceListLine_Result" />
+  </message>
   <message name="GetProductGroup">
     <part name="parameters" element="tns:GetProductGroup" />
   </message>
@@ -1558,6 +1582,10 @@
     <operation name="GetPluBuffer">
       <input name="GetPluBuffer" message="tns:GetPluBuffer" />
       <output name="GetPluBuffer_Result" message="tns:GetPluBuffer_Result" />
+    </operation>
+    <operation name="GetPriceListLine">
+      <input name="GetPriceListLine" message="tns:GetPriceListLine" />
+      <output name="GetPriceListLine_Result" message="tns:GetPriceListLine_Result" />
     </operation>
     <operation name="GetProductGroup">
       <input name="GetProductGroup" message="tns:GetProductGroup" />
@@ -1977,6 +2005,15 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>
+    <operation name="GetPriceListLine">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetPriceListLine" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetPriceListLine">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetPriceListLine_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
     <operation name="GetProductGroup">
       <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetProductGroup" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       <input name="GetProductGroup">
@@ -2205,7 +2242,7 @@
   </binding>
   <service name="ODataRequest">
     <port name="ODataRequest_Port" binding="tns:ODataRequest_Binding">
-      <address location="http://dhqsrvomni001:9047/LSCentralDev/WS/CRONUS%20-%20LS%20Central/Codeunit/ODataRequest" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <address location="http://ishqddlap2:9047/LSCentralDev/WS/ReplaceWithAPercentEncodedCompanyName/Codeunit/ODataRequest" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
     </port>
   </service>
 </definitions>

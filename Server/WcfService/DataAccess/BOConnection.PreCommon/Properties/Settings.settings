@@ -18,10 +18,10 @@
       <Value Profile="(Default)">http://dhqsrvomni001:9047/LSCentralMaster/WS/CRONUS%20-%20LS%20Central/Codeunit/OmniWrapper</Value>
     </Setting>
     <Setting Name="LSOmni_DataAccess_BOConnection_PreCommon_LSOData_ODataRequest" Type="(Web Service URL)" Scope="Application">
-      <Value Profile="(Default)">http://dhqsrvomni001:9047/LSCentralDev/WS/CRONUS%20-%20LS%20Central/Codeunit/ODataRequest</Value>
+      <Value Profile="(Default)">http://ishqddlap2:9047/LSCentralDev/WS/ReplaceWithAPercentEncodedCompanyName/Codeunit/ODataRequest</Value>
     </Setting>
     <Setting Name="LSOmni_DataAccess_BOConnection_PreCommon_LSCentral25_OmniWrapper" Type="(Web Service URL)" Scope="Application">
-      <Value Profile="(Default)">http://dhqsrvomni010:9047/LSCentralMa/WS/ReplaceWithAPercentEncodedCompanyName/Codeunit/OmniWrapper</Value>
+      <Value Profile="(Default)">http://172.22.2.208:9047/LscRelease/WS/CRONUS%20-%20LS%20Central/Codeunit/OmniWrapper</Value>
     </Setting>
   </Settings>
 </SettingsFile>

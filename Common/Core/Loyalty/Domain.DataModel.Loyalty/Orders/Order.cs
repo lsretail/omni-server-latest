@@ -86,6 +86,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         public string ReceiptNo { get; set; }
         [DataMember]
         public string Currency { get; set; }
+        [DataMember]
+        public decimal CurrencyFactor { get; set; }
 
         /// <summary>
         /// Ship Order, can also be used with Click And Collect order to be shipped from CAC Store

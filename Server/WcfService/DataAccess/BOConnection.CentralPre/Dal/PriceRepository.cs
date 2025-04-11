@@ -209,10 +209,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                                 if (par.Length < 8 || par.Length != keys.Count)
                                     continue;
 
-                                list.Add(new ReplPrice()
+                                ReplPrice price = new ReplPrice()
                                 {
                                     ItemId = par[0],
-                                    SaleType = Convert.ToInt32(par[1]),
                                     SaleCode = par[2],
                                     StartingDate = ConvertTo.GetDateTimeFromNav(par[3]),
                                     CurrencyCode = par[4],
@@ -220,7 +219,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                                     UnitOfMeasure = par[6],
                                     MinimumQuantity = Convert.ToDecimal(par[7]),
                                     IsDeleted = true
-                                });
+                                };
+                                price.SetOldPriceType(Convert.ToInt32(par[1]));
+                                list.Add(price);
                                 continue;
                             }
 
@@ -278,8 +279,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             List<ReplPrice> list = new List<ReplPrice>();
 
             // get records
-            sql = GetSQL(fullReplication, batchSize) + 
-                "mt.[Asset No_],mt.[Source Type],mt.[Source No_],mt.[Starting Date],mt.[Ending Date]," +
+            sql = GetSQL(fullReplication, batchSize) +
+                "mt.[Price List Code],mt.[Line No_],mt.[Asset No_],mt.[Source Type],mt.[Status],mt.[Source No_],mt.[Starting Date],mt.[Ending Date]," +
                 "mt.[Currency Code],mt.[Variant Code],mt.[Unit of Measure Code],mt.[Minimum Quantity]," +
                 "mt.[Unit Price],mt.[Price Includes VAT],mt.[VAT Bus_ Posting Gr_ (Price)]," +
                 "mt2.[LSC Unit Price Including VAT],spg.[Priority]" +
@@ -318,25 +319,16 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         {
                             if (act.Type == DDStatementType.Delete)
                             {
-                                /* we dont know the item id from delete action
-                                
                                 string[] par = act.ParamValue.Split(';');
                                 if (par.Length < 8 || par.Length != keys.Count)
                                     continue;
 
                                 list.Add(new ReplPrice()
                                 {
-                                    ItemId = par[0],
-                                    SaleType = Convert.ToInt32(par[1]),
-                                    SaleCode = par[2],
-                                    StartingDate = GetDateTimeFromNav(par[3]),
-                                    CurrencyCode = par[4],
-                                    VariantId = par[5],
-                                    UnitOfMeasure = par[6],
-                                    MinimumQuantity = Convert.ToDecimal(par[7]),
+                                    PriceListCode = par[0],
+                                    LineNumber = Convert.ToInt32(par[1]),
                                     IsDeleted = true
                                 });
-                                */
                                 continue;
                             }
 
@@ -469,7 +461,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             ReplPrice price = new ReplPrice()
             {
                 ItemId = SQLHelper.GetString(reader["Item No_"]),
-                SaleType = SQLHelper.GetInt32(reader["Sales Type"]),
                 SaleCode = SQLHelper.GetString(reader["Sales Code"]),
                 VariantId = SQLHelper.GetString(reader["Variant Code"]),
                 UnitOfMeasure = SQLHelper.GetString(reader["Unit of Measure Code"]),
@@ -484,6 +475,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 Priority = SQLHelper.GetInt32(reader["Priority"])
             };
 
+            price.SetOldPriceType(SQLHelper.GetInt32(reader["Sales Type"]));
             if (string.IsNullOrWhiteSpace(storeid) == false)
                 price.StoreId = storeid;
 
@@ -495,8 +487,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         {
             ReplPrice price = new ReplPrice()
             {
+                PriceListCode = SQLHelper.GetString(reader["Price List Code"]),
+                LineNumber = SQLHelper.GetInt32(reader["Line No_"]),
                 ItemId = SQLHelper.GetString(reader["Asset No_"]),
-                SaleType = SQLHelper.GetInt32(reader["Source Type"]),
+                SaleType = (PriceType)SQLHelper.GetInt32(reader["Source Type"]),
+                Status = (PriceStatus)SQLHelper.GetInt32(reader["Status"]),
                 SaleCode = SQLHelper.GetString(reader["Source No_"]),
                 VariantId = SQLHelper.GetString(reader["Variant Code"]),
                 UnitOfMeasure = SQLHelper.GetString(reader["Unit of Measure Code"]),

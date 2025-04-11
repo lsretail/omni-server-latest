@@ -179,7 +179,7 @@ namespace LSOmni.BLL.Loyalty
             OneListBLL oBll = new OneListBLL(config, timeoutInSeconds);
             oBll.OneListDeleteByCardId(cardId, stat);
 
-            BOLoyConnection.ConatctBlock(accountId, cardId, stat);
+            BOLoyConnection.ContactBlock(accountId, cardId, stat);
         }
 
         public virtual MemberContact ContactUpdate(MemberContact contact, bool getContact, Statistics stat)

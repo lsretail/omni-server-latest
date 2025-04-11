@@ -69,8 +69,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
             foreach (ReplODataRecord row in dynDataSet.DataSetRows)
             {
                 MemberContact rec = new MemberContact();
-                rec.Addresses = new List<Address>();
-                rec.Addresses.Add(new Address());
+                rec.Addresses = new List<Address>()
+                {
+                    new Address()
+                };
+
                 foreach (ReplODataField col in row.Fields)
                 {
                     ReplODataSetField fld = dynDataSet.DataSetFields.Find(f => f.FieldIndex == col.FieldIndex);
@@ -85,7 +88,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case "First Name": rec.FirstName = col.FieldValue; break;
                         case "Middle Name": rec.MiddleName = col.FieldValue; break;
                         case "Surname": rec.LastName = col.FieldValue; break;
-                        case "Gender": rec.Gender = (Gender)ConvertTo.SafeInt(col.FieldValue); break;
+                        case "Gender": 
+                            if (LSCVersion < new Version("25.0"))
+                                rec.Gender = (Gender)Convert.ToInt32(col.FieldValue);
+                            break;
+                        case "Contact Gender": rec.SetNewGender(col.FieldValue, LSCVersion); break;
                         case "E-Mail": rec.Email = col.FieldValue; break;
                         case "Date of Birth": rec.BirthDay = ConvertTo.SafeDateTime(col.FieldValue); break;
                         case "Marital Status": rec.MaritalStatus = (MaritalStatus)ConvertTo.SafeInt(col.FieldValue); break;

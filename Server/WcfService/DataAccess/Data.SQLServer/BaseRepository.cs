@@ -12,6 +12,7 @@ namespace LSOmni.DataAccess.Dal
     {
         protected internal static DateTime MinDate = new DateTime(1970, 1, 1); //min date for json
         protected static string sqlConnectionString = null;
+        protected static string encrCode = null;
         protected static BOConfiguration config;
 
         private static readonly object myLock = new object();
@@ -19,12 +20,19 @@ namespace LSOmni.DataAccess.Dal
 
         public BaseRepository(BOConfiguration configuration)
         {
-            config = configuration;
+            if (configuration != null)
+                config = configuration;
+
             if (sqlConnectionString == null)
             {
                 lock (myLock)
                 {
                     sqlConnectionString = ConfigSetting.GetString("SQLConnectionString.LSOmni");
+                    if (config == null)
+                    {
+                        config = new BOConfiguration();
+                        config.Settings.Add(new TenantSetting(ConfigKey.EncrCode.ToString(), ConfigSetting.GetEncrCode(), string.Empty, "string", false, true));
+                    }
 
                     DbConnectionStringBuilder builder = new DbConnectionStringBuilder();
                     builder.ConnectionString = sqlConnectionString;

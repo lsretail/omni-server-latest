@@ -11,12 +11,21 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
     {
         public SalesEntryShipment(string id) : base(id)
         {
+            DocumentId = string.Empty;
+            YourReference = string.Empty;
+            ExternalId = string.Empty;
             TrackingID = string.Empty;
+            Name = string.Empty;
+            Contact = string.Empty;
             ShipmentMethodCode = string.Empty;
+            AgentCode = string.Empty;
+            AgentServiceCode = string.Empty;
+            
+            Address = new Address();
             Lines = new List<SalesEntryShipmentLine>();
         }
 
-        public SalesEntryShipment() : base(string.Empty)
+        public SalesEntryShipment() : this(string.Empty)
         {
         }
 
@@ -90,5 +99,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         public string UomId { get; set; }
         [DataMember]
         public decimal Quantity { get; set; }
+
+        public string DocId { get; set; }
     }
 }

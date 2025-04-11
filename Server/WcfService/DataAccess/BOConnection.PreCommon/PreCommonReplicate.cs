@@ -523,7 +523,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
             map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-            string ret = odataWS.GetSalesPrice(storeId, batchSize, fullRepl, lastKey, lastEntry);
+
+            string ret;
+            if (LSCVersion >= new Version("26.0"))
+            {
+                ret = odataWS.GetPriceListLine(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                logger.Trace(config.LSKey.Key, ret);
+                return map.GetReplPriceListLine(ret, storeId, ref lastKey, ref recordsRemaining);
+            }
+
+            ret = odataWS.GetSalesPrice(storeId, batchSize, fullRepl, lastKey, lastEntry);
             logger.Trace(config.LSKey.Key, ret);
             return map.GetReplBasePrice(ret, storeId, ref lastKey, ref recordsRemaining);
         }

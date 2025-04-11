@@ -249,7 +249,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
             return order;
         }
 
-        public SalesEntry MapFromRootToRetailTransaction(LSCentral25.RootGetTransaction root)
+        public SalesEntry MapFromRootToSalesEntry(LSCentral25.RootGetTransaction root)
         {
             LSCentral25.TransactionHeader header = root.TransactionHeader.FirstOrDefault();
 
@@ -293,6 +293,71 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
             if (root.TransSalesEntry != null)
             {
                 foreach (LSCentral25.TransSalesEntry mobileTransLine in root.TransSalesEntry)
+                {
+                    transaction.Lines.Add(new SalesEntryLine()
+                    {
+                        ItemId = mobileTransLine.ItemNo,
+                        UomId = mobileTransLine.UnitofMeasure,
+                        VariantId = mobileTransLine.VariantCode,
+                        Amount = (mobileTransLine.NetAmount + mobileTransLine.VATAmount) * -1,
+                        NetAmount = mobileTransLine.NetAmount * -1,
+                        TaxAmount = mobileTransLine.VATAmount * -1,
+                        DiscountAmount = mobileTransLine.DiscountAmount,
+                        Quantity = mobileTransLine.Quantity * -1,
+                        Price = mobileTransLine.Price,
+                        NetPrice = mobileTransLine.NetPrice,
+                        LineNumber = mobileTransLine.LineNo,
+                        StoreId = mobileTransLine.StoreNo
+                    });
+                }
+            }
+            return transaction;
+        }
+
+        public SalesEntry MapFromRootV2ToSalesEntry(LSCentral25.RootGetTransaction1 root)
+        {
+            LSCentral25.TransactionHeader1 header = root.TransactionHeader.FirstOrDefault();
+            
+            SalesEntry transaction = new SalesEntry()
+            {
+                Id = header.ReceiptNo,
+                DocumentRegTime = ConvertTo.NavJoinDateAndTime(header.Date, header.Time),
+                CardId = header.MemberCardNo,
+                StoreId = header.StoreNo,
+                TerminalId = header.POSTerminalNo,
+                CustomerOrderNo = header.CustomerOrderNo,
+                ClickAndCollectOrder = header.CustomerOrder,
+                TotalAmount = header.GrossAmount * -1,
+                TotalNetAmount = header.NetAmount * -1,
+                TotalDiscount = header.DiscountAmount * -1,
+                LineItemCount = (int)header.NoofItems,
+                StoreCurrency = header.TransCurrency,
+                IdType = DocumentIdType.Receipt,
+                Status = SalesEntryStatus.Complete,
+                Posted = true
+            };
+
+            //now loop through the discount lines
+            transaction.DiscountLines = new List<SalesEntryDiscountLine>();
+            if (root.TransDiscountEntry != null)
+            {
+                foreach (LSCentral25.TransDiscountEntry1 mobileTransDisc in root.TransDiscountEntry)
+                {
+                    transaction.DiscountLines.Add(new SalesEntryDiscountLine()
+                    {
+                        OfferNumber = mobileTransDisc.OfferNo,
+                        LineNumber = mobileTransDisc.LineNo,
+                        DiscountAmount = mobileTransDisc.DiscountAmount,
+                        PeriodicDiscType = (PeriodicDiscType)(Convert.ToInt32(mobileTransDisc.OfferType) + 1)
+                    });
+                }
+            }
+
+            //now loop through the lines
+            transaction.Lines = new List<SalesEntryLine>();
+            if (root.TransSalesEntry != null)
+            {
+                foreach (LSCentral25.TransSalesEntry1 mobileTransLine in root.TransSalesEntry)
                 {
                     transaction.Lines.Add(new SalesEntryLine()
                     {
@@ -528,6 +593,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                 MemberCardNo = XMLHelper.GetString(request.CardId),
                 CurrencyFactor = 1,
                 SalesType = XMLHelper.GetString(request.SalesType),
+                MemberPriceGroupCode = XMLHelper.GetString(request.MemberPriceGroupCode),
+                PriceGroupCode = XMLHelper.GetString(request.PriceGroupCode),
+                CurrencyCode = XMLHelper.GetString(request.Currency),
+                CustomerId = XMLHelper.GetString(request.CustomerId),
                 SourceType = "1" //NAV POS = 0, Omni = 1
             });
             root.MobileTransaction = trans.ToArray();
@@ -658,6 +727,53 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
             {
                 int lineno = 1;
                 foreach (LSCentral25.TransPaymentEntry pay in root.TransPaymentEntry)
+                {
+                    Payment payment = new Payment()
+                    {
+                        Amount = new Money(pay.AmountTendered, transactionCurrency)
+                    };
+                    transaction.TenderLines.Add(new PaymentLine(lineno++, payment));
+                }
+            }
+            return transaction;
+        }
+
+        public RetailTransaction MapFromRootV2ToLoyTransaction(LSCentral25.RootGetTransaction1 root)
+        {
+            LSCentral25.TransactionHeader1 header = root.TransactionHeader.FirstOrDefault();
+            UnknownCurrency transactionCurrency = new UnknownCurrency(header.TransCurrency);
+
+            RetailTransaction transaction = new RetailTransaction()
+            {
+                Id = header.TransactionNo.ToString(),
+                GrossAmount = new Money(header.GrossAmount, transactionCurrency),
+                TotalDiscount = new Money(header.DiscountAmount, transactionCurrency),
+                NetAmount = new Money(header.NetAmount, transactionCurrency),
+                ReceiptNumber = header.ReceiptNo,
+                Terminal = new Terminal(header.POSTerminalNo),
+                RefundedReceiptNo = header.RefundReceiptNo
+            };
+
+            if (root.TransSalesEntry != null)
+            {
+                foreach (LSCentral25.TransSalesEntry1 entry in root.TransSalesEntry)
+                {
+                    transaction.SaleLines.Add(new SaleLine()
+                    {
+                        Item = new RetailItem(entry.ItemNo),
+                        Quantity = entry.Quantity,
+                        ReturnQuantity = entry.RefundQty,
+                        NetAmount = new Money(entry.NetAmount, transactionCurrency),
+                        TaxAmount = new Money(entry.VATAmount, transactionCurrency),
+                        UnitPrice = new Money(entry.Price, transactionCurrency),
+                    });
+                }
+            }
+
+            if (root.TransPaymentEntry != null)
+            {
+                int lineno = 1;
+                foreach (LSCentral25.TransPaymentEntry1 pay in root.TransPaymentEntry)
                 {
                     Payment payment = new Payment()
                     {

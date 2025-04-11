@@ -28,11 +28,19 @@ Procedure IISOnChange(Sender: TObject);
 begin                            
   Log('IISOnChange called');
   WizardForm.NextButton.Enabled := False;
-  if (Length(IISPage_txtWcfSiteName.Text) > 0) 
-      and (Length(IISPage_txtWcfServiceName.Text) > 0) and (Length(IISPage_txtNavUrl.Text) > 0)  
-      and (Length(IISPage_txtNavUser.Text) > 0) and (Length(IISPage_txtNavPwd.Text) > 0) then
+
+  if (CheckPage_MultiCheckBox.Checked) then
   begin
     WizardForm.NextButton.Enabled := True;
+  end
+  else
+  begin
+    if (Length(IISPage_txtWcfSiteName.Text) > 0) 
+        and (Length(IISPage_txtWcfServiceName.Text) > 0) and (Length(IISPage_txtNavUrl.Text) > 0)  
+        and (Length(IISPage_txtNavUser.Text) > 0) and (Length(IISPage_txtNavPwd.Text) > 0) then
+    begin
+      WizardForm.NextButton.Enabled := True;
+    end;
   end;
 end;
 
@@ -60,13 +68,21 @@ end;
 
 procedure IISCustomForm_Activate(Page: TWizardPage) ;
 begin
+  Log(Format('IISCustomForm_Activate called (v:%d)', [CheckPage_MultiCheckBox.Checked]));
   WizardForm.NextButton.Enabled := False;
   IISPage_xS2S.Checked := False;
-  if (Length(IISPage_txtWcfSiteName.Text) > 0) 
-      and (Length(IISPage_txtWcfServiceName.Text) > 0) and (Length(IISPage_txtNavUrl.Text) > 0)  
-      and (Length(IISPage_txtNavUser.Text) > 0) and (Length(IISPage_txtNavPwd.Text) > 0) then
+  if CheckPage_MultiCheckBox.Checked then
   begin
     WizardForm.NextButton.Enabled := True;
+  end
+  else
+  begin
+    if (Length(IISPage_txtWcfSiteName.Text) > 0) 
+        and (Length(IISPage_txtWcfServiceName.Text) > 0) and (Length(IISPage_txtNavUrl.Text) > 0)  
+        and (Length(IISPage_txtNavUser.Text) > 0) and (Length(IISPage_txtNavPwd.Text) > 0) then
+    begin
+      WizardForm.NextButton.Enabled := True;
+    end;
   end;
 end;
 

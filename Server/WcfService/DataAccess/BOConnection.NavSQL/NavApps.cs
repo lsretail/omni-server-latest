@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using LSOmni.Common.Util;
@@ -25,22 +26,31 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
         {
         }
 
-        public virtual List<ProactiveDiscount> DiscountsGetByStoreAndItem(string storeId, string itemId, Statistics stat)
+        public virtual List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string schemeCode, Statistics stat)
         {
             DiscountRepository rep = new DiscountRepository(config);
-            return rep.DiscountsGetByStoreAndItem(storeId, itemId);
-        }
+            List<ProactiveDiscount> discounts = rep.DiscountsGetByStoreAndItem(storeId, itemIds);
 
-        public virtual DiscountValidation GetDiscountValidationByOfferId(string offerId, Statistics stat)
-        {
-            DiscountRepository rep = new DiscountRepository(config);
-            return rep.GetDiscountValidationByOfferId(offerId);
-        }
+            if (string.IsNullOrEmpty(schemeCode))
+            {
+                discounts = discounts.Where(disc => disc.LoyaltySchemeCode == string.Empty).ToList();
+            }
+            else
+            {
+                discounts = discounts.Where(disc => disc.LoyaltySchemeCode == string.Empty || disc.LoyaltySchemeCode == schemeCode).ToList();
+            }
 
-        public virtual void LoadDiscountDetails(ProactiveDiscount disc, string storeId, string loyaltySchemeCode, Statistics stat)
-        {
-            DiscountRepository rep = new DiscountRepository(config);
-            rep.LoadDiscountDetails(disc, storeId, loyaltySchemeCode);
+            List<ProactiveDiscount> list = new List<ProactiveDiscount>();
+            foreach (ProactiveDiscount disc in discounts)
+            {
+                DiscountValidation dValid = rep.GetDiscountValidationByOfferId(disc.PeriodId);
+                if (dValid.OfferIsValid())
+                {
+                    rep.LoadDiscountDetails(disc, storeId, schemeCode);
+                    list.Add(disc);
+                }
+            }
+            return list;
         }
 
         public virtual Terminal TerminalGetById(string terminalId, Statistics stat)

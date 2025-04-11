@@ -380,7 +380,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         public string NavVersionToUse(out string centralVersion)
         {
             if (LSCVersion == null)
-                LSCVersion = new Version("25.0");
+                LSCVersion = new Version("26.0");
 
             centralVersion = LSCVersion.ToString();
             if (centralWS == null)
@@ -447,7 +447,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     navver = string.Format("{0} [{1}]", vv1, appBuild);
                 }
 
-                string asm = ConfigSetting.GetString("BOConnection.AssemblyName").ToLower();
                 if (LSCVersion >= new Version("21.3"))
                 {
                     if (config.SettingsKeyExists(ConfigKey.BOODataUrl) == false)

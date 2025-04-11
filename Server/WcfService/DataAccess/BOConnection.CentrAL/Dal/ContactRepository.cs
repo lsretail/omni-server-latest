@@ -40,7 +40,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
             // get records remaining
             string sql = string.Empty;
-            sqlcolumns += ",ma.[Club Code],ma.[Scheme Code]";
+            sqlcolumns += ",ma.[Club Code],ma.[Scheme Code],ma.[Linked To Customer No_]";
             sqlfrom += " LEFT JOIN [" + navCompanyName + "Member Account$5ecfc871-5d82-43f1-9c54-59685e82318d] ma ON ma.[No_]=mt.[Account No_]";
 
             if (fullReplication)
@@ -719,6 +719,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 CellularPhone = SQLHelper.GetString(reader["Mobile Phone No_"]),
                 PhoneLocal = SQLHelper.GetString(reader["Phone No_"]),
                 Blocked = SQLHelper.GetInt32(reader["Blocked"]),
+                CustomerId = SQLHelper.GetString(reader["Linked To Customer No_"]),
                 ClubCode = SQLHelper.GetString(reader["Club Code"]),
                 SchemeCode = SQLHelper.GetString(reader["Scheme Code"])
             };

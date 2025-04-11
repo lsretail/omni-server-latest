@@ -19,8 +19,14 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         {
             Description = string.Empty;
             CardId = string.Empty;
+            CustomerId = string.Empty;
             StoreId = string.Empty;
             Name = string.Empty;
+            MemberPriceGroupCode = string.Empty;
+            PriceGroupCode = string.Empty;
+            ShipToCountryCode = string.Empty;
+            SalesType = string.Empty;
+            Currency = string.Empty;
             CreateDate = DateTime.Now;
             ListType = ListType.Basket; // basket, wish
             Items = new ObservableCollection<OneListItem>();
@@ -47,8 +53,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             }
         }
 
-        public OneList()
-            : this(string.Empty)
+        public OneList() : this(string.Empty)
         {
         }
 
@@ -77,6 +82,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         public string CardId { get; set; }
         [DataMember]
         public string Name { get; set; }
+        [DataMember]
+        public string CustomerId { get; set; }
         [DataMember]
         public virtual List<OneListLink> CardLinks { get; set; }
 
@@ -132,6 +139,10 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         public bool IsHospitality { get; set; }
         [DataMember]
         public string SalesType { get; set; }
+        [DataMember]
+        public string MemberPriceGroupCode { get; set; }
+        [DataMember]
+        public string PriceGroupCode { get; set; }
         [DataMember]
         public string ShipToCountryCode { get; set; }
         /// <summary>

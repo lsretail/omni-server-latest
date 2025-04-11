@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Net;
-using System.Net.Security;
 
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;

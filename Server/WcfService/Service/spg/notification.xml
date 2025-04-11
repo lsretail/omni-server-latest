@@ -1,0 +1,22 @@
+<notifications>
+	<notification>
+		<type>ItemAdd</type>
+		<title>Basket Changes</title>
+		<body>{name} added item {itemid}-{desc} to Basket {listid}</body>
+	</notification>
+	<notification>
+		<type>ItemDel</type>
+		<title>Basket Changes</title>
+		<body>{name} removed item {itemid}-{desc} from Basket {listid}</body>
+	</notification>
+	<notification>
+		<type>UserAdd</type>
+		<title>Basket Share</title>
+		<body>{cardid}-{name}, has been added to Basket {listid}</body>
+	</notification>
+	<notification>
+		<type>UserDel</type>
+		<title>Basket Share</title>
+		<body>{cardid}-{name}, has been removed from Basket {listid}</body>
+	</notification>
+</notifications>

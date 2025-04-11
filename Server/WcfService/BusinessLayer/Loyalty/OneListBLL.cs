@@ -88,7 +88,7 @@ namespace LSOmni.BLL.Loyalty
             CheckItemSetup(list);
 
             Order order = BOLoyConnection.BasketCalcToOrder(list, stat);
-            bool compress = BOLoyConnection.CompressCOActive(stat);
+            CheckCompressLines(ref order, list.Items.ToList(), stat);
 
             List<OrderLine> lines = new List<OrderLine>();
             foreach (OneListItem oldItem in list.Items)
@@ -147,6 +147,53 @@ namespace LSOmni.BLL.Loyalty
             }
             order.OrderLines = lines;
             return order;
+        }
+
+        private void CheckCompressLines(ref Order order, List<OneListItem> items, Statistics stat)
+        {
+            if (BOLoyConnection.CompressCOActive(stat))
+                return;
+
+            List<OrderLine> oLines = new List<OrderLine>();
+            foreach (OrderLine line in order.OrderLines)
+            {
+                OrderLine oline = oLines.Find(l =>
+                        l.ItemId == line.ItemId &&
+                        l.VariantId == line.VariantId &&
+                        l.UomId == line.UomId &&
+                        l.LineType == line.LineType);
+
+                if (oline == null)
+                {
+                    oLines.Add(line);
+                }
+                else
+                {
+                    OneListItem item = items.Find(i => i.ItemId == line.ItemId && i.VariantId == line.VariantId && i.UnitOfMeasureId == line.UomId);
+                    if (item == null)
+                        item = items.Find(i => i.ItemId == line.ItemId && i.VariantId == line.VariantId);
+
+                    if (item != null && item.Immutable)
+                    {
+                        oLines.Add(line);
+                        continue;
+                    }
+
+                    if ((oline.DiscountLineNumbers.Count() > 0 && line.DiscountLineNumbers.Count() == 0) ||
+                        (oline.DiscountLineNumbers.Count() == 0 && line.DiscountLineNumbers.Count() > 0))
+                    {
+                        oLines.Add(line);
+                        continue;
+                    }
+
+                    oline.DiscountAmount += line.DiscountAmount;
+                    oline.NetAmount += line.NetAmount;
+                    oline.Quantity += line.Quantity;
+                    oline.TaxAmount += line.TaxAmount;
+                    oline.Amount += line.Amount;
+                }
+            }
+            order.OrderLines = oLines;
         }
 
         public virtual OrderHosp OneListHospCalculate(OneList list, Statistics stat)
@@ -302,11 +349,11 @@ namespace LSOmni.BLL.Loyalty
                     if (string.IsNullOrEmpty(email))
                     {
                         if (string.IsNullOrEmpty(phone))
-                            throw new LSOmniException(StatusCode.LookupValuesMissing);
+                            throw new LSOmniException(StatusCode.LookupValuesMissing, "Look up value, like CardId, Email or Phone number is missing");
 
                         member = cBll.ContactGet(ContactSearchType.PhoneNumber, phone, stat);
                         if (member == null)
-                            throw new LSOmniException(StatusCode.MemberAccountNotFound);
+                            throw new LSOmniException(StatusCode.MemberAccountNotFound, "Phone number not found in any Member account");
 
                         cardId = member.Cards[0].Id;
                         name = member.Name;
@@ -315,7 +362,7 @@ namespace LSOmni.BLL.Loyalty
                     {
                         member = cBll.ContactGet(ContactSearchType.Email, email, stat);
                         if (member == null)
-                            throw new LSOmniException(StatusCode.MemberAccountNotFound);
+                            throw new LSOmniException(StatusCode.MemberAccountNotFound, "Email not found in any Member account");
 
                         cardId = member.Cards[0].Id;
                         name = member.Name;
@@ -325,7 +372,7 @@ namespace LSOmni.BLL.Loyalty
                 {
                     MemberContact contact = cBll.ContactGet(ContactSearchType.CardId, cardId, stat);
                     if (contact == null)
-                        throw new LSOmniException(StatusCode.MemberAccountNotFound);
+                        throw new LSOmniException(StatusCode.MemberAccountNotFound, "CardId not found in any Member account");
 
                     name = contact.Name;
                 }
@@ -378,6 +425,7 @@ namespace LSOmni.BLL.Loyalty
             list.TotalTaxAmount = 0;
 
             Order calcResp = BOLoyConnection.BasketCalcToOrder(list, stat);
+            CheckCompressLines(ref calcResp, list.Items.ToList(), stat);
 
             list.TotalAmount = calcResp.TotalAmount;
             list.TotalNetAmount = calcResp.TotalNetAmount;

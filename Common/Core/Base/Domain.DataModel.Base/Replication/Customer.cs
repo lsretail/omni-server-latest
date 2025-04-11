@@ -103,6 +103,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public string AccountNumber { get; set; }
         [DataMember]
+        public string CustomerId { get; set; }
+        [DataMember]
         public string Name { get; set; }
         [DataMember]
         public string Street { get; set; }

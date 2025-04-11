@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
@@ -8,6 +9,10 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
     {
         public OrderHospStatus()
         {
+            ReceiptNo = string.Empty;
+            KotNo = string.Empty;
+            QueueCounter = string.Empty;
+            Lines = new List<OrderHospStatusLine>();
         }
 
         public void Dispose()
@@ -37,6 +42,34 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
         public bool Confirmed { get; set; }
         [DataMember]
         public decimal ProductionTime { get; set; }
+        [DataMember]
+        public List<OrderHospStatusLine> Lines { get; set; }
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2020")]
+    public class OrderHospStatusLine : IDisposable
+    {
+        public OrderHospStatusLine()
+        {
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+            }
+        }
+
+        [DataMember]
+        public string Number { get; set; }
+        [DataMember]
+        public int LineNumber { get; set; }
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2020")]

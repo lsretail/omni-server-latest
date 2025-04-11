@@ -22,6 +22,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Log
     public enum LogType
     {
         [EnumMember]
+        All = -1,
+        [EnumMember]
         App = 0,
         [EnumMember]
         ExternalAccessory = 1,
@@ -29,6 +31,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Log
         Pos = 2,
         [EnumMember]
         Console = 3,
+        [EnumMember]
+        WebService = 4,
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]

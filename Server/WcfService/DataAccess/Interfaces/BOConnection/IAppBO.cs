@@ -20,9 +20,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         List<InventoryResponse> ItemInStockGet(string itemId, string variantId, int arrivingInStockInDays, List<string> locationIds, bool skipUnAvailableStores, Statistics stat);
         List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId, bool useSourcingLocation, Statistics stat);
         string ItemDetailsGetById(string itemId, Statistics stat);
-        List<ProactiveDiscount> DiscountsGetByStoreAndItem(string storeId, string itemId, Statistics stat);
-        DiscountValidation GetDiscountValidationByOfferId(string offerId, Statistics stat);
-        void LoadDiscountDetails(ProactiveDiscount disc, string storeId, string loyaltySchemeCode, Statistics stat);
+        List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string schemeCode, Statistics stat);
 
         #region Replication
 

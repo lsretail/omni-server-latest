@@ -32,7 +32,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.TerminalGetById(terminalId, stat);
         }
 
-        public virtual List<ProactiveDiscount> DiscountsGetByStoreAndItem(string storeId, string itemId, Statistics stat)
+        public virtual List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string schemeCode, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
             {
@@ -40,29 +40,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
                 return new List<ProactiveDiscount>();
             }
 
-            return LSCWSBase.DiscountsGetByStoreAndItem(storeId, itemId, stat);
-        }
-
-        public virtual DiscountValidation GetDiscountValidationByOfferId(string offerId, Statistics stat)
-        {
-            if (NAVVersion < new Version("17.5"))
-            {
-                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 17.5 for SaaS");
-                return new DiscountValidation();
-            }
-
-            return LSCWSBase.GetDiscountValidationByOfferId(offerId, stat);
-        }
-
-        public virtual void LoadDiscountDetails(ProactiveDiscount disc, string storeId, string loyaltySchemeCode, Statistics stat)
-        {
-            if (NAVVersion < new Version("17.5"))
-            {
-                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 17.5 for SaaS");
-                return;
-            }
-
-            LSCWSBase.LoadDiscountDetails(disc, storeId, loyaltySchemeCode, stat);
+            return LSCWSBase.DiscountsGet(storeId, schemeCode, itemIds, stat);
         }
 
         public virtual UnitOfMeasure UnitOfMeasureGetById(string id, Statistics stat)

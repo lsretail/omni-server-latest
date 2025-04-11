@@ -99,6 +99,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         
         private System.Threading.SendOrPostCallback GetPluBufferOperationCompleted;
         
+        private System.Threading.SendOrPostCallback GetPriceListLineOperationCompleted;
+        
         private System.Threading.SendOrPostCallback GetProductGroupOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetSalesPriceOperationCompleted;
@@ -291,6 +293,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         
         /// <remarks/>
         public event GetPluBufferCompletedEventHandler GetPluBufferCompleted;
+        
+        /// <remarks/>
+        public event GetPriceListLineCompletedEventHandler GetPriceListLineCompleted;
         
         /// <remarks/>
         public event GetProductGroupCompletedEventHandler GetProductGroupCompleted;
@@ -1658,6 +1663,44 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
             if ((this.GetPluBufferCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetPluBufferCompleted(this, new GetPluBufferCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetPriceListLine", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetPriceListLine_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetPriceListLine(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetPriceListLine", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetPriceListLineAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetPriceListLineAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetPriceListLineAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetPriceListLineOperationCompleted == null)) {
+                this.GetPriceListLineOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetPriceListLineOperationCompleted);
+            }
+            this.InvokeAsync("GetPriceListLine", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetPriceListLineOperationCompleted, userState);
+        }
+        
+        private void OnGetPriceListLineOperationCompleted(object arg) {
+            if ((this.GetPriceListLineCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetPriceListLineCompleted(this, new GetPriceListLineCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -3511,6 +3554,32 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         private object[] results;
         
         internal GetPluBufferCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetPriceListLineCompletedEventHandler(object sender, GetPriceListLineCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetPriceListLineCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetPriceListLineCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }

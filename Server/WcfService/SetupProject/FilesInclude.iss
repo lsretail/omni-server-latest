@@ -23,8 +23,11 @@ Source: "..\Service\Xsl\notification.xsl"; DestDir: "{app}\{code:WcfDir}\Xsl\"; 
 Source: "..\Service\Xml\navdata.xml"; DestDir: "{app}\{code:WcfDir}\Xml\"; Flags: ignoreversion
 
 ; SPG Notification
-Source: "..\Service\bin\FirebaseAdmin.*"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
-Source: "..\Service\bin\Google.Api.*.*"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
+Source: "..\Service\bin\FirebaseAdmin.*"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion; Check: UseSPG
+Source: "..\Service\bin\Google.*.*"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion; Check: UseSPG
+Source: "..\Service\bin\System.*.*"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion; Check: UseSPG
+Source: "..\Service\Spg\firebase.json"; DestDir: "{app}\{code:WcfDir}\Spg\"; Flags: ignoreversion; Check: UseSPG
+Source: "..\Service\Spg\notification.xml"; DestDir: "{app}\{code:WcfDir}\Spg\"; Flags: ignoreversion; Check: UseSPG
 
 ; Configs Files
 Source: "..\Service\Web.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
@@ -35,6 +38,7 @@ Source: "..\Service\WebServices_SSL.config"; DestDir: "{app}\{code:WcfDir}"; Fla
 Source: "..\Service\WebServices_Basic.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
 Source: "..\Service\NLog.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
 Source: "Default\AppSettings.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion; Check: UpdAppSettings
+Source: "Multi\AppSettings.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion; Check: UpdAppMultiSettings
 
 [Dirs]
 Name: "{app}\{code:WcfDir}\logs"; Permissions: everyone-modify

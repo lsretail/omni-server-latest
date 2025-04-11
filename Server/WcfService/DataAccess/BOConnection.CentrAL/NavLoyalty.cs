@@ -119,7 +119,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return NavWSBase.ContactAddCard(contactId, accountId, cardId);
         }
 
-        public virtual void ConatctBlock(string accountId, string cardId, Statistics stat)
+        public virtual void ContactBlock(string accountId, string cardId, Statistics stat)
         {
             throw new NotSupportedException();
         }
@@ -422,7 +422,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             NavWSBase.HospOrderCancel(storeId, orderId);
         }
 
-        public virtual OrderHospStatus HospOrderStatus(string storeId, string orderId, Statistics stat)
+        public virtual List<OrderHospStatus> HospOrderStatus(string storeId, string orderId, Statistics stat)
         {
             return NavWSBase.HospOrderStatus(storeId, orderId);
         }
@@ -521,10 +521,21 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return entry;
         }
 
-        public virtual List<SalesEntryId> SalesEntryGetReturnSales(string receiptNo, Statistics stat)
+        public virtual List<SalesEntry> SalesEntryGetReturnSales(string receiptNo, Statistics stat)
         {
             SalesEntryRepository repo = new SalesEntryRepository(config, NAVVersion);
-            return repo.SalesEntryGetReturnSales(receiptNo);
+            List<SalesEntryId> list = repo.SalesEntryGetReturnSales(receiptNo);
+            List<SalesEntry> result = new List<SalesEntry>();
+            foreach (SalesEntryId line in list)
+            {
+                SalesEntry en = repo.SalesEntryGetById(line.ReceiptId);
+                if (en == null)
+                    continue;
+
+                en.CustomerOrderNo = line.OrderId;
+                result.Add(en);
+            }
+            return result;
         }
 
         public virtual SalesEntryList SalesEntryGetSalesByOrderId(string orderId, Statistics stat)

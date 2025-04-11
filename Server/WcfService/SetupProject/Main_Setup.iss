@@ -114,7 +114,9 @@ begin
   NavSQLPage_VerCombBox.ItemIndex := GetCommandLineParamInteger('-NavVer', 3);
 
   CheckPage_SQLCheckBox.Checked := GetCommandLineParamBoolean('-SqlX', True);
+  CheckPage_MultiCheckBox.Checked := GetCommandLineParamBoolean('-MultiX', False);
   CheckPage_WSCheckBox.Checked := GetCommandLineParamBoolean('-WSX', False);
+  CheckPage_SPGCheckBox.Checked := GetCommandLineParamBoolean('-SPG', False);
   SQLPage_txtDBname.Text := GetCommandLineParamString('-SqlDb', 'Commerce');
   SQLPage_txtServer.Text := GetCommandLineParamString('-SqlSrv', 'localhost');
   SQLPage_txtUsername.Text := GetCommandLineParamString('-SqlUsr', 'CommerceUser');
@@ -136,9 +138,35 @@ begin
   Result := IISPage_txtWcfServiceName.Text;
 end;
 
+function PortalDir(Param: String): String;
+begin
+  Result := 'CommercePortal';
+end;
+
 function UpdAppSettings: Boolean;
 begin
-  Result := CopyAppSettingsFile
+  if not CheckPage_MultiCheckBox.Checked then
+    Result := CopyAppSettingsFile
+  else
+    Result := False;
+end;
+
+function UpdAppMultiSettings: Boolean;
+begin
+  if CopyAppSettingsFile then
+    Result := CheckPage_MultiCheckBox.Checked
+  else
+    Result := False;
+end;
+
+function UseSPG: Boolean;
+begin
+  Result := CheckPage_SPGCheckBox.Checked
+end;
+
+function SingleMode: Boolean;
+begin
+  Result := CheckPage_MultiCheckBox.Checked = False;
 end;
 
 function WebMode: Boolean;
@@ -225,6 +253,19 @@ begin
     // Central Web Service
     if CheckPage_IISCheckBox.Checked then
     begin
+      if CheckPage_MultiCheckBox.Checked then
+      begin
+        Log('Update DB IIS Settings');
+        ADOUpdateAppSettings('BOUrl', Trim(IISPage_txtNavUrl.Text));
+        ADOUpdateAppSettings('BOODataUrl', Trim(IISPage_txtODataUrl.Text));
+        ADOUpdateAppSettings('BOUser', Trim(IISPage_txtNavUser.Text));
+        ADOUpdateAppSettings('BOPassword', Trim(IISPage_txtNavPwd.Text));
+        ADOUpdateAppSettings('BOTenant', Trim(IISPage_txtNavTen.Text));
+        if IISPage_xS2S.Checked then
+          ADOUpdateAppSettings('BOProtocol', 'S2S');
+      end
+      else
+      begin
         Log('Update File IIS Settings');
         UpdateAppSettingsConfig('BOConnection.Nav.Url', Trim(IISPage_txtNavUrl.Text), ExpandConstant('{app}\{code:WcfDir}'));
         UpdateAppSettingsConfig('BOConnection.Nav.ODataUrl', Trim(IISPage_txtODataUrl.Text), ExpandConstant('{app}\{code:WcfDir}'));
@@ -233,6 +274,7 @@ begin
         UpdateAppSettingsConfig('BOConnection.Nav.Tenant', Trim(IISPage_txtNavTen.Text), ExpandConstant('{app}\{code:WcfDir}'));
         if IISPage_xS2S.Checked then
           UpdateAppSettingsConfig('BOConnection.Nav.Protocol', 'S2S', ExpandConstant('{app}\{code:WcfDir}'));
+      end;
     end;
 
     // Central connection string
@@ -266,7 +308,10 @@ begin
       navStr := navStr + ';NAVCompanyName=' + navCompany;
       navStr := navStr + ';Persist Security Info=True;MultipleActiveResultSets=True;Connection Timeout=10;';
 
-      UpdateAppSettingsConfig('SqlConnectionString.Nav', navStr, ExpandConstant('{app}\{code:WcfDir}'));
+      if CheckPage_MultiCheckBox.Checked then
+        ADOUpdateAppSettings('BOSql', navStr)
+      else
+        UpdateAppSettingsConfig('SqlConnectionString.Nav', navStr, ExpandConstant('{app}\{code:WcfDir}'));
     end;
 
     if CheckPage_WSCheckBox.Checked then
@@ -370,6 +415,20 @@ begin
       doContinue := True;
       Result := '';
     end;
+
+    if CheckPage_MultiCheckBox.Checked then
+    begin
+      if (not IISCreateWebApplication(IISPage_txtWcfSiteName.Text, PortalDir(''), WizardForm.DirEdit.Text, CmdMode)) then
+      begin
+        doContinue := False;
+        Result := 'Something went wrong in the IIS Portal setup...';
+      end
+      else
+      begin
+        doContinue := True;
+        Result := '';
+      end;
+    end;
   end;
 
   if (Length(Result) > 0) then
@@ -448,8 +507,20 @@ begin
     begin
       with IISPage do
       begin
+        IISPage_lblNavUrl.Visible := SingleMode;
+        IISPage_txtNavUrl.Visible := SingleMode;
+        IISPage_lblODataUrl.Visible := SingleMode;
+        IISPage_txtODataUrl.Visible := SingleMode;
+        IISPage_lblEComUrl.Visible := SingleMode;
+        IISPage_txtEComUrl.Visible := SingleMode;
+        IISPage_lblNavAuthentication.Visible := SingleMode;
+        IISPage_lblNavUser.Visible := SingleMode;
+        IISPage_txtNavUser.Visible := SingleMode;
+        IISPage_lblNavPwd.Visible := SingleMode;
+        IISPage_txtNavPwd.Visible := SingleMode;
         IISPage_lblNavTen.Visible := False;
         IISPage_txtNavTen.Visible := False;
+        IISPage_xS2S.Visible := SingleMode;
         OnActivate := @IISCustomForm_Activate;
       end;
     end;

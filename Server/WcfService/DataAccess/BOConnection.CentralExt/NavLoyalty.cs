@@ -123,9 +123,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
             return LSCentralWSBase.ContactAddCard(contactId, accountId, cardId, stat);
         }
 
-        public virtual void ConatctBlock(string accountId, string cardId, Statistics stat)
+        public virtual void ContactBlock(string accountId, string cardId, Statistics stat)
         {
-            LSCentralWSBase.ConatctBlock(accountId, cardId, stat);
+            LSCentralWSBase.ContactBlock(accountId, cardId, stat);
         }
 
         public virtual MemberContact Login(string userName, string password, string deviceID, string deviceName, Statistics stat)
@@ -490,7 +490,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
             LSCentralWSBase.HospOrderCancel(storeId, orderId, stat);
         }
 
-        public virtual OrderHospStatus HospOrderStatus(string storeId, string orderId, Statistics stat)
+        public virtual List<OrderHospStatus> HospOrderStatus(string storeId, string orderId, Statistics stat)
         {
             return LSCentralWSBase.HospOrderKotStatus(storeId, orderId, stat);
         }
@@ -598,13 +598,23 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
             return entry;
         }
 
-        public virtual List<SalesEntryId> SalesEntryGetReturnSales(string receiptNo, Statistics stat)
+        public virtual List<SalesEntry> SalesEntryGetReturnSales(string receiptNo, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
             SalesEntryRepository repo = new SalesEntryRepository(config, LSCVersion);
             List<SalesEntryId> list = repo.SalesEntryGetReturnSales(receiptNo);
+            List<SalesEntry> result = new List<SalesEntry>();
+            foreach (SalesEntryId line in list)
+            {
+                SalesEntry en = repo.SalesEntryGetById(line.ReceiptId, string.Empty, string.Empty, 0, stat);
+                if (en == null)
+                    continue;
+
+                en.CustomerOrderNo = line.OrderId;
+                result.Add(en);
+            }
             logger.StatisticEndSub(ref stat, index);
-            return list;
+            return result;
         }
 
         public virtual SalesEntryList SalesEntryGetSalesByOrderId(string orderId, Statistics stat)
@@ -633,7 +643,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
             List<SalesEntry> list = new List<SalesEntry>();
             foreach (SalesEntry entry in data)
             {
-                if (entry.IdType == DocumentIdType.Receipt && entry.TotalAmount == 0 && entry.Quantity == 0)
+                if (entry.IdType == DocumentIdType.Receipt && entry.TotalAmount == 0)
                 {
                     SalesEntry order = data.Find(e => e.CustomerOrderNo == entry.CustomerOrderNo && e.Quantity > 0);
                     if (order != null)

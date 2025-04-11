@@ -44,6 +44,13 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         ServiceTier = 1,
     }
 
+    public enum DevToolsBehaviorEnum
+    {
+        Disabled = 0, // old OpenDevTools false
+        Enabled = 1,
+        OpenOnStart = 2,// old OpenDevTools true
+    }
+
     public class AppConfig
     {
         [System.Xml.Serialization.XmlElementAttribute("AppSettings")]
@@ -69,13 +76,15 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         private int fontSize;
 
         private bool showHardwareOverlay;
-        private bool openDevTools;
+        private DevToolsBehaviorEnum devToolsBehavior = DevToolsBehaviorEnum.Disabled;
         private bool toggleFullScreen;
         private bool hardwareOverlayToLog;
         private int hardwareMinutes;
         private bool consoleLogToLog;
 
         private bool ignoreCertificateErrors;
+
+        private string webView2RuntimeLocation;
 
         public const string AutoUpdateKey = "AutoUpdateKey";
         public const string AutoUpdatePathKey = "AutoUpdatePathKey";
@@ -93,13 +102,15 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
 
         
         public const string ShowHardwareOverlayKey = "ShowHardwareOverlayKey";
-        public const string OpenDevToolsKey = "OpenDevToolsKey";
+        public const string DevToolsBehaviorKey = "DevToolsBehaviorKey";
         public const string FontSizeKey = "FontSizeKey";
         public const string HardwareOverlayToLogKey = "HardwareOverlayToLogKey";
         public const string ConsoleLogToLogKey = "ConsoleLogToLogKey";
         public const string HardwareMinutesKey = "HardwareMinutesKey";
 
         public const string IgnoreCertificateErrorsKey = "IgnoreCertificateErrorsKey";
+
+        public const string WebView2RuntimeLocationKey = "WebView2RuntimeLocationKey";
 
         [System.Xml.Serialization.XmlElementAttribute("AutoUpdate")]
         public bool AutoUpdate
@@ -271,13 +282,13 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute("OpenDevTools")]
-        public bool OpenDevTools
+        [System.Xml.Serialization.XmlElementAttribute("DevToolsBehavior")]
+        public DevToolsBehaviorEnum DevToolsBehavior
         {
-            get => openDevTools;
+            get => devToolsBehavior;
             set
             {
-                openDevTools = value;
+                devToolsBehavior = value;
                 NotifyPropertyChanged();
             }
         }
@@ -300,6 +311,17 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             set
             {
                 ignoreCertificateErrors = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        [System.Xml.Serialization.XmlElementAttribute("WebView2RuntimeLocation")]
+        public string WebView2RuntimeLocation
+        {
+            get => webView2RuntimeLocation;
+            set
+            {
+                webView2RuntimeLocation = value;
                 NotifyPropertyChanged();
             }
         }
@@ -366,6 +388,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         private static SettingsConfig emptyConfig;
         private string otherParameters;
 
+        private string lsCentralWsUrl = string.Empty;
         private string lsCentralOdataUrl = string.Empty;
         private string lsCentralTenantId = string.Empty;
         private string lsCentralClientId = string.Empty;
@@ -455,6 +478,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             serviceTierUsername = config.serviceTierUsername;
             serviceTierPassword = config.serviceTierPassword;
 
+            lsCentralWsUrl = config.lsCentralWsUrl;
             lsCentralOdataUrl = config.lsCentralOdataUrl;
             lsCentralTenantId = config.lsCentralTenantId;
             lsCentralClientId = config.lsCentralClientId;
@@ -1123,7 +1147,17 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         public bool EnableCache { get; set; }
 
         //RemoteConfiguration
-        [XmlElementAttribute("LsCentralOdataUrl")]
+        [XmlElementAttribute("LSCentralWsUrl")]
+        public string LsCentralWsUrl
+        {
+            get => lsCentralWsUrl;
+            set
+            {
+                lsCentralWsUrl = value;
+                NotifyPropertyChanged();
+            }
+        }
+        [XmlElementAttribute("LSCentralODataUrl")]
         public string LsCentralOdataUrl
         {
             get => lsCentralOdataUrl;
@@ -1134,7 +1168,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             }
         }
 
-        [XmlElementAttribute("LsCentralTenantId")]
+        [XmlElementAttribute("LSCentralTenantId")]
         public string LsCentralTenantId
         {
             get => lsCentralTenantId;
@@ -1145,7 +1179,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             }
         }
 
-        [XmlElementAttribute("LsCentralClientId")]
+        [XmlElementAttribute("LSCentralClientId")]
         public string LsCentralClientId
         {
             get => lsCentralClientId;
@@ -1156,7 +1190,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             }
         }
 
-        [XmlElementAttribute("LsCentralClientSecret")]
+        [XmlElementAttribute("LSCentralClientSecret")]
         public string LsCentralClientSecret
         {
             get => lsCentralClientSecret;
@@ -1167,7 +1201,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             }
         }
 
-        [XmlElementAttribute("LsCentralTimeout")]
+        [XmlElementAttribute("LSCentralTimeout")]
         public int LsCentralTimeout
         {
             get => lsCentralTimeout;

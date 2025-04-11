@@ -12,7 +12,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.10.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.12.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -81,8 +81,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://dhqsrvomni001:9047/LSCentralDev/WS/CRONUS%20-%20LS%20Central/Codeunit/ODat" +
-            "aRequest")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://ishqddlap2:9047/LSCentralDev/WS/ReplaceWithAPercentEncodedCompanyName/Code" +
+            "unit/ODataRequest")]
         public string LSOmni_DataAccess_BOConnection_PreCommon_LSOData_ODataRequest {
             get {
                 return ((string)(this["LSOmni_DataAccess_BOConnection_PreCommon_LSOData_ODataRequest"]));
@@ -92,8 +92,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://dhqsrvomni010:9047/LSCentralMa/WS/ReplaceWithAPercentEncodedCompanyName/Co" +
-            "deunit/OmniWrapper")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://172.22.2.208:9047/LscRelease/WS/CRONUS%20-%20LS%20Central/Codeunit/OmniWra" +
+            "pper")]
         public string LSOmni_DataAccess_BOConnection_PreCommon_LSCentral25_OmniWrapper {
             get {
                 return ((string)(this["LSOmni_DataAccess_BOConnection_PreCommon_LSCentral25_OmniWrapper"]));

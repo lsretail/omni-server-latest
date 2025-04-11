@@ -39,7 +39,11 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Hierarchies
         [EnumMember]
         Customer,
         [EnumMember]
-        CustomerGroup
+        CustomerGroup,
+        [EnumMember]
+        Vendor,
+        [EnumMember]
+        ItemCategory
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]

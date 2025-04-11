@@ -47,7 +47,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         double ContactAddCard(string contactId, string accountId, string cardId, Statistics stat);
         MemberContact ContactGet(ContactSearchType searchType, string searchValue, Statistics stat);
         List<Customer> CustomerSearch(CustomerSearchType searchType, string search, int maxNumberOfRowsReturned, Statistics stat);
-        void ConatctBlock(string accountId, string cardId, Statistics stat);
+        void ContactBlock(string accountId, string cardId, Statistics stat);
 
         MemberContact Login(string userName, string password, string deviceID, string deviceName, Statistics stat);
         MemberContact SocialLogon(string authenticator, string authenticationId, string deviceID, string deviceName, Statistics stat);
@@ -102,7 +102,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
 
         List<SalesEntry> SalesEntriesGetByCardId(string cardId, string storeId, DateTime date, bool dateGreaterThan, int maxNumberOfEntries, Statistics stat);
         SalesEntry SalesEntryGet(string entryId, DocumentIdType type, Statistics stat);
-        List<SalesEntryId> SalesEntryGetReturnSales(string receiptNo, Statistics stat);
+        List<SalesEntry> SalesEntryGetReturnSales(string receiptNo, Statistics stat);
         SalesEntryList SalesEntryGetSalesByOrderId(string orderId, Statistics stat);
         string FormatAmount(decimal amount, string culture);
         List<SalesEntry> SalesEntrySearch(string search, string cardId, int maxNumberOfTransactions, Statistics stat);
@@ -136,7 +136,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         OrderHosp HospOrderCalculate(OneList list, Statistics stat);
         string HospOrderCreate(OrderHosp request, Statistics stat);
         void HospOrderCancel(string storeId, string orderId, Statistics stat);
-        OrderHospStatus HospOrderStatus(string storeId, string orderId, Statistics stat);
+        List<OrderHospStatus> HospOrderStatus(string storeId, string orderId, Statistics stat);
         List<HospAvailabilityResponse> CheckAvailability(List<HospAvailabilityRequest> request, string storeId, Statistics stat);
 
         #endregion

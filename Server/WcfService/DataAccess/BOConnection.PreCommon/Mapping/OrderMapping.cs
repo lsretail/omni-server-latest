@@ -34,6 +34,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 CardId = header.MemberCardNo,
                 CustomerId = header.CustomerId,
                 Currency = header.CurrencyCode,
+                CurrencyFactor = header.CurrencyFactor,
                 TotalAmount = header.GrossAmount,
                 TotalNetAmount = header.NetAmount,
                 TotalDiscount = header.LineDiscount,
@@ -41,7 +42,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 PointsRewarded = header.IssuedPoints,
                 PointCashAmountNeeded = header.AmountRemaining,
                 PointAmount = header.BasketInPoints,
-                PointsUsedInOrder = header.PointsUsedInBasket
+                PointsUsedInOrder = header.PointsUsedInBasket               
             };
 
             //now loop through the lines
@@ -704,25 +705,30 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 PointsUsedInBasket = list.PointAmount,
                 CurrencyFactor = list.CurrencyFactor,
                 SourceType = "1", //NAV POS = 0, Omni = 1
+                SalesType = XMLHelper.GetString(list.SalesType),
+                PriceGroupCode = XMLHelper.GetString(list.PriceGroupCode),
+                MemberPriceGroupCode = XMLHelper.GetString(list.MemberPriceGroupCode),
+                CurrencyCode = XMLHelper.GetString(list.Currency),
+                CustomerId = XMLHelper.GetString(list.CustomerId),
 
                 // fill out null fields
-                CustomerId = string.Empty,
                 BusinessTAXCode = string.Empty,
                 GenBusPostingGroup = string.Empty,
                 VATBusPostingGroup = string.Empty,
                 CustDiscGroup = string.Empty,
-                CurrencyCode = string.Empty,
                 DiningTblDescription = string.Empty,
-                MemberPriceGroupCode = string.Empty,
-                PriceGroupCode = string.Empty,
                 ReceiptNo = string.Empty,
                 RefundedFromPOSTermNo = string.Empty,
                 RefundedFromStoreNo = string.Empty,
                 RefundedReceiptNo = string.Empty,
-                SalesType = string.Empty,
                 StaffId = string.Empty,
                 TerminalId = string.Empty
             };
+
+            if (LSCVersion >= new Version("19.0"))
+            {
+                head.ShipToCountryRegionCode = XMLHelper.GetString(list.ShipToCountryCode);
+            }
 
             trans.Add(head);
             root.MobileTransaction = trans.ToArray();

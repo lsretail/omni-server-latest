@@ -339,6 +339,38 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
             MemberContact temp = (MemberContact)MemberwiseClone();
             return temp;
         }
+
+        public void SetNewGender(string value, Version version)
+        {
+            if (value == null)
+                return;
+
+            if (version >= new Version("25.0"))
+            {
+                // enum not same as option
+                if (value == "1")
+                    Gender = Gender.Female;
+                if (value == "2")
+                    Gender = Gender.Male;
+            }
+            else
+            {
+                Gender = (Gender)Convert.ToInt32(value);
+            }
+        }
+
+        public string GetNewGender(Version version)
+        {
+            if (version >= new Version("25.0"))
+            {
+                // enum not same as option
+                if (Gender == Gender.Female)
+                    return "1";
+                if (Gender == Gender.Male)
+                    return "2";
+            }
+            return ((int)Gender).ToString();
+        }
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]

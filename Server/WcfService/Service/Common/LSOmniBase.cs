@@ -1,10 +1,8 @@
 ﻿using System;
-using System.IO;
 using System.Net;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
-using System.Text;
 
 using LSOmni.BLL;
 using LSOmni.BLL.Loyalty;
@@ -118,6 +116,8 @@ namespace LSOmni.Service
                 //token should be here except for login
                 logger.Debug(config.LSKey.Key, @"{0}=[{1}] {2} port:{3} - clientIP:[{4}] UserAgent:[{5}] Version:[{6}] ClientVersion:[{7}] deviceId:[{8}] clientTimeOut:[{9}]",
                     HEADER_TOKEN, config.SecurityToken, serverUri, port, clientIPAddress, userAgent, Version(), version, deviceId, clientTimeOutInSeconds);
+
+                config.Settings.Add(new TenantSetting(ConfigKey.EncrCode.ToString(), ConfigSetting.GetEncrCode(), string.Empty, "string", false, true));
 
                 config = GetConfig(config);
                 ConfigBLL bll = new ConfigBLL(config);

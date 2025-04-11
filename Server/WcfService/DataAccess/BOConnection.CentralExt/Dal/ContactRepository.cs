@@ -25,7 +25,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
         public ContactRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlcolumns = "mt.[Account No_],mt.[Contact No_],mt.[Name],mt.[E-Mail],mt.[Phone No_],mt.[Mobile Phone No_],mt.[Blocked],mt.[Reason Blocked],mt.[Date Blocked],mt.[Blocked by]," +
-                         "mt.[First Name],mt.[Middle Name],mt.[Surname],mt.[Date of Birth],mt.[Gender],mt.[Marital Status],mt.[Home Page],mt.[External ID],mt.[External System]," +
+                         "mt.[First Name],mt.[Middle Name],mt.[Surname],mt.[Date of Birth],mt.[Marital Status],mt.[Home Page],mt.[External ID],mt.[External System]," +
                          "mt.[Address],mt.[Address 2],mt.[House_Apartment No_],mt.[City],mt.[Post Code],mt.[Territory Code],mt.[County],mt.[Country_Region Code]";
 
             if (LSCVersion >= new Version("19.2"))
@@ -33,6 +33,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
 
             if (LSCVersion >= new Version("24.0"))
                 sqlcolumns += ",mt.[Guest Type]";
+
+            if (LSCVersion >= new Version("25.0"))
+                sqlcolumns += ",mt.[Contact Gender] AS [Gender]";
+            else
+                sqlcolumns += ",mt.[Gender]";
 
             sqlfrom = " FROM [" + navCompanyName + "LSC Member Contact$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
         }
@@ -46,7 +51,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
 
             // get records remaining
             string sql = string.Empty;
-            sqlcolumns += ",ma.[Club Code],ma.[Scheme Code]";
+            sqlcolumns += ",ma.[Club Code],ma.[Scheme Code],ma.[Linked To Customer No_]";
             sqlfrom += " LEFT JOIN [" + navCompanyName + "LSC Member Account$5ecfc871-5d82-43f1-9c54-59685e82318d] ma ON ma.[No_]=mt.[Account No_]";
 
             if (fullReplication)
@@ -140,7 +145,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             ProcessLastKey(lastKey, out string mainKey, out string delKey);
             List<JscKey> keys = GetPrimaryKeys("LSC Member Contact$5ecfc871-5d82-43f1-9c54-59685e82318d");
 
-            sqlcolumns += ",ma.[Club Code],ma.[Scheme Code]";
+            sqlcolumns += ",ma.[Club Code],ma.[Scheme Code],ma.[Linked To Customer No_]";
             sqlfrom += " LEFT JOIN [" + navCompanyName + "LSC Member Account$5ecfc871-5d82-43f1-9c54-59685e82318d] ma ON ma.[No_]=mt.[Account No_]";
 
             string sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatement(true, keys, false);
@@ -793,6 +798,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                 CellularPhone = SQLHelper.GetString(reader["Mobile Phone No_"]),
                 PhoneLocal = SQLHelper.GetString(reader["Phone No_"]),
                 Blocked = SQLHelper.GetInt32(reader["Blocked"]),
+                CustomerId = SQLHelper.GetString(reader["Linked To Customer No_"]),
                 ClubCode = SQLHelper.GetString(reader["Club Code"]),
                 SchemeCode = SQLHelper.GetString(reader["Scheme Code"])
             };
@@ -818,7 +824,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                 LastName = SQLHelper.GetString(reader["Surname"]),
                 Email = SQLHelper.GetString(reader["E-Mail"]),
                 BirthDay = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date of Birth"]), config.IsJson),
-                Gender = (Gender)SQLHelper.GetInt32(reader["Gender"]),
                 MaritalStatus = (MaritalStatus)SQLHelper.GetInt32(reader["Marital Status"]),
                 Blocked = SQLHelper.GetBool(reader["Blocked"]),
                 BlockedReason = SQLHelper.GetString(reader["Reason Blocked"]),
@@ -828,6 +833,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                 ExternalSystem = SQLHelper.GetString(reader["External System"])
             };
 
+            cont.SetNewGender(SQLHelper.GetString(reader["Gender"]), LSCVersion);
             if (LSCVersion >= new Version("19.2"))
                 cont.SendReceiptByEMail = (SendEmail)SQLHelper.GetInt32(reader["Send Receipt by E-mail"]);
 

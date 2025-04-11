@@ -763,6 +763,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
             List<ReplAttributeValue> attrValue = LoadAttrValues(result.GetDataSet(10000786));
             List<StoreHours> storeHr = LoadHours(result.GetDataSet(99009052));
             List<ImageView> images = LoadImage(result.GetDataSet(99009064));
+            List<LSKey> extraHr = LoadExtraHours(result.GetDataSet(99009050));
 
             foreach (Store store in list)
             {
@@ -780,6 +781,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                 }
 
                 store.StoreHours = storeHr.FindAll(x => x.StoreId == store.Id);
+                foreach (LSKey key in extraHr)
+                {
+                    if (key.Key != store.Id)
+                        continue;
+
+                    store.StoreHours.AddRange(storeHr.FindAll(x => x.StoreId == key.Description));
+                }
+
                 foreach (StoreHours sh in store.StoreHours)
                 {
                     if (sh.DayOfWeek == 7)
@@ -983,6 +992,32 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case "Day - Name": rec.NameOfDay = col.FieldValue; break;
                         case "Reason Closed": rec.Description = col.FieldValue; break;
                         case "Line Type": rec.Type = (StoreHourOpeningType)ConvertTo.SafeInt(col.FieldValue); break;
+                    }
+                }
+                list.Add(rec);
+            }
+            return list;
+        }
+
+        private List<LSKey> LoadExtraHours(ReplODataSetRecRef dynDataSet)
+        {
+            List<LSKey> list = new List<LSKey>();
+            if (dynDataSet == null || dynDataSet.DataSetRows.Count == 0)
+                return list;
+
+            foreach (ReplODataRecord row in dynDataSet.DataSetRows)
+            {
+                LSKey rec = new LSKey();
+                foreach (ReplODataField col in row.Fields)
+                {
+                    ReplODataSetField fld = dynDataSet.DataSetFields.Find(f => f.FieldIndex == col.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldName)
+                    {
+                        case "Store No.": rec.Key = col.FieldValue; break;
+                        case "Calendar ID": rec.Description = col.FieldValue; break;
                     }
                 }
                 list.Add(rec);
@@ -2159,6 +2194,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case "Surname": line.LastName = data.FieldValue; break;
                         case "CardNo": line.Cards.Add(new Card(data.FieldValue)); break;
                         case "LoginId": line.UserName = data.FieldValue; break;
+                        case "CustomerId": line.CustomerId = data.FieldValue; break;
                         case "Send Receipt by E-mail": line.SendReceiptByEMail = (SendEmail)ConvertTo.SafeInt(data.FieldValue); break;
                     };
                 }

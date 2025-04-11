@@ -63,7 +63,7 @@ namespace LSOmni.BLL
                 {
                     // check if image has changed in NAV
                     ImageView iv = ImageGetById(id, imageSize, false, stat);
-                    if (iv.ModifiedTime > lastModifyTime)
+                    if (iv != null && iv.ModifiedTime > lastModifyTime)
                     {
                         // load with blob and put into cache
                         iv = ImageGetById(id, imageSize, true, stat);

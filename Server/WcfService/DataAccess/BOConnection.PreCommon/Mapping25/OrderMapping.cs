@@ -7,6 +7,7 @@ using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
+using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout;
 
@@ -34,6 +35,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                 CardId = header.MemberCardNo,
                 CustomerId = header.CustomerId,
                 Currency = header.CurrencyCode,
+                CurrencyFactor = header.CurrencyFactor,
                 TotalAmount = header.GrossAmount,
                 TotalNetAmount = header.NetAmount,
                 TotalDiscount = header.LineDiscount,
@@ -327,6 +329,156 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                 }
             }
             return list;
+        }
+
+        public LSCentral25.RootCustomerOrderCreateV6 MapFromOrderV6ToRoot(Order order, string loyCur)
+        {
+            LSCentral25.RootCustomerOrderCreateV6 root = new LSCentral25.RootCustomerOrderCreateV6();
+
+            if (order.OrderType == OrderType.Sale)
+                order.ShipOrder = true;
+
+            List<LSCentral25.CustomerOrderCreateCOHeaderV6> header = new List<LSCentral25.CustomerOrderCreateCOHeaderV6>();
+            LSCentral25.CustomerOrderCreateCOHeaderV6 head = new LSCentral25.CustomerOrderCreateCOHeaderV6()
+            {
+                DocumentID = string.Empty,
+                ExternalID = order.Id.ToUpper(),
+                MemberCardNo = XMLHelper.GetString(order.CardId),
+                CustomerNo = XMLHelper.GetString(order.CustomerId),
+                Name = XMLHelper.GetString(order.ContactName),
+                SourceType = "1", //NAV POS = 0, Omni = 1
+                Address = XMLHelper.GetString(order.ContactAddress.Address1),
+                Address2 = XMLHelper.GetString(order.ContactAddress.Address2),
+                HouseApartmentNo = XMLHelper.GetString(order.ContactAddress.HouseNo),
+                City = XMLHelper.GetString(order.ContactAddress.City),
+                County = XMLHelper.GetString(order.ContactAddress.County),
+                PostCode = XMLHelper.GetString(order.ContactAddress.PostCode),
+                CountryRegionCode = XMLHelper.GetString(order.ContactAddress.Country),
+                TerritoryCode = XMLHelper.GetString(order.ContactAddress.StateProvinceRegion),
+                PhoneNo = XMLHelper.GetString(order.ContactAddress.PhoneNumber),
+                MobilePhoneNo = XMLHelper.GetString(order.ContactAddress.CellPhoneNumber),
+                DaytimePhoneNo = XMLHelper.GetString(order.DayPhoneNumber),
+                Email = XMLHelper.GetString(order.Email),
+                ShipToName = XMLHelper.GetString(order.ShipToName),
+                ShipToAddress = XMLHelper.GetString(order.ShipToAddress.Address1),
+                ShipToAddress2 = XMLHelper.GetString(order.ShipToAddress.Address2),
+                ShipToHouseApartmentNo = XMLHelper.GetString(order.ShipToAddress.HouseNo),
+                ShipToCity = XMLHelper.GetString(order.ShipToAddress.City),
+                ShipToCounty = XMLHelper.GetString(order.ShipToAddress.County),
+                ShipToPostCode = XMLHelper.GetString(order.ShipToAddress.PostCode),
+                ShipToCountryRegionCode = XMLHelper.GetString(order.ShipToAddress.Country),
+                ShipToPhoneNo = XMLHelper.GetString(order.ShipToAddress.PhoneNumber),
+                ShipToEmail = XMLHelper.GetString(order.ShipToEmail),
+                ShippingAgentCode = XMLHelper.GetString(order.ShippingAgentCode),
+                ShippingAgentServiceCode = XMLHelper.GetString(order.ShippingAgentServiceCode),
+                ShipOrder = order.ShipOrder,
+                CreatedAtStore = order.StoreId,
+                RequestedDeliveryDate = order.RequestedDeliveryDate,
+                ScanPaygo = (order.OrderType == OrderType.ScanPayGo)
+            };
+
+            bool useHeaderCAC = false;
+            string storeId = order.StoreId.ToUpper();
+            if (order.OrderType == OrderType.ClickAndCollect && string.IsNullOrEmpty(order.CollectLocation) == false)
+            {
+                storeId = order.CollectLocation.ToUpper();
+                useHeaderCAC = true;
+            }
+
+            header.Add(head);
+            root.CustomerOrderCreateCOHeaderV6 = header.ToArray();
+
+            int lineNo = order.OrderLines.Max(l => l.LineNumber);
+            List<LSCentral25.CustomerOrderCreateCOLineV6> orderLines = new List<LSCentral25.CustomerOrderCreateCOLineV6>();
+            foreach (OrderLine line in order.OrderLines)
+            {
+                if (line.LineNumber == 0)
+                    line.LineNumber = ++lineNo;
+
+                orderLines.Add(new LSCentral25.CustomerOrderCreateCOLineV6()
+                {
+                    DocumentID = string.Empty,
+                    ExternalID = (string.IsNullOrEmpty(line.Id)) ? string.Empty : line.Id.ToUpper(),
+                    LineNo = XMLHelper.LineNumberToNav(line.LineNumber),
+                    LineType = Convert.ToInt32(line.LineType).ToString(),
+                    Number = line.ItemId,
+                    VariantCode = XMLHelper.GetString(line.VariantId),
+                    UnitofMeasureCode = XMLHelper.GetString(line.UomId),
+                    OrderReference = XMLHelper.GetString(line.OrderId),
+                    StoreNo = string.IsNullOrEmpty(line.StoreId) ? storeId : line.StoreId.ToUpper(),
+                    ClickAndCollect = (useHeaderCAC) ? (order.OrderType == OrderType.ClickAndCollect) : line.ClickAndCollectLine,
+                    Quantity = line.Quantity,
+                    SourcingLocation = XMLHelper.GetString(line.SourcingLocation),
+                    InventoryTransfer = line.InventoryTransfer,
+                    VendorSourcing = line.VendorSourcing,
+                    DiscountAmount = line.DiscountAmount,
+                    DiscountPercent = line.DiscountPercent,
+                    Amount = line.Amount,
+                    NetAmount = line.NetAmount,
+                    VatAmount = line.TaxAmount,
+                    Price = line.Price,
+                    NetPrice = line.NetPrice,
+                    ValidateTaxParameter = line.ValidateTax
+                });
+            }
+            root.CustomerOrderCreateCOLineV6 = orderLines.ToArray();
+
+            List<LSCentral25.CustomerOrderCreateCODiscountLineV6> discLines = new List<LSCentral25.CustomerOrderCreateCODiscountLineV6>();
+            if (order.OrderDiscountLines != null)
+            {
+                foreach (OrderDiscountLine line in order.OrderDiscountLines)
+                {
+                    discLines.Add(new LSCentral25.CustomerOrderCreateCODiscountLineV6()
+                    {
+                        DocumentID = string.Empty,
+                        LineNo = XMLHelper.LineNumberToNav(line.LineNumber),
+                        EntryNo = Convert.ToInt32(line.No),
+                        DiscountType = (int)line.DiscountType,
+                        OfferNo = XMLHelper.GetString(line.OfferNumber),
+                        PeriodicDiscType = (int)line.PeriodicDiscType,
+                        PeriodicDiscGroup = XMLHelper.GetString(string.IsNullOrEmpty(line.PeriodicDiscGroup) ? line.OfferNumber : line.PeriodicDiscGroup),
+                        Description = XMLHelper.GetString(line.Description),
+                        DiscountPercent = line.DiscountPercent,
+                        DiscountAmount = line.DiscountAmount
+                    });
+                }
+            }
+            root.CustomerOrderCreateCODiscountLineV6 = discLines.ToArray();
+
+            List<LSCentral25.CustomerOrderCreateCOPaymentV6> payLines = new List<LSCentral25.CustomerOrderCreateCOPaymentV6>();
+            if (order.OrderPayments != null)
+            {
+                foreach (OrderPayment line in order.OrderPayments)
+                {
+                    string curcode = XMLHelper.GetString(line.CurrencyCode);
+                    bool loypayment = (string.IsNullOrEmpty(curcode)) ? false : curcode.Equals(loyCur, StringComparison.InvariantCultureIgnoreCase);
+
+                    payLines.Add(new LSCentral25.CustomerOrderCreateCOPaymentV6()
+                    {
+                        DocumentID = string.Empty,
+                        LineNo = XMLHelper.LineNumberToNav(line.LineNumber),
+                        PreApprovedAmount = line.Amount,
+                        PreApprovedAmountLCY = line.CurrencyFactor * line.Amount,
+                        Type = ((int)line.PaymentType).ToString(),
+                        TenderType = line.TenderType,
+                        CardType = XMLHelper.GetString(line.CardType),
+                        EFTCardType = XMLHelper.GetString(line.EFTCardType),
+                        StoreNo = (order.OrderType == OrderType.ClickAndCollect && string.IsNullOrEmpty(order.CollectLocation) == false) ? order.CollectLocation.ToUpper() : order.StoreId.ToUpper(),
+                        CurrencyCode = curcode,
+                        CurrencyFactor = line.CurrencyFactor,
+                        AuthorizationCode = XMLHelper.GetString(line.AuthorizationCode),
+                        AuthorizationExpired = line.AuthorizationExpired,
+                        TokenNo = XMLHelper.GetString(line.TokenNumber),
+                        ExternalReference = XMLHelper.GetString(line.ExternalReference),
+                        PreApprovedValidDate = line.PreApprovedValidDate,
+                        CardorCustomernumber = XMLHelper.GetString(line.CardNumber),
+                        LoyaltyPointpayment = loypayment,
+                        DepositPayment = line.DepositPayment
+                    });
+                }
+            }
+            root.CustomerOrderCreateCOPaymentV6 = payLines.ToArray();
+            return root;
         }
 
         public LSCentral25.RootCustomerOrderCreateV5 MapFromOrderV5ToRoot(Order order, string loyCur)
@@ -689,11 +841,21 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                 TransactionType = 2,
                 EntryStatus = (int)EntryStatus.Normal,
                 MemberCardNo = XMLHelper.GetString(list.CardId),
+                CustomerId = XMLHelper.GetString(list.CustomerId),
                 TransDate = DateTime.Now,
                 PointsUsedInBasket = list.PointAmount,
                 CurrencyFactor = list.CurrencyFactor,
-                SourceType = "1" //NAV POS = 0, Omni = 1
+                SourceType = "1", //NAV POS = 0, Omni = 1
+                SalesType = XMLHelper.GetString(list.SalesType),
+                PriceGroupCode = XMLHelper.GetString(list.PriceGroupCode),
+                MemberPriceGroupCode = XMLHelper.GetString(list.MemberPriceGroupCode),
+                CurrencyCode = XMLHelper.GetString(list.Currency)
             };
+
+            if (LSCVersion >= new Version("26.0"))
+            {
+                head.ShipToCountryRegionCode = XMLHelper.GetString(list.ShipToCountryCode);
+            }
 
             trans.Add(head);
             root.MobileTransaction = trans.ToArray();
@@ -868,7 +1030,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
             return rootin;
         }
 
-        public OrderCheck RootToOrderCheck(LSCentral25.RootSPGOrderCheck root)
+        public OrderCheck RootToOrderCheck(LSCentral25.RootSPGOrderCheck1 root)
         {
             OrderCheck order = new OrderCheck();
             if (root.SPGOrderCheckCOHeader == null || root.SPGOrderCheckCOHeader.Count() == 0)
@@ -880,7 +1042,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
             if (root.SPGOrderCheckCOLine != null)
             {
                 order.Lines = new List<OrderCheckLines>();
-                foreach (LSCentral25.SPGOrderCheckCOLine line in root.SPGOrderCheckCOLine)
+                foreach (LSCentral25.SPGOrderCheckCOLine1 line in root.SPGOrderCheckCOLine)
                 {
                     order.Lines.Add(new OrderCheckLines()
                     {
@@ -945,6 +1107,44 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                 root.CustomerOrderCancelCOLine = clines.ToArray();
             }
             return root;
+        }
+
+        public List<OrderHospStatus> GetKotStatus(LSCentral25.RootKotStatus root, int estTime)
+        {
+            List<OrderHospStatus> statues = new List<OrderHospStatus>();
+
+            if (root.KotStatus == null)
+                return statues;
+            
+            foreach (LSCentral25.KotStatus stat in root.KotStatus)
+            {
+                OrderHospStatus status = new OrderHospStatus()
+                {
+                    ReceiptNo = stat.ReceiptNo,
+                    KotNo = stat.KotNo,
+                    QueueCounter = stat.OrderID,
+                    Status = (KOTStatus)Convert.ToInt32(stat.Status),
+                    Confirmed = stat.ConfirmedbyExp,
+                    ProductionTime = stat.KotProdTime,
+                    EstimatedTime = estTime
+                };
+                statues.Add(status);
+
+                if (root.KOT_Line == null)
+                    continue;
+
+                status.Lines = new List<OrderHospStatusLine>();
+                List<LSCentral25.KOT_Line> lines = root.KOT_Line.ToList().FindAll(l => l.KotNo == stat.KotNo);
+                foreach (LSCentral25.KOT_Line line in lines)
+                {
+                    status.Lines.Add(new OrderHospStatusLine()
+                    {
+                        Number = line.ItemNo,
+                        LineNumber = line.KotLineNo
+                    });
+                }
+            }
+            return statues;
         }
     }
 }

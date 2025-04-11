@@ -139,7 +139,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT [Receipt No_]," +
-                                          "(SELECT [Customer Order ID] " +
+                                          "(SELECT DISTINCT [Customer Order ID] " +
                                           "FROM [" + navCompanyName + "Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] " +
                                           "WHERE [Receipt No_]=@no) AS CONo " +
                                           "FROM [" + navCompanyName + "Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] " +

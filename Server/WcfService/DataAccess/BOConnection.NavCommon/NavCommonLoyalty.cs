@@ -1372,7 +1372,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleWS2ResponseCode("CancelHospOrder", respCode, errorText);
         }
 
-        public OrderHospStatus HospOrderStatus(string storeId, string orderId)
+        public List<OrderHospStatus> HospOrderStatus(string storeId, string orderId)
         {
             string respCode = string.Empty;
             string errorText = string.Empty;
@@ -1383,10 +1383,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             NavWS.RootKotStatus root = new NavWS.RootKotStatus();
             navQryWS.GetKotStatus(ref respCode, ref errorText, storeId, orderId, ref root);
             HandleWS2ResponseCode("GetKotStatus", respCode, errorText);
-            if (root.KotStatus == null || root.KotStatus.Length == 0)
-                return new OrderHospStatus();
 
-            return new OrderHospStatus()
+            List<OrderHospStatus> status = new List<OrderHospStatus>();
+            if (root.KotStatus == null || root.KotStatus.Length == 0)
+                return status;
+
+            status.Add(new OrderHospStatus()
             {
                 ReceiptNo = root.KotStatus[0].ReceiptNo,
                 KotNo = root.KotStatus[0].KotNo,
@@ -1394,7 +1396,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 Confirmed = root.KotStatus[0].ConfirmedbyExp,
                 ProductionTime = root.KotStatus[0].KotProdTime,
                 EstimatedTime = estTime
-            };
+            });
+            return status;
         }
 
         #endregion
