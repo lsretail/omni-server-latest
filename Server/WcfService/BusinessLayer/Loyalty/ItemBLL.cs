@@ -93,6 +93,11 @@ namespace LSOmni.BLL.Loyalty
         {
             return BOLoyConnection.HierarchyGet(storeId, stat);
         }
+
+        public virtual List<Hierarchy> HierarchyContentGet(string storeNo, string languageCode, Statistics stat)
+        {
+            return BOLoyConnection.HierarchyContentGet(storeNo, languageCode, stat);
+        }
     }
 }
 

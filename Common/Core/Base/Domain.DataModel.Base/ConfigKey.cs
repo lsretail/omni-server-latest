@@ -1,4 +1,4 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
 
 namespace LSRetail.Omni.Domain.DataModel.Base
 {
@@ -23,6 +23,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         BOTimeout = 101,
         BOEncode = 102,
         BOS2SExpAdjust = 103,
+        BOCompanyID = 104,
 
         //Proxy setup
         Proxy_Server = 300,

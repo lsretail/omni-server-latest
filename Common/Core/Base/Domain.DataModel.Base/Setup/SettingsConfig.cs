@@ -83,6 +83,11 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
 
         private string webView2RuntimeLocation;
 
+        private bool appInsightsEnabled;
+        private string appInsightsConnectionString;
+        private bool appInsightsSendUsage;
+        private bool appInsightsSendExceptions;
+
         public const string AutoUpdateKey = "AutoUpdateKey";
         public const string AutoUpdatePathKey = "AutoUpdatePathKey";
         public const string ServiceUpdateTimerKey = "ServiceUpdateTimerKey";

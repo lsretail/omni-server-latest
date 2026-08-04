@@ -401,6 +401,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return rep.HierarchyGetByStore(storeId);
         }
 
+        public virtual List<Hierarchy> HierarchyContentGet(string storeNo, string languageCode, Statistics stat)
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual MobileMenu MenuGet(string restaurantNo, string terminalNo, string salesType, Currency currency, Statistics stat)
         {
             return NavWSBase.MenuGet(restaurantNo, terminalNo, salesType, currency);

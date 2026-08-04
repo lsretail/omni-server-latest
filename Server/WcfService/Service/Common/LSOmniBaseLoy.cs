@@ -2061,6 +2061,28 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual List<Hierarchy> HierarchyContentGet(string storeNo, string languageCode)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                logger.Debug(config.LSKey.Key, "storeId:{0}", storeNo);
+
+                ItemBLL bll = new ItemBLL(config, clientTimeOutInSeconds);
+                return bll.HierarchyContentGet(storeNo, languageCode, stat);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "storeId:{0}", storeNo);
+                return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
         public virtual MobileMenu MenuGet(string restaurantNo, string terminalNo, string salesType, bool loadDetails, ImageSize imageSize)
         {
             Statistics stat = logger.StatisticStartMain(config, serverUri);

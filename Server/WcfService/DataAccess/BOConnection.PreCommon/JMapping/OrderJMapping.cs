@@ -241,6 +241,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                 string curCode = string.Empty;
                 PaymentType pType = PaymentType.None;
                 decimal curFact = 0;
+                decimal amtCurrency = 0;
 
                 foreach (ReplODataField col in row.Fields)
                 {
@@ -273,6 +274,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case "Click and Collect Line": rec.ClickAndCollectLine = ConvertTo.SafeBoolean(col.FieldValue); break;
                         case "Image Id": rec.ItemImageId = col.FieldValue; break;
 
+                        case "Amount in Currency": amtCurrency = ConvertTo.SafeDecimal(col.FieldValue); break;
                         case "Document ID": docId = col.FieldValue; break;
                         case "Currency Code": curCode = col.FieldValue; break;
                         case "Currency Factor": curFact = ConvertTo.SafeDecimal(col.FieldValue); break;
@@ -288,7 +290,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                 {
                     entry.Payments.Add(new SalesEntryPayment()
                     {
-                        Amount = rec.Amount,
+                        Amount = amtCurrency,
                         AmountLCY = rec.Amount,
                         LineNumber = payLineNo,
                         TenderType = rec.ItemId,

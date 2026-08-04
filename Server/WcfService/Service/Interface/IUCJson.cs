@@ -98,7 +98,7 @@ namespace LSOmni.Service
         /// Get balance of a gift card.
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetDataEntryBalance
+        /// LS Central WS2 : GetDataEntryBalanceV2 (LS Central 24.0+); earlier versions read POS Data Entry directly
         /// </remarks>
         /// <param name="cardNo">Gift card number</param>
         /// <param name="pin">Gift card pin number</param>
@@ -111,6 +111,9 @@ namespace LSOmni.Service
         /// <summary>
         /// Get activity history for Gift Card
         /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : GetVoucherEntriesV2 (LS Central 24.0+), GetVoucherEntries (earlier)
+        /// </remarks>
         /// <param name="cardNo">Gift card number</param>
         /// <param name="pin">Gift card pin number</param>
         /// <param name="entryType">Gift card Entry type. If empty, GiftCard_DataEntryType from TenantConfig is used</param>
@@ -149,6 +152,27 @@ namespace LSOmni.Service
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         Notification NotificationGetById(string notificationId);
 
+        /// <summary>
+        /// Register a device to receive Push Notifications, or update the registration and its enabled/disabled status
+        /// </summary>
+        /// <example>
+        /// Sample request including minimum data needed to be able to process the request in LS Commerce
+        /// <code language="xml" title="REST Sample Request">
+        /// <![CDATA[
+        /// {
+        ///     "pushNotificationRequest": {
+        ///         "Application": 1,
+        ///         "Body": "Your order is ready for collection",
+        ///         "DeviceId": "fWc8sX1qP0k:APA91bF...device-registration-token...",
+        ///         "Id": "",
+        ///         "Platform": 1,
+        ///         "Status": 1,
+        ///         "Title": "Order Ready"
+        ///     }
+        /// }
+        /// ]]>
+        /// </code>
+        /// </example>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         bool PushNotificationSave(PushNotificationRequest pushNotificationRequest);
@@ -411,6 +435,27 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Central WS2 : COQtyAvailabilityV2
         /// </remarks>
+        /// <example>
+        /// Sample request including minimum data needed to be able to process the request in LS Commerce<p/>
+        /// Check availability of a Basket (OneList) for a shipped order
+        /// <code language="xml" title="REST Sample Request">
+        /// <![CDATA[
+        /// {
+        ///     "request": {
+        ///         "CardId": "10021",
+        ///         "Items": [{
+        ///             "ItemId": "40020",
+        ///             "Quantity": 2,
+        ///             "VariantId": "002"
+        ///         }],
+        ///         "ListType": 0,
+        ///         "StoreId": "S0001"
+        ///     },
+        ///     "shippingOrder": true
+        /// }
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="request"></param>
         /// <param name="shippingOrder">true if order is to be shipped, false if click and collect</param>
         /// <returns></returns>
@@ -670,8 +715,44 @@ namespace LSOmni.Service
         /// Edit Customer Order
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : CustomerOrderEditV2
+        /// LS Central WS2 : CustomerOrderEditV2 (LS Central 28.0+), CustomerOrderEdit (earlier)
         /// </remarks>
+        /// <example>
+        /// Sample request including minimum data needed to be able to process the request in LS Commerce<p/>
+        /// Edit an existing shipped Order, increasing the quantity of the order line from 2 to 3
+        /// <code language="xml" title="REST Sample Request">
+        /// <![CDATA[
+        /// {
+        ///     "request": {
+        ///         "CardId": "10021",
+        ///         "OrderLines": [{
+        ///             "ItemId": "40020",
+        ///             "LineNumber": "1",
+        ///             "LineType": "0",
+        ///             "Quantity": "3",
+        ///             "VariantId": "002"
+        ///         }],
+        ///         "OrderType": "0",
+        ///         "ShipOrder": "1",
+        ///         "ShipToAddress": {
+        ///             "Address1": "600 Lue Via",
+        ///             "Address2": "None",
+        ///             "City": "North Viola",
+        ///             "Country": "Belgium",
+        ///             "PhoneNumber": "555-555-5555",
+        ///             "PostCode": "88391-4289",
+        ///             "StateProvinceRegion": "None",
+        ///             "Type": "0"
+        ///         },
+        ///         "StoreId": "S0013"
+        ///     },
+        ///     "orderId": "CO000123",
+        ///     "editType": 1,
+        ///     "returnOrderIdOnly": 0
+        /// }
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="request">Updated Order object</param>
         /// <param name="orderId">Order Id to edit</param>
         /// <param name="editType">Type of Order Edit</param>
@@ -685,8 +766,34 @@ namespace LSOmni.Service
         /// Update payments for Customer Order
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : COUpdatePaymentV2
+        /// LS Central WS2 : COUpdatePaymentV2 (LS Central 28.0+), COUpdatePayment (earlier)
         /// </remarks>
+        /// <example>
+        /// Sample request including minimum data needed to be able to process the request in LS Commerce<p/>
+        /// Update the pre-authorized card payment on an existing Customer Order
+        /// <code language="xml" title="REST Sample Request">
+        /// <![CDATA[
+        /// {
+        ///     "orderId": "CO000123",
+        ///     "storeId": "S0013",
+        ///     "payment": {
+        ///         "Amount": "160.0",
+        ///         "AuthorizationCode": "123456",
+        ///         "CardNumber": "10xx xxxx xxxx 1475",
+        ///         "CardType": "VISA",
+        ///         "CurrencyCode": "GBP",
+        ///         "CurrencyFactor": 1,
+        ///         "ExternalReference": "MyRef123",
+        ///         "LineNumber": 1,
+        ///         "PaymentType": "2",
+        ///         "PreApprovedValidDate": "\/Date(1892160000000+1000)\/",
+        ///         "TenderType": "1",
+        ///         "TokenNumber": "123456"
+        ///     }
+        /// }
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="payment"></param>
         /// <param name="orderId">Customer Order Id</param>
         /// <param name="storeId"></param>
@@ -912,7 +1019,7 @@ namespace LSOmni.Service
         /// Check Status of a Customer Order
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : CustomerOrderStatus
+        /// LS Central WS2 : CustomerOrderStatusV2 (LS Central 18.2+), CustomerOrderStatus (earlier)
         /// </remarks>
         /// <param name="orderId"></param>
         /// <returns></returns>
@@ -941,6 +1048,24 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Central WS2 : CustomerOrderCancel
         /// </remarks>
+        /// <example>
+        /// Sample request including minimum data needed to be able to process the request in LS Commerce<p/>
+        /// Cancel a single quantity of one line on an existing Customer Order (leave "lines" empty to cancel the whole order)
+        /// <code language="xml" title="REST Sample Request">
+        /// <![CDATA[
+        /// {
+        ///     "orderId": "CO000123",
+        ///     "storeId": "S0013",
+        ///     "userId": "10021",
+        ///     "lines": [{
+        ///         "ItemNo": "40020",
+        ///         "LineNo": 1,
+        ///         "Quantity": 1
+        ///     }]
+        /// }
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="orderId">Customer Order Id</param>
         /// <param name="storeId">Web Store Id</param>
         /// <param name="userId">User who cancels the order, use Contact ID for logged in user</param>
@@ -1757,6 +1882,20 @@ namespace LSOmni.Service
         /// <summary>
         /// Gets Hospitality Kitchen Current Availability
         /// </summary>
+        /// <example>
+        /// Sample request including minimum data needed to be able to process the request in LS Commerce
+        /// <code language="xml" title="REST Sample Request">
+        /// <![CDATA[
+        /// {
+        ///     "request": [{
+        ///         "ItemId": "S10025",
+        ///         "UnitOfMeasure": ""
+        ///     }],
+        ///     "storeId": "S0017"
+        /// }
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="request">List of items to get, if empty, get all items</param>
         /// <param name="storeId">Store to get, if empty get all stores</param>
         /// <returns></returns>
@@ -1823,6 +1962,23 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Central WS2 : EcomGetCustomerPrice
         /// </remarks>
+        /// <example>
+        /// Sample request including minimum data needed to be able to process the request in LS Commerce
+        /// <code language="xml" title="REST Sample Request">
+        /// <![CDATA[
+        /// {
+        ///     "storeId": "S0001",
+        ///     "cardId": "10021",
+        ///     "items": [{
+        ///         "Id": "40020",
+        ///         "LineNo": 1,
+        ///         "Quantity": 1,
+        ///         "VariantId": "010"
+        ///     }]
+        /// }
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="storeId"></param>
         /// <param name="cardId"></param>
         /// <param name="items">list of items to get prices for</param>
@@ -1848,6 +2004,19 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         List<Hierarchy> HierarchyGet(string storeId);
+
+        /// <summary>
+        /// Gets Hierarchy setup for a Store with all Leaves and Nodes with content information
+        /// </summary>
+        /// <remarks>
+        /// LS Central OData: GetHierarchyV3
+        /// </remarks>
+        /// <param name="storeNo"></param>
+        /// <param name="languageCode"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        List<Hierarchy> HierarchyContentGet(string storeNo, string languageCode);
 
         #endregion
 
@@ -2112,7 +2281,8 @@ namespace LSOmni.Service
         /// Gets Return Policy
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetReturnPolicy
+        /// LS Central WS2 : GetReturnPolicy<p/>
+        /// LS Central PageWS : returnPolicies
         /// </remarks>
         /// <param name="storeId"></param>
         /// <param name="storeGroupCode"></param>
@@ -3287,11 +3457,36 @@ namespace LSOmni.Service
         List<AdditionalCharge> ActivityReservationAdditionalChargesGet(string reservationNo);
 
         /// <summary>
-        /// 
+        /// Change or insert additional charges to a group reservation member
         /// </summary>
         /// <remarks>
         /// LS Central WS2 : SetGroupAdditionalCharges
         /// </remarks>
+        /// <example>
+        /// Sample request including minimum data needed to be able to process the request in LS Commerce
+        /// <code language="xml" title="REST Sample Request">
+        /// <![CDATA[
+        /// {
+        ///   "reqest": {
+        ///     "ActivityNo": "ACT0035",
+        ///     "DiscountPercentage": "0.0",
+        ///     "InvoiceReference": "",
+        ///     "ItemNo": "40020",
+        ///     "LineNo": 1,
+        ///     "Optional": "",
+        ///     "OptionalComment": "",
+        ///     "ParentLine": 0,
+        ///     "Price": 110.0,
+        ///     "ProductType": "0",
+        ///     "Quantity": 1,
+        ///     "TotalAmount": 110.0,
+        ///     "UnitOfMeasure": "",
+        ///     "VariantCode": ""
+        ///   }
+        /// }
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="reqest"></param>
         /// <returns></returns>
         [OperationContract]
@@ -3455,6 +3650,31 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Central WS2 : UpdateReservationVx
         /// </remarks>
+        /// <example>
+        /// Sample request including minimum data needed to be able to process the request in LS Commerce
+        /// <code language="xml" title="REST Sample Request">
+        /// <![CDATA[
+        /// {
+        ///     "request": {
+        ///        "ContactName": "Tom",
+        ///        "ContactNo": "MO000008",
+        ///        "Description": "",
+        ///        "Email": "tom@xxx.com",
+        ///        "EventNo": "",
+        ///        "Internalstatus": "0",
+        ///        "Location": "CAMBRIDGE",
+        ///        "ResDateFrom": "\/Date(1570737600000)\/",
+        ///        "ResDateTo": "\/Date(1570741200000)\/",
+        ///        "ResTimeFrom": "\/Date(1570737600000)\/",
+        ///        "ResTimeTo": "\/Date(1570741200000)\/",
+        ///        "ReservationType": "SPA",
+        ///        "SalesPerson": "AH",
+        ///        "Status": ""
+        ///     }
+        /// }
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="request"></param>
         /// <returns></returns>
         [OperationContract]
@@ -3622,6 +3842,32 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Central WS2 : UpdateGroupReservationVx
         /// </remarks>
+        /// <example>
+        /// Sample request including minimum data needed to be able to process the request in LS Commerce
+        /// <code language="xml" title="REST Sample Request">
+        /// <![CDATA[
+        /// {
+        ///      "request": {
+        ///        "ContactName": "Tom",
+        ///        "ContactNo": "MO000008",
+        ///        "Description": "",
+        ///        "Email": "tom@xxx.com",
+        ///        "EventNo": "",
+        ///        "Internalstatus": "0",
+        ///        "Location": "CAMBRIDGE",
+        ///        "NoOfPerson": 2,
+        ///        "ResDateFrom": "\/Date(1570737600000)\/",
+        ///        "ResDateTo": "\/Date(1570741200000)\/",
+        ///        "ResTimeFrom": "\/Date(1570737600000)\/",
+        ///        "ResTimeTo": "\/Date(1570741200000)\/",
+        ///        "ReservationType": "SPA",
+        ///        "SalesPerson": "AH",
+        ///        "Status": ""
+        ///      }
+        /// }
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="request"></param>
         /// <returns></returns>
         [OperationContract]
@@ -3951,11 +4197,32 @@ namespace LSOmni.Service
         string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering);
 
         /// <summary>
-        /// Add Payment token
+        /// Add or delete a payment card token
         /// </summary>
         /// <remarks>
         /// LS Central WS2 : SetTokenEntry, SetMemberCardToken, DeleteMemberCardToken
         /// </remarks>
+        /// <example>
+        /// Sample request including minimum data needed to be able to process the request in LS Commerce
+        /// <code language="xml" title="REST Sample Request">
+        /// <![CDATA[
+        /// {
+        ///   "token": {
+        ///     "AccountNo": "10000",
+        ///     "CardMask": "459999XXXXXX0001",
+        ///     "ContactNo": "MO000008",
+        ///     "DefaultToken": true,
+        ///     "ExpiryDate": "\/Date(1893456000000)\/",
+        ///     "Token": "9F8A7B6C5D4E3F21",
+        ///     "TokenId": "TID0001",
+        ///     "Type": "VISA",
+        ///     "pSPID": "PSP01"
+        ///   },
+        ///   "deleteToken": false
+        /// }
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="token"></param>
         /// <param name="deleteToken">Delete token, Send token with token and cardId to delete</param>
         /// <returns></returns>

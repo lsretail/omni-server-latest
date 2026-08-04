@@ -319,25 +319,16 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                         {
                             if (act.Type == DDStatementType.Delete)
                             {
-                                /* we dont know the item id from delete action
-                                
                                 string[] par = act.ParamValue.Split(';');
-                                if (par.Length < 8 || par.Length != keys.Count)
+                                if (par.Length < 2 || par.Length != keys.Count)
                                     continue;
 
                                 list.Add(new ReplPrice()
                                 {
-                                    ItemId = par[0],
-                                    SaleType = Convert.ToInt32(par[1]),
-                                    SaleCode = par[2],
-                                    StartingDate = GetDateTimeFromNav(par[3]),
-                                    CurrencyCode = par[4],
-                                    VariantId = par[5],
-                                    UnitOfMeasure = par[6],
-                                    MinimumQuantity = Convert.ToDecimal(par[7]),
+                                    PriceListCode = par[0],
+                                    LineNumber = ConvertTo.SafeInt(par[1]),
                                     IsDeleted = true
                                 });
-                                */
                                 continue;
                             }
 

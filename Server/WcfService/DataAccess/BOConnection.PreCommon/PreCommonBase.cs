@@ -1,19 +1,20 @@
-﻿using System;
+﻿using LSOmni.Common.Util;
+using LSOmni.DataAccess.BOConnection.PreCommon.JMapping;
+using LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping;
+using LSRetail.Omni.Domain.DataModel.Base;
+
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Net;
-using System.Text;
 using System.Linq;
+using System.Net;
+using System.Net.Security;
+using System.Text;
 using System.Web;
 using System.Xml;
 using System.Xml.Linq;
-using System.Net.Security;
-using System.Diagnostics;
-using System.Collections.Generic;
-
-using LSOmni.Common.Util;
-using LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping;
-using LSOmni.DataAccess.BOConnection.PreCommon.JMapping;
-using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.DataAccess.BOConnection.PreCommon
 {
@@ -46,7 +47,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             }
         }
 
+        public static string Escape(string value) => value.Replace("'", "''");
+
         protected static LSLogger logger = new LSLogger();
+        private static readonly object Locker = new object();
 
         private readonly NavWebReference.RetailWebServices navWebReference = null;
         private readonly NavWebReference.RetailWebServices navWebQryReference = null;
@@ -57,7 +61,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         public LSActivity.Activity activityWS = null;
         public LSOData.ODataRequest odataWS = null;
         private readonly int base64ConversionMinLength = 1024 * 100; //50KB 75KB  minimum length to base64 conversion
-        private static readonly object Locker = new object();
 
         public Version LSCVersion = null; //use this in code to check Nav version
         public string NavCompany = string.Empty;
@@ -228,11 +231,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             NavVersionToUse(false, out string cVer);
         }
 
-        public string SendToOData(string command, string data, bool sendget)
+        public string SendToOData(string command, string data, bool sendget, bool pageWS = false)
         {
             try
             {
-                Uri url = new Uri(string.Format("{0}/{1}?company={2}", config.SettingsGetByKey(ConfigKey.BOODataUrl), command, NavCompany));
+                Uri url;
+                if (pageWS)
+                    url = new Uri(string.Format("{0}/{1}", config.SettingsGetByKey(ConfigKey.BOODataUrl).Replace("ODataV4", "api/lsRetail"), command));
+                else
+                    url = new Uri(string.Format("{0}/{1}?company={2}", config.SettingsGetByKey(ConfigKey.BOODataUrl), command, NavCompany));
+
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                 httpWebRequest.ContentType = "application/json";
                 httpWebRequest.Method = (sendget) ? "GET" : "POST";
@@ -273,12 +281,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     }
                 }
 
-                logger.Debug(config.LSKey.Key, "OData Req Sent to:{0} ReqData:{1}", url.LocalPath, data);
-                using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+                logger.Debug(config.LSKey.Key, "OData {0} To {1} - Command:{2} ReqData:[{3}]", 
+                    httpWebRequest.Method, url.Host + url.LocalPath, command, data);
+                if (sendget == false)
                 {
-                    streamWriter.Write(data);
-                    streamWriter.Flush();
-                    streamWriter.Close();
+                    using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+                    {
+                        streamWriter.Write(data);
+                        streamWriter.Flush();
+                        streamWriter.Close();
+                    }
                 }
 
                 string ret = string.Empty;
@@ -290,6 +302,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
                 logger.Debug(config.LSKey.Key, "OData Result:[{0}]", ret);
                 return ret;
+            }
+            catch (WebException wex) when (wex.Response is HttpWebResponse errResponse)
+            {
+                string body;
+                using (StreamReader reader = new StreamReader(errResponse.GetResponseStream()))
+                {
+                    body = reader.ReadToEnd();
+                }
+                logger.Error(config.LSKey.Key, wex, "OData [{0}] {1} - Response:[{2}]", (int)errResponse.StatusCode, errResponse.StatusDescription, body);
+                return string.IsNullOrWhiteSpace(body) ? "ERROR:" + wex.Message : body;
             }
             catch (Exception ex)
             {
@@ -354,7 +376,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         public string NavVersionToUse(bool foreceCall, out string centralVersion)
         {
             if (LSCVersion == null)
-                LSCVersion = new Version("27.0");
+                LSCVersion = new Version("28.0");
 
             centralVersion = LSCVersion.ToString();
             if (centralWS == null)
@@ -434,7 +456,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     {
                         Statistics stat = new Statistics();
                         string ret = SendToOData("TestConnectionOData_TestConnection", "{ }", false);
-                        logger.Debug(config.LSKey.Key, "Central OData TestConnection Response > " + ret);
                         SetupJMapping map = new SetupJMapping(config.IsJson);
                         map.GetTestConnection(ret, out appVersion, out retailVersion, out appBuild, out retailCopyright, out bool licActive, out bool ecomLic, out errorText, out respCode);
                         HandleWS2ResponseCode("TestConnectionOData", respCode, errorText, ref stat, 0);
@@ -443,7 +464,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     else
                     {
                         string ret = SendToOData("GetMemberContactInfo_GetRequestDef", "{ }", false);
-                        logger.Debug(config.LSKey.Key, "Central OData Response > " + ret);
                         if (ret.StartsWith("ERROR:"))
                             throw new LSOmniServiceException(StatusCode.NavODataError, "9003", ret);
                     }
@@ -762,6 +782,90 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         protected string HandleWS2ResponseCode(string funcName, string respCode, string errText, ref Statistics stat, int statIndex, string[] codesToHandle = null)
         {
             if (respCode == "0000" || respCode == "")
+                return string.Empty;
+
+            StatusCode statusCode = MapResponseToStatusCode(funcName, respCode);
+            logger.Error(config.LSKey.Key, "LS Central [{0}] Error: [{1}]:{2} [OmniCode:{3}]", funcName, respCode, errText, statusCode);
+
+            if (codesToHandle != null && codesToHandle.Length > 0)
+            {
+                foreach (string code in codesToHandle)
+                {
+                    //expected return codes, so don't throw unexpected exception, rather return the known codes to client  
+                    if (code.Equals(respCode))
+                    {
+                        logger.Warn(config.LSKey.Key, "LS Central [{0}] Warning: [{1}]:{2} [OmniCode:{3}]", funcName, respCode, errText, statusCode);
+                        return code;
+                    }
+                }
+            }
+            logger.StatisticEndSub(ref stat, statIndex);
+            throw new LSOmniServiceException(statusCode, respCode, errText);
+        }
+
+        protected string HandleWJsonResponseCode(string jsondata, string funcName, out string respCode, out string errText, ref Statistics stat, int statIndex, string[] codesToHandle = null)
+        {
+            respCode = "0000";
+            errText = string.Empty;
+
+            JObject parsed;
+            try
+            {
+                parsed = JObject.Parse(jsondata);
+            }
+            catch (Exception)
+            {
+                throw new LSOmniServiceException(StatusCode.NavODataError, "API Page Error:" + jsondata);
+            }
+
+            bool found = false;
+            var topLevelError = parsed.SelectToken("error");
+            if (topLevelError != null)
+            {
+                respCode = topLevelError.SelectToken("code").Value<string>();
+                errText = topLevelError.SelectToken("message").Value<string>();
+                found = true;
+            }
+
+            var token = parsed.SelectToken("responses");
+            if (token != null)
+            {
+                JArray array = JArray.Parse(token.ToString());
+                if (array == null)
+                    throw new LSOmniServiceException(StatusCode.NavODataError, "Responses Array element not found in result");
+                if (array.Count > 1)
+                    return string.Empty;
+
+                parsed = array.FirstOrDefault().ToObject<JObject>();
+                var hasError = parsed.SelectToken("body.error");
+                if (hasError == null)
+                    return string.Empty;
+
+                respCode = hasError.SelectToken("code").Value<string>();
+                errText = hasError.SelectToken("message").Value<string>();
+                found = true;
+            }
+            
+            token = parsed.SelectToken("value");
+            if (token != null)
+            {
+                JArray array = JArray.Parse(token.ToString());
+                if (array == null)
+                    throw new LSOmniServiceException(StatusCode.NavODataError, "Value Array element not found in result");
+                if (array.Count > 1)
+                    return string.Empty;
+
+                parsed = array.FirstOrDefault().ToObject<JObject>();
+                var hasError = parsed.SelectToken("value.error");
+                if (hasError == null)
+                    return string.Empty;
+
+                respCode = hasError.SelectToken("code").Value<string>();
+                errText = hasError.SelectToken("message").Value<string>();
+                found = true;
+            }
+
+            if (found == false)
                 return string.Empty;
 
             StatusCode statusCode = MapResponseToStatusCode(funcName, respCode);
@@ -1172,12 +1276,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     statusCode = StatusCode.WorksheetNotFound;
                     break;
                 case "7750":  //Percassi only
-                        statusCode = StatusCode.SuspendFailure;
-                        break;
-
-                    default:
-                        break;
-                    }
+                    statusCode = StatusCode.SuspendFailure;
+                    break;
+                default:
+                    break;
+            }
             return statusCode;
         }
 

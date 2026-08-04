@@ -6,18 +6,39 @@ using LSRetail.Omni.Domain.DataModel.Base.Base;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Hierarchies
 {
-    public class Hierarchy : Entity
+    public class Hierarchy : Entity, IDisposable
     {
-        public Hierarchy()
+        public Hierarchy() : this(string.Empty)
+        {
+        }
+
+        public Hierarchy(string id) : base(id)
         {
             Description = String.Empty;
             SalesType = String.Empty;
             ValidationScheduleId = String.Empty;
             StartDate = DateTime.MinValue.ToUniversalTime();
+            Nodes = new List<HierarchyNode>();
+            Attributes = new List<HierarchyAttribute>();
         }
 
-        public Hierarchy(string id) : base(id)
+        public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (Nodes != null)
+                    Nodes.Clear();
+                if (Attributes != null)
+                    Attributes.Clear();
+                Nodes = null;
+                Attributes = null;
+            }
         }
 
         [DataMember]

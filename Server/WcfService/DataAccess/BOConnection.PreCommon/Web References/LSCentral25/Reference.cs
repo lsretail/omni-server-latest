@@ -65447,7 +65447,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         
         private decimal quantityField;
         
-        private decimal quanitytoTriggerField;
+        private int quantityToTriggerField;
         
         private int numberofUnusedCouponsField;
         
@@ -65459,7 +65459,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         
         public FBPWSBuffer() {
             this.quantityField = ((decimal)(0m));
-            this.quanitytoTriggerField = ((decimal)(0m));
+            this.quantityToTriggerField = 0;
             this.numberofUnusedCouponsField = 0;
             this.numberofNewCouponsField = 0;
             this.numberofBenefitCouponsField = 0;
@@ -65497,13 +65497,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         }
         
         /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
-        public decimal QuanitytoTrigger {
+        [System.ComponentModel.DefaultValueAttribute(0)]
+        public int QuantityToTrigger {
             get {
-                return this.quanitytoTriggerField;
+                return this.quantityToTriggerField;
             }
             set {
-                this.quanitytoTriggerField = value;
+                this.quantityToTriggerField = value;
             }
         }
         
@@ -73599,6 +73599,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         
         private int pINField;
         
+        private string[] blockedOnEComField;
+        
         public POSDataEntry() {
             this.balanceField = ((decimal)(0m));
             this.expiryDateField = new System.DateTime(0);
@@ -73646,6 +73648,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
             }
             set {
                 this.pINField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("BlockedOnECom")]
+        public string[] BlockedOnECom {
+            get {
+                return this.blockedOnEComField;
+            }
+            set {
+                this.blockedOnEComField = value;
             }
         }
     }
@@ -86016,6 +86029,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         
         private string eFTCardTypeField;
         
+        private string pTEJsonCarrierField;
+        
         public CustomerOrderCreateCOPaymentV6() {
             this.lineNoField = 0;
             this.preApprovedAmountField = ((decimal)(0m));
@@ -86291,6 +86306,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
                 this.eFTCardTypeField = value;
             }
         }
+        
+        /// <remarks/>
+        public string PTEJsonCarrier {
+            get {
+                return this.pTEJsonCarrierField;
+            }
+            set {
+                this.pTEJsonCarrierField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -86540,6 +86565,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         private string lotNoField;
         
         private string wishListNoField;
+        
+        private string pTEJsonCarrierField;
         
         public CustomerOrderCreateCOLineV6() {
             this.lineNoField = 0;
@@ -86938,6 +86965,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
                 this.wishListNoField = value;
             }
         }
+        
+        /// <remarks/>
+        public string PTEJsonCarrier {
+            get {
+                return this.pTEJsonCarrierField;
+            }
+            set {
+                this.pTEJsonCarrierField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -87035,6 +87072,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
         private string currencyCodeField;
         
         private decimal currencyFactorField;
+        
+        private string pTEJsonCarrierField;
         
         public CustomerOrderCreateCOHeaderV6() {
             this.shipOrderField = false;
@@ -87491,6 +87530,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral25 {
             }
             set {
                 this.currencyFactorField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PTEJsonCarrier {
+            get {
+                return this.pTEJsonCarrierField;
+            }
+            set {
+                this.pTEJsonCarrierField = value;
             }
         }
     }

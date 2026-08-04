@@ -16,7 +16,7 @@ namespace LSOmni.BLL.Loyalty
     public class SpgNotificationBLL : BaseLoyBLL
     {
         private readonly ISpgNotificationRepository iSpgRepository;
-        static object locklog = new object();
+        static readonly object locklog = new object();
 
         public SpgNotificationBLL(BOConfiguration config, int timeoutInSeconds = 15)
             : base(config, timeoutInSeconds)
@@ -86,7 +86,7 @@ namespace LSOmni.BLL.Loyalty
                 {
                     FirebaseApp.Create(new AppOptions()
                     {
-                        Credential = GoogleCredential.FromFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "spg", "firebase.json"))
+                        Credential = CredentialFactory.FromFile<ServiceAccountCredential>(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "spg", "firebase.json")).ToGoogleCredential()
                     });
                 }
 

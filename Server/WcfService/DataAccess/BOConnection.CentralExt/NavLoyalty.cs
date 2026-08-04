@@ -469,6 +469,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
             return rep.HierarchyGetByStore(storeId, stat);
         }
 
+        public virtual List<Hierarchy> HierarchyContentGet(string storeNo, string languageCode, Statistics stat)
+        {
+            return LSCentralWSBase.HierarchyContentGet(storeNo, languageCode, stat);
+        }
+
         public virtual MobileMenu MenuGet(string restaurantNo, string terminalNo, string salesType, Currency currency, Statistics stat)
         {
             return LSCentralWSBase.MenuGet(restaurantNo, terminalNo, salesType, currency, stat);

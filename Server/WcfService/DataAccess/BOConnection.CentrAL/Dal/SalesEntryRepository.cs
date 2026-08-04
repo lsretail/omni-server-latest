@@ -427,7 +427,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                                 " FROM [" + navCompanyName + "POS Trans_ Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ml" +
                                 " JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=ml.[Store No_]" +
                                 " LEFT JOIN [" + navCompanyName + "Item Variant Registration$5ecfc871-5d82-43f1-9c54-59685e82318d] v ON v.[Item No_]=ml.[Number] AND v.[Variant]=ml.[Variant Code]" +
-                                " WHERE ml.[Receipt No_]=@id AND (ml.[Entry Type]=0 OR (ml.[Entry Type]=5 AND ml.[Sales Type]!=''))";
+                                " WHERE ml.[Receipt No_]=@id AND (ml.[Entry Type]=0 OR ml.[Entry Type]=4 OR (ml.[Entry Type]=5 AND ml.[Sales Type]!=''))";
 
                     command.Parameters.AddWithValue("@id", receiptId);
                     TraceSqlCommand(command);

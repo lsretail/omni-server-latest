@@ -183,6 +183,8 @@ namespace LSOmni.Service
                     config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOProtocol.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.Protocol");
                 if (ConfigSetting.KeyExists("BOConnection.Nav.Tenant"))
                     config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOTenant.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.Tenant");
+                if (ConfigSetting.KeyExists("BOConnection.Nav.CompanyId"))
+                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOCompanyID.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.CompanyId");
 
                 if (ConfigSetting.KeyExists("SqlConnectionString.Nav"))
                     config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOSql.ToString()).Value = ConfigSetting.GetString("SqlConnectionString.Nav");

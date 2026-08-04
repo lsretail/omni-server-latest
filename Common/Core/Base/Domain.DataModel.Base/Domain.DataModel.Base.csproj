@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net8.0;net9.0;net9.0-ios;net9.0-android</TargetFrameworks>
+		<!-- Base targets always included -->
+		<TargetFrameworks>netstandard2.0;net8.0;net10.0</TargetFrameworks>
 		<Nullable>disable</Nullable>
 	</PropertyGroup>
 	<PropertyGroup>
@@ -24,7 +25,4 @@
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
 		<WarningLevel>6</WarningLevel>
 	</PropertyGroup>
-	<ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-	</ItemGroup>
 </Project>

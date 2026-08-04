@@ -828,6 +828,7 @@
           <element minOccurs="0" maxOccurs="1" name="PrepaymentInvoiceType" type="string" />
           <element minOccurs="0" maxOccurs="1" name="CurrencyCode" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0" name="CurrencyFactor" type="decimal" />
+          <element minOccurs="0" maxOccurs="1" name="PTEJsonCarrier" type="string" />
         </sequence>
       </complexType>
       <complexType name="CustomerOrderCreateCOLineV6">
@@ -868,6 +869,7 @@
           <element minOccurs="0" maxOccurs="1" name="SerialNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="LotNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="WishListNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="PTEJsonCarrier" type="string" />
         </sequence>
       </complexType>
       <complexType name="CustomerOrderCreateCODiscountLineV6">
@@ -913,6 +915,7 @@
           <element minOccurs="0" maxOccurs="1" name="ExternalReference" type="string" />
           <element minOccurs="0" maxOccurs="1" name="TaxGroupCode" type="string" />
           <element minOccurs="0" maxOccurs="1" name="EFTCardType" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="PTEJsonCarrier" type="string" />
         </sequence>
       </complexType>
       <complexType name="CustomerOrderCreateCOStatusLogV6">
@@ -2089,6 +2092,7 @@
           <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="ExpiryDate" type="date" />
           <element minOccurs="0" maxOccurs="1" name="CurrencyCode" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0" name="PIN" type="int" />
+          <element minOccurs="0" maxOccurs="unbounded" name="BlockedOnECom" type="string" />
         </sequence>
       </complexType>
       <complexType name="RootGetDataEntryBalance" mixed="true">
@@ -2950,7 +2954,7 @@
           <element minOccurs="0" maxOccurs="1" name="FBPHeaderNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="FBPDescription" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0" name="Quantity" type="decimal" />
-          <element minOccurs="0" maxOccurs="1" default="0" name="QuanitytoTrigger" type="decimal" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="QuantityToTrigger" type="int" />
           <element minOccurs="0" maxOccurs="1" default="0" name="NumberofUnusedCoupons" type="int" />
           <element minOccurs="0" maxOccurs="1" default="0" name="NumberofNewCoupons" type="int" />
           <element minOccurs="0" maxOccurs="1" default="0" name="NumberofBenefitCoupons" type="int" />

@@ -535,7 +535,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplPriceListLine2(ret, storeId, ref lastKey, ref recordsRemaining);
             }
-            else if (LSCVersion >= new Version("26.0") && usePriceLine)
+            
+            if (LSCVersion >= new Version("26.0") && usePriceLine)
             {
                 ret = odataWS.GetPriceListLine(storeId, batchSize, fullRepl, lastKey, lastEntry);
                 logger.Trace(config.LSKey.Key, ret);

@@ -582,7 +582,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
             return root;
         }
 
-        public LSCentral25.RootMobileTransaction MapFromOrderToRoot(OneList request)
+        public LSCentral25.RootMobileTransaction MapFromOneListToRoot(OneList request)
         {
             LSCentral25.RootMobileTransaction root = new LSCentral25.RootMobileTransaction();
 

@@ -39,7 +39,8 @@ Compression=lzma
 SolidCompression=yes
  
 ;SetupLogging file location C:\Users\<user>\AppData\Local\Temp\Setup Log 2015-05-29 #003.txt
-SetupLogging = yes 
+SetupLogging = yes
+WizardSizePercent=110
 DisableWelcomePage=False   
 DisableReadyPage=False   
 DisableFinishedPage=False   
@@ -132,6 +133,7 @@ begin
   IISPage_txtODataUrl.Text := GetCommandLineParamString('-IisOData', 'http://localhost:9048/LSCentral/ODataV4');
   IISPage_txtEComUrl.Text := GetCommandLineParamString('-IEcomUrl', 'Demo');
   IISPage_txtNavTen.Text := GetCommandLineParamString('-IisTen', '');
+  IISPage_txtNavCompanyId.Text := GetCommandLineParamString('-IisCompId', '6eec3c9c-282d-f111-9c7a-000d3abaafeb');
   IISPage_txtNavUser.Text := GetCommandLineParamString('-IisUsr', '');
   IISPage_txtNavPwd.Text := GetCommandLineParamString('-IisPwd', '');
 end;
@@ -262,6 +264,7 @@ begin
       UpdateAppSettingsConfig('BOConnection.Nav.UserName', Trim(IISPage_txtNavUser.Text), ExpandConstant('{app}\{code:WcfDir}'));
       UpdateAppSettingsConfig('BOConnection.Nav.Password', Trim(IISPage_txtNavPwd.Text), ExpandConstant('{app}\{code:WcfDir}'));
       UpdateAppSettingsConfig('BOConnection.Nav.Tenant', Trim(IISPage_txtNavTen.Text), ExpandConstant('{app}\{code:WcfDir}'));
+      UpdateAppSettingsConfig('BOConnection.Nav.CompanyId', Trim(IISPage_txtNavCompanyId.Text), ExpandConstant('{app}\{code:WcfDir}'));
       if IISPage_xS2S.Checked then
         UpdateAppSettingsConfig('BOConnection.Nav.Protocol', 'S2S', ExpandConstant('{app}\{code:WcfDir}'));
     end;

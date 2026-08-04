@@ -4,7 +4,7 @@ OmniServer Setup Parameters and default values
 -NavX 		true			Configure LS Central SQL parameters
 -NavSrv		localhost		LS Central SQL Server instance
 -NavDb		LSCentral		LS Central SQL Database name
--NavComp	CRONUS - LS Central	LS Central Company name
+-NavComp	CRONUS - LS Central	Central Company name
 -NavUsr		CommerceUser	LS Central SQL User name
 -NavPwd		CommerceUser	LS Central SQL User password
 -NavWaun	false			Use Windows Authentication for LS Central SQL
@@ -27,6 +27,7 @@ OmniServer Setup Parameters and default values
 -IisSrv		CommerceService		Web Service name
 -IisUrl		http://localhost:9047/LSCentral/WS/CRONUS - LS Central/Codeunit/RetailWebServices	LS Central Web Services Url
 -IisOData	http://localhost:9048/LSCentral/ODataV4	LS Central OData Url
+-IisCompId	xxxxxx-xxxx-xxx-xxx	Central Company id
 -IisTen					LS Central SaaS tenant id
 -IisUsr					LS Central WS User name
 -IisPwd					LS Central WS User password

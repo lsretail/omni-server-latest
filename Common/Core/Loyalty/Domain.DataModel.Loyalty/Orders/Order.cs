@@ -39,6 +39,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
             ShippingAgentServiceCode = string.Empty;
             TransId = string.Empty;
             TransTerminal = string.Empty;
+            PTEJsonData = string.Empty;
 
             OrderLines = new List<OrderLine>();
             OrderDiscountLines = new List<OrderDiscountLine>();
@@ -174,6 +175,11 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         /// </summary>
         [DataMember]
         public decimal PointsRewarded { get; set; }
+        /// <summary>
+        /// JSON data from PTE, if any, to be used in the order. Use Central Event to process the data
+        /// </summary>
+        [DataMember]
+        public string PTEJsonData { get; set; }
 
         // local properties to find transactions
         public string TransId { get; set; }

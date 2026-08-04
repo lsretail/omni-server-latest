@@ -4,7 +4,6 @@ using System.Runtime.Serialization;
 
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Base;
-using Newtonsoft.Json;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
 {
@@ -130,7 +129,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         public decimal TotalAmount { get; set; }
         [DataMember]
         public decimal TotalDiscount { get; set; }
-        [JsonIgnore]
         public decimal VatAmount => TotalAmount - TotalNetAmount;
 
         [DataMember]

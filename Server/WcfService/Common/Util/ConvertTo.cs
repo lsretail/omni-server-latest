@@ -22,7 +22,11 @@ namespace LSOmni.Common.Util
             if (string.IsNullOrWhiteSpace(val))
                 return 0M;
             val = SafeDecimalString(val, absValue);
-            return Convert.ToDecimal(val, CultureInfo.InvariantCulture);
+
+            if (decimal.TryParse(val, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var result) == false)
+                return 0M;
+
+            return result;
         }
 
         public static int SafeInt(string val)
@@ -108,10 +112,16 @@ namespace LSOmni.Common.Util
             }
         }
 
-        public static string SafeStringDateTime(DateTime dt)
+        public static string SafeStringDateTime(DateTime dt, bool isJson = false)
         {
             //json friendly date, all dates sent to client do not have timezone info in them
-            return dt.ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+            return dt.ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture) + ((isJson) ? "Z" : "");
+        }
+
+        public static string SafeStringDate(DateTime dt)
+        {
+            //json friendly date, all dates sent to client do not have timezone info in them
+            return dt.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
         }
 
         public static DateTime SafeDateTime(DateTime dt)
@@ -125,12 +135,28 @@ namespace LSOmni.Common.Util
             return new DateTime(date.Year, date.Month, date.Day, time.Hour, time.Minute, time.Second, time.Millisecond);
         }
 
+        public static DateTime NavGetDateTime(DateTime? dateptr)
+        {
+            if (dateptr == null)
+                return new DateTime(1754, 1, 1, 0, 0, 0, DateTimeKind.Utc); // 1754 is a Central Null date
+
+            return (DateTime)dateptr.Value;
+        }
+
         public static DateTime NavGetDate(DateTime date, bool returnMinDate)
         {
             if (date == DateTime.MinValue)
                 return (returnMinDate) ? DateTime.MinValue : new DateTime(1753, 1, 1);
 
             return new DateTime(date.Year, date.Month, date.Day);
+        }
+
+        public static DateTime NavGetDate(DateTime? date, bool returnMinDate)
+        {
+            if (date == null)
+                return (returnMinDate) ? DateTime.MinValue : new DateTime(1753, 1, 1);
+
+            return NavGetDate((DateTime)date, returnMinDate);
         }
 
         public static DateTime NavGetTime(DateTime date, bool returnMinDate)

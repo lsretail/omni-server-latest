@@ -1,33 +1,31 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-
-using LSOmni.Common.Util;
+﻿using LSOmni.Common.Util;
+using LSOmni.DataAccess.BOConnection.PreCommon.JMapping;
+using LSOmni.DataAccess.BOConnection.PreCommon.Mapping;
+using LSOmni.DataAccess.BOConnection.PreCommon.Mapping25;
 using LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping;
 using LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Loyalty;
 using LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication;
-using LSOmni.DataAccess.BOConnection.PreCommon.Mapping;
-using LSOmni.DataAccess.BOConnection.PreCommon.Mapping25;
-using LSOmni.DataAccess.BOConnection.PreCommon.JMapping;
-
 using LSRetail.Omni.Domain.DataModel.Base;
-using LSRetail.Omni.Domain.DataModel.Base.Menu;
-using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
-using LSRetail.Omni.Domain.DataModel.Base.Retail;
-using LSRetail.Omni.Domain.DataModel.Base.Setup;
-using LSRetail.Omni.Domain.DataModel.Base.Requests;
+using LSRetail.Omni.Domain.DataModel.Base.Menu;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
+using LSRetail.Omni.Domain.DataModel.Base.Requests;
+using LSRetail.Omni.Domain.DataModel.Base.Retail;
+using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
+using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
+using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
-using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
-using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Payment;
+using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LSOmni.DataAccess.BOConnection.PreCommon
 {
@@ -1657,7 +1655,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                                 "\"includeDetail\": false }";
 
                 string ret = SendToOData("GetStores_GetStores", data, false);
-                SetupJMapping map = new SetupJMapping(config.IsJson);
+                StoreJMapping map = new StoreJMapping(config.IsJson);
                 List<Store> slist = map.GetStores(ret, 0, out string resCode, out string resErr);
                 HandleWS2ResponseCode("GetStores", resCode, resErr, ref stat, index);
                 logger.StatisticEndSub(ref stat, index);
@@ -1740,7 +1738,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             if (LSCVersion >= new Version("25.0"))
             {
                 TransactionMapping25 map = new TransactionMapping25(LSCVersion, config.IsJson);
-                LSCentral25.RootMobileTransaction root = map.MapFromOrderToRoot(list);
+                LSCentral25.RootMobileTransaction root = map.MapFromOneListToRoot(list);
                 logger.Debug(config.LSKey.Key, "MobilePosCalculate Request - " + Serialization.ToXml(root, true));
                 centralQryWS25.MobilePosCalculate(ref respCode, ref errorText, string.Empty, ref root);
                 HandleWS2ResponseCode("MobilePosCalculate", respCode, errorText, ref stat, index);
@@ -1750,7 +1748,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             else
             {
                 TransactionMapping map = new TransactionMapping(LSCVersion, config.IsJson);
-                LSCentral.RootMobileTransaction root = map.MapFromOrderToRoot(list);
+                LSCentral.RootMobileTransaction root = map.MapFromOneListToRoot(list);
                 logger.Debug(config.LSKey.Key, "MobilePosCalculate Request - " + Serialization.ToXml(root, true));
                 centralQryWS.MobilePosCalculate(ref respCode, ref errorText, string.Empty, ref root);
                 HandleWS2ResponseCode("MobilePosCalculate", respCode, errorText, ref stat, index);
@@ -2713,7 +2711,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                                 "\"includeDetail\": " + inclDetails.ToString().ToLower() + " }";
 
                 string ret = SendToOData("GetStores_GetStores", data, false);
-                SetupJMapping map = new SetupJMapping(config.IsJson);
+                StoreJMapping map = new StoreJMapping(config.IsJson);
                 List<Store> slist = map.GetStores(ret, offset, out string resCode, out string resErr);
                 HandleWS2ResponseCode("GetStores", resCode, resErr, ref stat, index);
                 logger.StatisticEndSub(ref stat, index);
@@ -2792,7 +2790,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                                 "\"includeDetail\": " + inclDetails.ToString().ToLower() + " }";
 
                 string ret = SendToOData("GetStores_GetStores", data, false);
-                SetupJMapping map = new SetupJMapping(config.IsJson);
+                StoreJMapping map = new StoreJMapping(config.IsJson);
                 List<Store> slist = map.GetStores(ret, offset, out string resCode, out string resErr);
                 HandleWS2ResponseCode("GetStores", resCode, resErr, ref stat, index);
                 logger.StatisticEndSub(ref stat, index);
@@ -3629,9 +3627,33 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return list;
         }
 
+        public List<Hierarchy> HierarchyContentGet(string storeNo, string languageCode, Statistics stat)
+        {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
+            string data = "{ \"storeID\": \"" + storeNo + "\", " +
+                            "\"languageCode\": \"" + languageCode.ToUpper() + "\" }";
+
+            string ret = SendToOData("GetHierarchyV3_GetHierarchyV3", data, false);
+            StoreJMapping map = new StoreJMapping(config.IsJson);
+            string value = map.GetJsonValue(ret, "GetDynamicContentHierarchy", out string resCode, out string resErr);
+            HandleWS2ResponseCode("GetHierarchyV3", resCode, resErr, ref stat, index);
+            List<Hierarchy> list = map.GetContentMenu(value);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
+        }
+
         public MobileMenu MenuGet(string restaurantNo, string terminalNo, string salesType, Currency currency, Statistics stat)
         {
-            return new MobileMenu();
+            logger.StatisticStartSub(true, ref stat, out int index);
+
+            MenuXml menuxml = new MenuXml(config.LSKey.Key);
+            string xmlRequest = menuxml.MenuGetAllRequestXML(restaurantNo, terminalNo, salesType);
+            string xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+
+            logger.StatisticEndSub(ref stat, index);
+            return menuxml.MenuGetAllResponseXML(xmlResponse, currency);
         }
 
         #endregion
@@ -3677,14 +3699,45 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             string respCode = string.Empty;
             string errorText = string.Empty;
 
-            StoreMapping map = new StoreMapping();
-            LSCentral.RootGetReturnPolicy root = new LSCentral.RootGetReturnPolicy();
+            List<ReturnPolicy> list = new List<ReturnPolicy>();
+            if (LSCVersion >= new Version("29.0"))
+            {
+                List<string> clauses = new List<string>();
+                if (string.IsNullOrEmpty(storeId) == false) 
+                    clauses.Add($"storeNo eq '{Escape(storeId)}'");
+                if (string.IsNullOrEmpty(itemId) == false) 
+                    clauses.Add($"itemNo eq '{Escape(itemId)}'");
+                if (string.IsNullOrEmpty(variantCode) == false) 
+                    clauses.Add($"variantCode eq '{Escape(variantCode)}'");
+                if (string.IsNullOrEmpty(storeGroupCode) == false) 
+                    clauses.Add($"storeGroupCode eq '{Escape(storeGroupCode)}'");
+                if (string.IsNullOrEmpty(itemCategory) == false) 
+                    clauses.Add($"itemCategoryCode eq '{Escape(itemCategory)}'");
+                if (string.IsNullOrEmpty(productGroup) == false) 
+                    clauses.Add($"retailProductCode eq '{Escape(productGroup)}'");
+                if (string.IsNullOrEmpty(variantDim1) == false) 
+                    clauses.Add($"variantDimension1Code eq '{Escape(variantDim1)}'");
 
-            logger.Debug(config.LSKey.Key, "GetReturnPolicy - storeId:{0}, storeGroup:{1} itemCat:{2} prodGroup:{3}", storeId, storeGroupCode, itemCategory, productGroup);
-            centralQryWS.GetReturnPolicy(ref respCode, ref errorText, XMLHelper.GetString(storeId), XMLHelper.GetString(storeGroupCode), XMLHelper.GetString(itemCategory), XMLHelper.GetString(productGroup), XMLHelper.GetString(itemId), XMLHelper.GetString(variantCode), XMLHelper.GetString(variantDim1), ref root);
-            HandleWS2ResponseCode("GetReturnPolicy", respCode, errorText, ref stat, index, new string[] { "1000" });
-            logger.Debug(config.LSKey.Key, "GetReturnPolicy Response - " + Serialization.ToXml(root, true));
-            List<ReturnPolicy> list = map.MapFromRootToReturnPolicy(root);
+                string cmd = $"customerOrder/v1.0/companies({config.SettingsGetByKey(ConfigKey.BOCompanyID)})/returnPolicies";
+                if (clauses.Count > 0)
+                    cmd += "?$filter=" + Uri.EscapeDataString(string.Join(" and ", clauses));
+
+                string ret = SendToOData(cmd, string.Empty, true, true);
+                StoreJMapping smap = new StoreJMapping(config.IsJson);
+                list = smap.GetReturnPolicy(ret, out string resCode, out string resErr);
+                HandleWS2ResponseCode("returnPolicies", resCode, resErr, ref stat, index);
+            } 
+            else
+            {
+                LSCentral.RootGetReturnPolicy root = new LSCentral.RootGetReturnPolicy();
+                logger.Debug(config.LSKey.Key, "GetReturnPolicy - storeId:{0}, storeGroup:{1} itemCat:{2} prodGroup:{3}", storeId, storeGroupCode, itemCategory, productGroup);
+                centralQryWS.GetReturnPolicy(ref respCode, ref errorText, XMLHelper.GetString(storeId), XMLHelper.GetString(storeGroupCode), XMLHelper.GetString(itemCategory), XMLHelper.GetString(productGroup), XMLHelper.GetString(itemId), XMLHelper.GetString(variantCode), XMLHelper.GetString(variantDim1), ref root);
+                HandleWS2ResponseCode("GetReturnPolicy", respCode, errorText, ref stat, index, new string[] { "1000" });
+                logger.Debug(config.LSKey.Key, "GetReturnPolicy Response - " + Serialization.ToXml(root, true));
+                StoreMapping map = new StoreMapping();
+                list = map.MapFromRootToReturnPolicy(root);
+            }
+
             logger.StatisticEndSub(ref stat, index);
             return list;
         }

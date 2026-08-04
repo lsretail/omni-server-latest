@@ -60,6 +60,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             EndingDate = new DateTime(1900, 1, 1);
             StartingDate = new DateTime(1900, 1, 1);
             QtyPerUnitOfMeasure = 0M;
+            Status = PriceStatus.Active;
         }
 
         public void Dispose()

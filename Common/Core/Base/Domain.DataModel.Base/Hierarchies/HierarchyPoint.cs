@@ -21,6 +21,11 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Hierarchies
         public string ImageId { get; set; }
 
         [DataMember]
+        public string VariantCode { get; set; }
+        [DataMember]
+        public string UnitOfMeasure { get; set; }
+
+        [DataMember]
         public string HierarchyCode { get; set; }
         [DataMember]
         public string ParentNode { get; set; }

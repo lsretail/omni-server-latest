@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using LSOmni.Common.Util;
+﻿using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
 
 namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
 {
@@ -67,6 +67,35 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
 
             resCode = parsed.SelectToken("ResponseCode").Value<string>();
             resErr = parsed.SelectToken("ErrorText").Value<string>();
+            return token.ToString();
+        }
+
+        public string GetJsonPageValue(string ret, out string resCode, out string resErr)
+        {
+            resCode = "0000";
+            resErr = string.Empty;
+
+            if (ret.StartsWith("ERROR"))
+            {
+                resCode = "9900";
+                resErr = ret;
+                return null;
+            }
+
+            JObject parsed;
+            try
+            {
+                parsed = JObject.Parse(ret);
+            }
+            catch (Exception)
+            {
+                throw new LSOmniServiceException(StatusCode.NavODataError, "OData4 Error:" + ret);
+            }
+
+            var token = parsed.SelectToken("value");
+            if (token == null)
+                throw new LSOmniServiceException(StatusCode.NavODataError, "Value element not found in result");
+
             return token.ToString();
         }
 

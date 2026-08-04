@@ -37,7 +37,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -61,6 +61,7 @@
     </Compile>
     <Compile Include="JMapping\ContactJMapping.cs" />
     <Compile Include="JMapping\OrderJMapping.cs" />
+    <Compile Include="JMapping\StoreJMapping.cs" />
     <Compile Include="Mapping25\BaseMapping.cs" />
     <Compile Include="Mapping25\ContactMapping.cs" />
     <Compile Include="Mapping25\OrderMapping.cs" />
@@ -111,6 +112,7 @@
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
     <Compile Include="XmlMapping\BaseXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\MenuXml.cs" />
     <Compile Include="XmlMapping\Loyalty\NavXml.cs" />
     <Compile Include="XmlMapping\Loyalty\PublishedOfferXml.cs" />
     <Compile Include="XmlMapping\NAVWebXml.cs" />

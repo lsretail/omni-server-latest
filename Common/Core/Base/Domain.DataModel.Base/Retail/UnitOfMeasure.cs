@@ -58,6 +58,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
         public string ShortDescription { get; set; }
         [DataMember]
         public decimal Price { get; set; }
+        [DataMember]
+        public int DealLine { get; set; }
+        [DataMember]
+        public int DealModLine { get; set; }
 
         public string DisplayString
         {

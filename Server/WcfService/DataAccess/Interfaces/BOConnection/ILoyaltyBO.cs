@@ -178,6 +178,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         List<ProductGroup> ProductGroupGetByItemCategoryId(string itemcategoryId, string culture, bool includeChildren, bool includeItems, Statistics stat);
         ProductGroup ProductGroupGetById(string id, string culture, bool includeItems, bool includeItemDetail, Statistics stat);
         List<Hierarchy> HierarchyGet(string storeId, Statistics stat);
+        List<Hierarchy> HierarchyContentGet(string storeNo, string languageCode, Statistics stat);
         MobileMenu MenuGet(string restaurantNo, string terminalNo, string salesType, Currency currency, Statistics stat);
 
         #endregion

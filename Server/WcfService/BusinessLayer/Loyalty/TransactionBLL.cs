@@ -39,9 +39,12 @@ namespace LSOmni.BLL.Loyalty
                 if (line.LineNumber == line.ParentLine)
                     line.ParentLine = 0;
 
-                entry.TotalAmount += line.Amount;
-                entry.TotalDiscount += line.DiscountAmount;
-                entry.TotalNetAmount += line.NetAmount;
+                if (line.LineType == LineType.Item)
+                {
+                    entry.TotalAmount += line.Amount;
+                    entry.TotalDiscount += line.DiscountAmount;
+                    entry.TotalNetAmount += line.NetAmount;
+                }
 
                 List<SalesEntryLine> sublines = lines.FindAll(s => s.ParentLine == line.LineNumber);
                 SalesEntryLine lineFound = lines.Find(l => l.ItemId == line.ItemId && l.VariantId == line.VariantId && l.UomId == line.UomId && (l.Price == line.Price && l.OrgQuantity == line.Quantity) && l.LineType == line.LineType && ((line.ParentLine > 0 && l.ParentLine == line.ParentLine) || (line.ParentLine == 0 && sublines.Count == 0)));

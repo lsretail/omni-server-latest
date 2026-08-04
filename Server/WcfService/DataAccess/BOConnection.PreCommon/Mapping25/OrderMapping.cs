@@ -566,6 +566,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                 head.CurrencyCode = XMLHelper.GetString(order.Currency);
                 head.CurrencyFactor = order.CurrencyFactor;
             }
+            if (LSCVersion >= new Version("28.1"))
+            {
+                head.PTEJsonCarrier = XMLHelper.GetString(order.PTEJsonData);
+            }
 
             bool useHeaderCAC = false;
             string storeId = order.StoreId.ToUpper();
@@ -621,6 +625,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                 {
                     oline.WishListNo = XMLHelper.GetString(line.WishListNo);
                 }
+                if (LSCVersion >= new Version("28.1"))
+                {
+                    oline.PTEJsonCarrier = XMLHelper.GetString(line.PTEJsonData);
+                }
                 orderLines.Add(oline);
 
             }
@@ -656,7 +664,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                     string curcode = XMLHelper.GetString(line.CurrencyCode);
                     bool loypayment = (string.IsNullOrEmpty(curcode)) ? false : curcode.Equals(loyCur, StringComparison.InvariantCultureIgnoreCase);
 
-                    payLines.Add(new LSCentral25.CustomerOrderCreateCOPaymentV6()
+                    LSCentral25.CustomerOrderCreateCOPaymentV6 pay = new LSCentral25.CustomerOrderCreateCOPaymentV6()
                     {
                         DocumentID = string.Empty,
                         LineNo = XMLHelper.LineNumberToNav(line.LineNumber),
@@ -677,7 +685,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                         CardorCustomernumber = XMLHelper.GetString(line.CardNumber),
                         LoyaltyPointpayment = loypayment,
                         DepositPayment = line.DepositPayment
-                    });
+                    };
+                    if (LSCVersion >= new Version("28.1"))
+                    {
+                        pay.PTEJsonCarrier = XMLHelper.GetString(line.PTEJsonData);
+                    }
+                    payLines.Add(pay);
                 }
             }
             root.CustomerOrderCreateCOPaymentV6 = payLines.ToArray();

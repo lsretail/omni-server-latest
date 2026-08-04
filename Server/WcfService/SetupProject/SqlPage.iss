@@ -191,7 +191,7 @@ begin
     Parent := SQLPage.Surface;
     Caption := 'A new database is created if one does not exist';
     Left := ScaleX(24);
-    Top := ScaleY(54);
+    Top := ScaleY(60);
     Width := ScaleX(250);
     Height := ScaleY(13);
   end;
@@ -201,7 +201,7 @@ begin
   begin
     Parent := SQLPage.Surface;
     Left := ScaleX(24);
-    Top := ScaleY(70);
+    Top := ScaleY(76);
     Width := ScaleX(380);
     Height := ScaleY(21);
     Caption := 'Create and use CommerceUser to connect to Commerce Database';
@@ -218,7 +218,7 @@ begin
     Parent := SQLPage.Surface;
     Caption :=  'SQL credentials';
     Left := ScaleX(24);
-    Top := ScaleY(96);
+    Top := ScaleY(102);
     Width := ScaleX(87);
     Height := ScaleY(13);
     Enabled := True;
@@ -231,7 +231,7 @@ begin
     Parent := SQLPage.Surface;
     Caption := 'Use Windows Authentication';
     Left := ScaleX(32);
-    Top := ScaleY(113);
+    Top := ScaleY(119);
     Width := ScaleX(177);
     Height := ScaleY(17);
     Checked := True;
@@ -248,7 +248,7 @@ begin
     Parent := SQLPage.Surface;
     Caption := 'Use SQL Server Authentication';
     Left := ScaleX(32);
-    Top := ScaleY(133);
+    Top := ScaleY(139);
     Width := ScaleX(185);
     Height := ScaleY(17);
     Checked := False;
@@ -264,7 +264,7 @@ begin
     Parent := SQLPage.Surface;
     Caption := 'User (sysadmin):' ;
     Left := ScaleX(60);
-    Top := ScaleY(156);
+    Top := ScaleY(162);
     Width := ScaleX(85);
     Height := ScaleY(13);
     Enabled := False;
@@ -275,7 +275,7 @@ begin
   begin
     Parent := SQLPage.Surface;
     Left := ScaleX(152);
-    Top := ScaleY(153);
+    Top := ScaleY(159);
     Width := ScaleX(225);
     Height := ScaleY(21);
     Enabled := False;
@@ -289,7 +289,7 @@ begin
     Parent := SQLPage.Surface;
     Caption := 'Password:' ;
     Left := ScaleX(60);
-    Top := ScaleY(174);
+    Top := ScaleY(180);
     Width := ScaleX(85);
     Height := ScaleY(13);
     Enabled := False;
@@ -300,7 +300,7 @@ begin
   begin
     Parent := SQLPage.Surface;
     Left := ScaleX(152);
-    Top := ScaleY(177);
+    Top := ScaleY(183);
     Width := ScaleX(225);
     Height := ScaleY(21);
     Enabled := False;
@@ -313,7 +313,7 @@ begin
   begin
     Parent := SQLPage.Surface;
     Left := ScaleX(152);
-    Top := ScaleY(201);
+    Top := ScaleY(220);
     Width := ScaleX(121);
     Height := ScaleY(21);
     Enabled := False;

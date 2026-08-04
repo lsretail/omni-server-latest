@@ -66,32 +66,45 @@ namespace LSOmni.BLL
             if (protocol.ToUpper().Equals("S2S") == false)
                 return string.Empty;
 
-            if (tokenList == null)
-            {
-                tokenList = new List<TokenList>();
-                logger.Warn(myconfig.LSKey.Key, "TokenList is null, initializing new list.");
-            }
-
+            TokenList token = null;
             ConfigBLL bll = new ConfigBLL();
-            TokenList token = tokenList.Find(x => x.Key == myconfig.LSKey.Key);
-            if (token != null)
+            try
             {
-                token.LastId++;
-                if (token.LastId >= token.Tokens.Count)
-                    token.LastId = 0;
-
-                if (token.Tokens[token.LastId].Expires > DateTime.UtcNow)
+                if (tokenList == null)
                 {
-                    logger.Debug(myconfig.LSKey.Key, "Token for LS Central is still valid, using existing token for Id:{0}", token.LastId);
-                    bll.ConfigSetByKey(myconfig.LSKey.Key, ConfigKey.Central_Token, token.Tokens[token.LastId].AccessToken, "string", true, "Active token");
-                    myconfig.SettingsUpdateByKey(ConfigKey.Central_Token, token.Tokens[token.LastId].AccessToken);
-                    return token.Tokens[token.LastId].AccessToken;
+                    tokenList = new List<TokenList>();
+                    logger.Warn(myconfig.LSKey.Key, "TokenList is null, initializing new list.");
+                }
+
+                token = tokenList.Find(x => x.Key == myconfig.LSKey.Key);
+                if (token != null)
+                {
+                    token.LastId++;
+                    if (token.LastId >= token.Tokens.Count)
+                        token.LastId = 0;
+
+                    if (token.Tokens[token.LastId].Expires > DateTime.UtcNow)
+                    {
+                        logger.Debug(myconfig.LSKey.Key, "Token for LS Central is still valid, using existing token for Id:{0}", token.LastId);
+                        bll.ConfigSetByKey(myconfig.LSKey.Key, ConfigKey.Central_Token, token.Tokens[token.LastId].AccessToken, "string", true, "Active token");
+                        myconfig.SettingsUpdateByKey(ConfigKey.Central_Token, token.Tokens[token.LastId].AccessToken);
+                        return token.Tokens[token.LastId].AccessToken;
+                    }
+                }
+                else
+                {
+                    token = new TokenList();
+                    token.Tokens = new List<TokenData>();
                 }
             }
-            else
+            catch (Exception ex)
             {
-                token = new TokenList();
-                token.Tokens = new List<TokenData>();
+                logger.Error(myconfig.LSKey.Key, ex, "Error checking token for LS Central");
+                tokenList = new List<TokenList>();
+                token = new TokenList()
+                {
+                    Tokens = new List<TokenData>()
+                };
             }
 
             if (token.Tokens.Count == 0)
@@ -162,7 +175,7 @@ namespace LSOmni.BLL
                 HttpWebRequest httpWebRequest = (HttpWebRequest)System.Net.WebRequest.Create(posturl);
                 httpWebRequest.Method = "POST";
 
-                logger.Debug(myconfig.LSKey.Key, "Send Token request for LS Central to:{0} Message:{1}", posturl.AbsoluteUri, body);
+                logger.Debug(myconfig.LSKey.Key, "Send Token request for LS Central to:{0} ClientId:{1}", posturl.AbsoluteUri, tokenData.ClientId);
                 byte[] byteArray = Encoding.UTF8.GetBytes(body); //json
 
                 httpWebRequest.Accept = "application/json";
@@ -235,6 +248,12 @@ namespace LSOmni.BLL
 
     internal class TokenList
     {
+        public TokenList()
+        {
+            Tokens = new List<TokenData>();
+            Key = string.Empty;
+        }
+
         public string Key { get; set; }
         public int LastId { get; set; }
         public List<TokenData> Tokens { get; set; }
@@ -242,6 +261,14 @@ namespace LSOmni.BLL
 
     internal class TokenData
     {
+        public TokenData()
+        {
+            ClientId = string.Empty;
+            ClientSecret = string.Empty;
+            AccessToken = string.Empty;
+            Expires = DateTime.MinValue;
+        }
+
         public int Id { get; set; }
         public string ClientId { get; set; }
         public string ClientSecret { get; set; }

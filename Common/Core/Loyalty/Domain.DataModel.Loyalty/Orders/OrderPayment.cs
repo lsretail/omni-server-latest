@@ -18,6 +18,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
             TokenNumber = string.Empty;
             ExternalReference = string.Empty;
             CardNumber = string.Empty;
+            PTEJsonData = string.Empty;
         }
 
         public void Dispose()
@@ -70,5 +71,10 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
 
         [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime PreApprovedValidDate { get; set; }
+        /// <summary>
+        /// JSON data from PTE, if any, to be used in the order. Use Central Event to process the data
+        /// </summary>
+        [DataMember]
+        public string PTEJsonData { get; set; }
     }
 }

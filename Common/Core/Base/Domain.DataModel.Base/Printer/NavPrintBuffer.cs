@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Printer
 {
@@ -19,45 +18,26 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Printer
 
     public class NavPrintJob
     {
-        [JsonProperty("PrintBuffer")]
         public List<NavPrintBuffer> PrintBuffer { get; set; }
 
-        [JsonProperty("PrinterSettings")]
         public NavPrinterSettings PrinterSettings { get; set; }
     }
 
     public class NavPrinterSettings
     {
-        [JsonProperty("Logo")]
         public string Logo { get; set; }
     }
 
     public class NavPrintBuffer
     {
         public string timestamp { get; set; }
-
-        [JsonProperty("Store No.")]
         public string StoreNo { get; set; }
-
-        [JsonProperty("Terminal No.")]
         public string TerminalNo { get; set; }
-
-        [JsonProperty("Transaction No.")]
         public int TransactionNo { get; set; }
-
-        [JsonProperty("Entry No.")]
         public int EntryNo { get; set; }
-
-        [JsonProperty("Buffer Index")]
         public int BufferIndex { get; set; }
-
-        [JsonProperty("Station No.")]
         public int StationNo { get; set; }
-
-        [JsonProperty("Page No.")]
         public int PageNo { get; set; }
-
-        [JsonProperty("Line No.")]
         public int LineNo { get; set; }
 
         public int LineType { get; set; }

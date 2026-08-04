@@ -22,6 +22,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
             StoreId = string.Empty;
             SourcingLocation = string.Empty;
             WishListNo = string.Empty;
+            PTEJsonData = string.Empty;
 
             LineType = LineType.Item; //never change this unless you know what you are doing !
 
@@ -128,6 +129,11 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         public bool ValidateTax { get; set; }
         [DataMember]
         public bool ServiceItem { get; set; }
+        /// <summary>
+        /// JSON data from PTE, if any, to be used in the order. Use Central Event to process the data
+        /// </summary>
+        [DataMember]
+        public string PTEJsonData { get; set; }
 
         [IgnoreDataMember]
         public bool ItemHasVariant

@@ -298,7 +298,7 @@ begin
     Parent := NavSQLPage.Surface;
     Caption := 'Use SQL Server Authentication';
     Left := ScaleX(32);
-    Top := ScaleY(133);
+    Top := ScaleY(135);
     Width := ScaleX(185);
     Height := ScaleY(17);
     Checked := True;
@@ -314,7 +314,7 @@ begin
     Parent := NavSQLPage.Surface;
     Caption := 'User (dbowner):' ;
     Left := ScaleX(60);
-    Top := ScaleY(156);
+    Top := ScaleY(160);
     Width := ScaleX(85);
     Height := ScaleY(13);
     Enabled := True;
@@ -325,7 +325,7 @@ begin
   begin
     Parent := NavSQLPage.Surface;
     Left := ScaleX(152);
-    Top := ScaleY(153);
+    Top := ScaleY(157);
     Width := ScaleX(225);
     Height := ScaleY(21);
     Enabled := True;
@@ -339,7 +339,7 @@ begin
     Parent := NavSQLPage.Surface;
     Caption := 'Password:' ;
     Left := ScaleX(60);
-    Top := ScaleY(180);
+    Top := ScaleY(182);
     Width := ScaleX(85);
     Height := ScaleY(13);
     Enabled := True;
@@ -350,7 +350,7 @@ begin
   begin
     Parent := NavSQLPage.Surface;
     Left := ScaleX(152);
-    Top := ScaleY(177);
+    Top := ScaleY(179);
     Width := ScaleX(225);
     Height := ScaleY(21);
     Enabled := True;
@@ -363,7 +363,7 @@ begin
     begin
       Parent := NavSQLPage.Surface;
       Left := ScaleX(145);
-      Top := ScaleY(207);
+      Top := ScaleY(209);
       Width := ScaleX(141);
       Height := ScaleY(21);
       Enabled := False;

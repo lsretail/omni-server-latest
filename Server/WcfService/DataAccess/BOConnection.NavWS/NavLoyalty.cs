@@ -626,6 +626,14 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.HierarchyGet(storeId, stat);
         }
 
+        public virtual List<Hierarchy> HierarchyContentGet(string storeNo, string languageCode, Statistics stat)
+        {
+            if (NAVVersion < new Version("17.5"))
+                throw new NotImplementedException();
+
+            return LSCWSBase.HierarchyContentGet(storeNo, languageCode, stat);
+        }
+
         public virtual MobileMenu MenuGet(string restaurantNo, string terminalNo, string salesType, Currency currency, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))

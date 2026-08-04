@@ -89,7 +89,7 @@ namespace LSOmni.Service
         /// Get balance of a gift card.
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetDataEntryBalance
+        /// LS Central WS2 : GetDataEntryBalanceV2 (LS Central 24.0+); earlier versions read POS Data Entry directly
         /// </remarks>
         /// <param name="cardNo">Gift card number</param>
         /// <param name="pin">Gift card pin number</param>
@@ -101,6 +101,9 @@ namespace LSOmni.Service
         /// <summary>
         /// Get activity history for Gift Card
         /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : GetVoucherEntriesV2 (LS Central 24.0+), GetVoucherEntries (earlier)
+        /// </remarks>
         /// <param name="cardNo">Gift card number</param>
         /// <param name="pin">Gift card pin number</param>
         /// <param name="entryType">Gift card Entry type. If empty, GiftCard_DataEntryType from TenantConfig is used</param>
@@ -134,6 +137,33 @@ namespace LSOmni.Service
         [OperationContract]
         Notification NotificationGetById(string notificationId);
 
+        /// <summary>
+        /// Register a device to receive Push Notifications, or update the registration and its enabled/disabled status
+        /// </summary>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
+        /// Include minimum data needed to be able to process the request
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017">
+        ///   <soapenv:Header/>
+        ///   <soapenv:Body>
+        ///      <ser:PushNotificationSave>
+        ///         <ser:pushNotificationRequest>
+        ///            <ns:Application>Loyalty</ns:Application>
+        ///            <ns:Body>Your order is ready for collection</ns:Body>
+        ///            <ns:DeviceId>fWc8sX1qP0k:APA91bF...device-registration-token...</ns:DeviceId>
+        ///            <ns:Id></ns:Id>
+        ///            <ns:Platform>Apple</ns:Platform>
+        ///            <ns:Status>Enabled</ns:Status>
+        ///            <ns:Title>Order Ready</ns:Title>
+        ///         </ser:pushNotificationRequest>
+        ///      </ser:PushNotificationSave>
+        ///   </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
         [OperationContract]
         bool PushNotificationSave(PushNotificationRequest pushNotificationRequest);
 
@@ -336,6 +366,30 @@ namespace LSOmni.Service
         /// <summary>
         /// Add or remove Item in OneList without sending whole list
         /// </summary>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
+        /// Include minimum data needed to be able to process the request
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017">
+        ///   <soapenv:Header/>
+        ///   <soapenv:Body>
+        ///      <ser:OneListItemModify>
+        ///         <ser:oneListId>1117AC57-10BD-4F7C-974D-FA19B1B027FB</ser:oneListId>
+        ///         <ser:item>
+        ///            <ns1:ItemId>40045</ns1:ItemId>
+        ///            <ns1:Quantity>1</ns1:Quantity>
+        ///            <ns1:VariantId>015</ns1:VariantId>
+        ///         </ser:item>
+        ///         <ser:cardId>10021</ser:cardId>
+        ///         <ser:remove>false</ser:remove>
+        ///         <ser:calculate>true</ser:calculate>
+        ///      </ser:OneListItemModify>
+        ///   </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="oneListId">OneList Id</param>
         /// <param name="item">OneList Item to add or remove</param>
         /// <param name="cardId">Card Id of the person making the changes</param>
@@ -367,6 +421,34 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Central WS2 : COQtyAvailabilityV2
         /// </remarks>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
+        /// Check availability of a Basket (OneList) for a shipped order
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017">
+        ///  <soapenv:Header/>
+        ///   <soapenv:Body>
+        ///      <ser:OrderCheckAvailability>
+        ///         <ser:request>
+        ///            <ns1:CardId>10021</ns1:CardId>
+        ///            <ns1:Items>
+        ///               <ns1:OneListItem>
+        ///                  <ns1:ItemId>40020</ns1:ItemId>
+        ///                  <ns1:Quantity>2</ns1:Quantity>
+        ///                  <ns1:VariantId>002</ns1:VariantId>
+        ///               </ns1:OneListItem>
+        ///            </ns1:Items>
+        ///            <ns1:ListType>Basket</ns1:ListType>
+        ///            <ns1:StoreId>S0001</ns1:StoreId>
+        ///         </ser:request>
+        ///         <ser:shippingOrder>true</ser:shippingOrder>
+        ///      </ser:OrderCheckAvailability>
+        ///   </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="request"></param>
         /// <param name="shippingOrder">true if order is to be shipped, false if click and collect</param>
         /// <returns></returns>
@@ -514,8 +596,56 @@ namespace LSOmni.Service
         /// Edit Customer Order
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : CustomerOrderEditV2
+        /// LS Central WS2 : CustomerOrderEditV2 (LS Central 28.0+), CustomerOrderEdit (earlier)
         /// </remarks>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
+        /// Edit an existing shipped Order, increasing the quantity of the order line from 2 to 3
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017">
+        ///  <soapenv:Header/>
+        ///  <soapenv:Body>
+        ///     <ser:OrderEdit>
+        ///        <ser:request>
+        ///           <ns1:CardId>10021</ns1:CardId>
+        ///           <ns1:OrderDiscountLines>
+        ///           </ns1:OrderDiscountLines>
+        ///           <ns1:OrderLines>
+        ///              <ns1:OrderLine>
+        ///                 <ns1:ItemId>40020</ns1:ItemId>
+        ///                 <ns1:LineNumber>1</ns1:LineNumber>
+        ///                 <ns1:LineType>Item</ns1:LineType>
+        ///                 <ns1:Quantity>3.00</ns1:Quantity>
+        ///                 <ns1:UomId/>
+        ///                 <ns1:VariantId>002</ns1:VariantId>
+        ///              </ns1:OrderLine>
+        ///           </ns1:OrderLines>
+        ///           <ns1:OrderType>Sale</ns1:OrderType>
+        ///           <ns1:ShipOrder>true</ns1:ShipOrder>
+        ///           <ns1:ShipToAddress>
+        ///              <ns:Address1>Some Address</ns:Address1>
+        ///              <ns:Address2></ns:Address2>
+        ///              <ns:CellPhoneNumber></ns:CellPhoneNumber>
+        ///              <ns:City>Some City</ns:City>
+        ///              <ns:Country></ns:Country>
+        ///              <ns:HouseNo></ns:HouseNo>
+        ///              <ns:PhoneNumber></ns:PhoneNumber>
+        ///              <ns:PostCode>999</ns:PostCode>
+        ///              <ns:StateProvinceRegion></ns:StateProvinceRegion>
+        ///              <ns:Type>Residential</ns:Type>
+        ///           </ns1:ShipToAddress>
+        ///           <ns1:StoreId>S0013</ns1:StoreId>
+        ///        </ser:request>
+        ///        <ser:orderId>CO000123</ser:orderId>
+        ///        <ser:editType>General</ser:editType>
+        ///        <ser:returnOrderIdOnly>false</ser:returnOrderIdOnly>
+        ///     </ser:OrderEdit>
+        ///  </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="request">Updated Order object</param>
         /// <param name="orderId">Order Id to edit</param>
         /// <param name="editType">Type of Order Edit</param>
@@ -528,8 +658,39 @@ namespace LSOmni.Service
         /// Update payments for Customer Order
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : COUpdatePaymentV2
+        /// LS Central WS2 : COUpdatePaymentV2 (LS Central 28.0+), COUpdatePayment (earlier)
         /// </remarks>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
+        /// Update the pre-authorized card payment on an existing Customer Order
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017">
+        ///  <soapenv:Header/>
+        ///  <soapenv:Body>
+        ///     <ser:OrderUpdatePayment>
+        ///        <ser:orderId>CO000123</ser:orderId>
+        ///        <ser:storeId>S0013</ser:storeId>
+        ///        <ser:payment>
+        ///           <ns1:Amount>160.00</ns1:Amount>
+        ///           <ns1:AuthorizationCode>123456</ns1:AuthorizationCode>
+        ///           <ns1:CardNumber>45XX..5555</ns1:CardNumber>
+        ///           <ns1:CardType>VISA</ns1:CardType>
+        ///           <ns1:CurrencyCode></ns1:CurrencyCode>
+        ///           <ns1:CurrencyFactor>1</ns1:CurrencyFactor>
+        ///           <ns1:ExternalReference>My123456</ns1:ExternalReference>
+        ///           <ns1:LineNumber>1</ns1:LineNumber>
+        ///           <ns1:PaymentType>PreAuthorization</ns1:PaymentType>
+        ///           <ns1:PreApprovedValidDate>2030-01-01</ns1:PreApprovedValidDate>
+        ///           <ns1:TenderType>1</ns1:TenderType>
+        ///           <ns1:TokenNumber>123456</ns1:TokenNumber>
+        ///        </ser:payment>
+        ///     </ser:OrderUpdatePayment>
+        ///  </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="payment"></param>
         /// <param name="orderId">Customer Order Id</param>
         /// <param name="storeId"></param>
@@ -780,7 +941,7 @@ namespace LSOmni.Service
         /// Check Status of a Customer Order
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : CustomerOrderStatus
+        /// LS Central WS2 : CustomerOrderStatusV2 (LS Central 18.2+), CustomerOrderStatus (earlier)
         /// </remarks>
         /// <param name="orderId"></param>
         /// <returns></returns>
@@ -807,6 +968,31 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Central WS2 : CustomerOrderCancel
         /// </remarks>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
+        /// Cancel a single quantity of one line on an existing Customer Order (leave lines empty to cancel the whole order)
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017">
+        ///  <soapenv:Header/>
+        ///  <soapenv:Body>
+        ///     <ser:OrderCancelEx>
+        ///        <ser:orderId>CO000123</ser:orderId>
+        ///        <ser:storeId>S0013</ser:storeId>
+        ///        <ser:userId>10021</ser:userId>
+        ///        <ser:lines>
+        ///           <ns1:OrderCancelLine>
+        ///              <ns1:ItemNo>40020</ns1:ItemNo>
+        ///              <ns1:LineNo>1</ns1:LineNo>
+        ///              <ns1:Quantity>1</ns1:Quantity>
+        ///           </ns1:OrderCancelLine>
+        ///        </ser:lines>
+        ///     </ser:OrderCancelEx>
+        ///  </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="orderId">Customer Order Id</param>
         /// <param name="storeId">Web Store Id</param>
         /// <param name="userId">User who cancels the order, use Contact ID for logged in user</param>
@@ -1150,6 +1336,24 @@ namespace LSOmni.Service
         /// LS Central WS2 : GetMemberContact2<p/>
         /// LS Central WS4 : GetMemberContactInfo
         /// </remarks>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
+        /// Sample request to search by Name
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017">
+        ///   <soapenv:Header/>
+        ///   <soapenv:Body>
+        ///      <ser:ContactSearch>
+        ///         <ser:searchType>Name</ser:searchType>
+        ///         <ser:search>Sarah</ser:search>
+        ///         <ser:maxNumberOfRowsReturned>10</ser:maxNumberOfRowsReturned>
+        ///      </ser:ContactSearch>
+        ///   </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="searchType">Field to search by</param>
         /// <param name="search">Search value</param>
         /// <param name="maxNumberOfRowsReturned">Max number of record, if set to 1 the exact search will be performed</param>
@@ -1164,6 +1368,23 @@ namespace LSOmni.Service
         /// LS Central WS2 : GetMemberContact2<p/>
         /// LS Central WS4 : GetMemberContactInfo
         /// </remarks>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
+        /// Sample request to get Contact by Name
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017">
+        ///   <soapenv:Header/>
+        ///   <soapenv:Body>
+        ///      <ser:ContactGet>
+        ///         <ser:searchType>Name</ser:searchType>
+        ///         <ser:search>Sarah Parker</ser:search>
+        ///      </ser:ContactGet>
+        ///   </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="searchType">Field to search by</param>
         /// <param name="search">Search value</param>
         /// <returns></returns>
@@ -1523,6 +1744,28 @@ namespace LSOmni.Service
         /// LS Central WS2 : GetInventoryMultiple<p/><p/>
         /// If storeId is empty, all store that have item available will be returned
         /// </remarks>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
+        /// Include minimum data needed to be able to process the request
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017">
+        ///   <soapenv:Header/>
+        ///   <soapenv:Body>
+        ///      <ser:ItemsInStoreGet>
+        ///         <ser:items>
+        ///            <ns:InventoryRequest>
+        ///               <ns:ItemId>40020</ns:ItemId>
+        ///               <ns:VariantId>010</ns:VariantId>
+        ///            </ns:InventoryRequest>
+        ///         </ser:items>
+        ///         <ser:storeId>S0001</ser:storeId>
+        ///      </ser:ItemsInStoreGet>
+        ///   </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="items">Items to get status for</param>
         /// <param name="storeId">Store to get Stock status for, if empty get status for all stores</param>
         /// <returns></returns>
@@ -1537,6 +1780,30 @@ namespace LSOmni.Service
         /// If storeId is empty, all store that have item available will be returned.
         /// If locationId is set, only status for that location will be shown (with or without storeId)
         /// </remarks>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
+        /// Include minimum data needed to be able to process the request
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017">
+        ///   <soapenv:Header/>
+        ///   <soapenv:Body>
+        ///      <ser:ItemsInStoreGetEx>
+        ///         <ser:items>
+        ///            <ns:InventoryRequest>
+        ///               <ns:ItemId>40020</ns:ItemId>
+        ///               <ns:VariantId>010</ns:VariantId>
+        ///            </ns:InventoryRequest>
+        ///         </ser:items>
+        ///         <ser:storeId>S0001</ser:storeId>
+        ///         <ser:locationId>W0001</ser:locationId>
+        ///         <ser:useSourcingLocation>false</ser:useSourcingLocation>
+        ///      </ser:ItemsInStoreGetEx>
+        ///   </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="items">Items to get status for</param>
         /// <param name="storeId">Store to get Stock status for, if empty get status for all stores</param>
         /// <param name="locationId">Sourcing Location to get status for</param>
@@ -1548,6 +1815,28 @@ namespace LSOmni.Service
         /// <summary>
         /// Gets Hospitality Kitchen Current Availability
         /// </summary>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
+        /// Include minimum data needed to be able to process the request
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017" xmlns:ns2="http://lsretail.com/LSOmniService/Base/2021">
+        ///   <soapenv:Header/>
+        ///   <soapenv:Body>
+        ///      <ser:CheckAvailability>
+        ///         <ser:request>
+        ///            <ns2:HospAvailabilityRequest>
+        ///               <ns2:ItemId>S10025</ns2:ItemId>
+        ///               <ns2:UnitOfMeasure></ns2:UnitOfMeasure>
+        ///            </ns2:HospAvailabilityRequest>
+        ///         </ser:request>
+        ///         <ser:storeId>S0017</ser:storeId>
+        ///      </ser:CheckAvailability>
+        ///   </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="request">List of items to get, if empty, get all items</param>
         /// <param name="storeId">Store to get, if empty get all stores</param>
         /// <returns></returns>
@@ -1607,6 +1896,31 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Central WS2 : EcomGetCustomerPrice
         /// </remarks>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
+        /// Include minimum data needed to be able to process the request
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017">
+        ///   <soapenv:Header/>
+        ///   <soapenv:Body>
+        ///      <ser:ItemCustomerPricesGet>
+        ///         <ser:storeId>S0001</ser:storeId>
+        ///         <ser:cardId>10021</ser:cardId>
+        ///         <ser:items>
+        ///            <ns1:ItemCustomerPrice>
+        ///               <ns:Id>40020</ns:Id>
+        ///               <ns1:LineNo>1</ns1:LineNo>
+        ///               <ns1:Quantity>1</ns1:Quantity>
+        ///               <ns1:VariantId>010</ns1:VariantId>
+        ///            </ns1:ItemCustomerPrice>
+        ///         </ser:items>
+        ///      </ser:ItemCustomerPricesGet>
+        ///   </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="storeId"></param>
         /// <param name="cardId"></param>
         /// <param name="items">list of items to get prices for</param>
@@ -1629,6 +1943,18 @@ namespace LSOmni.Service
         /// <returns></returns>
         [OperationContract]
         List<Hierarchy> HierarchyGet(string storeId);
+
+        /// <summary>
+        /// Gets Hierarchy setup for a Store with all Leaves and Nodes with content information
+        /// </summary>
+        /// <remarks>
+        /// LS Central OData: GetHierarchyV3
+        /// </remarks>
+        /// <param name="storeNo"></param>
+        /// <param name="languageCode"></param>
+        /// <returns></returns>
+        [OperationContract]
+        List<Hierarchy> HierarchyContentGet(string storeNo, string languageCode);
 
         #endregion
 
@@ -1763,6 +2089,24 @@ namespace LSOmni.Service
         /// LS Central OData : GetStores<p/><p/>
         /// Data for Store Hours needs to be generated in LS Central by running COMMERCE_XXXX Scheduler Jobs
         /// </remarks>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
+        /// Sample request to get all Click and Collect Stores
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017">
+        ///   <soapenv:Header/>
+        ///   <soapenv:Body>
+        ///      <ser:StoresGet>
+        ///         <ser:storeType>ClickAndCollect</ser:storeType>
+        ///         <ser:includeDetails>true</ser:includeDetails>
+        ///         <ser:includeImages>false</ser:includeImages>
+        ///      </ser:StoresGet>
+        ///   </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <returns>List of stores</returns>
         /// <exception cref="LSOmniServiceException">StatusCodes returned:
         /// <list type="bullet">
@@ -1871,7 +2215,8 @@ namespace LSOmni.Service
         /// Gets Return Policy
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetReturnPolicy
+        /// LS Central WS2 : GetReturnPolicy<p/>
+        /// LS Central PageWS : returnPolicies
         /// </remarks>
         /// <param name="storeId"></param>
         /// <param name="storeGroupCode"></param>
@@ -2290,6 +2635,28 @@ namespace LSOmni.Service
         /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to Commerce Service for LS Central, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
+        /// Sample request can be used with all other Replication functions
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017">
+        ///   <soapenv:Header/>
+        ///   <soapenv:Body>
+        ///      <ser:ReplEcommAttribute>
+        ///         <ser:replRequest>
+        ///            <ns1:BatchSize>100</ns1:BatchSize>
+        ///            <ns1:FullReplication>true</ns1:FullReplication>
+        ///            <ns1:LastKey></ns1:LastKey>
+        ///            <ns1:MaxKey></ns1:MaxKey>
+        ///            <ns1:StoreId>S0013</ns1:StoreId>
+        ///         </ser:replRequest>
+        ///      </ser:ReplEcommAttribute>
+        ///   </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of attributes</returns>
         [OperationContract]
@@ -2872,6 +3239,27 @@ namespace LSOmni.Service
         /// LS Central WS2 : GetAvailabilityVx<p/><p/>
         /// Optional to include required resource (if only specific resource) and contactNo for accurate pricing.
         /// </remarks>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
+        /// Include minimum data needed to be able to process the request
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service">
+        ///    <soapenv:Header/>
+        ///    <soapenv:Body>
+        ///       <ser:ActivityAvailabilityGet>
+        ///          <ser:locationNo>CAMBRIDGE</ser:locationNo>
+        ///          <ser:productNo>MASSAGE30</ser:productNo>
+        ///          <ser:activityDate>2020-02-01T18:06:38</ser:activityDate>
+        ///          <ser:contactNo>MO000008</ser:contactNo>
+        ///          <ser:optionalResource></ser:optionalResource>
+        ///          <ser:promoCode></ser:promoCode>
+        ///       </ser:ActivityAvailabilityGet>
+        ///    </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="locationNo"></param>
         /// <param name="productNo"></param>
         /// <param name="activityDate"></param>
@@ -2964,11 +3352,42 @@ namespace LSOmni.Service
         List<AdditionalCharge> ActivityReservationAdditionalChargesGet(string reservationNo);
 
         /// <summary>
-        /// 
+        /// Change or insert additional charges to a group reservation member
         /// </summary>
         /// <remarks>
         /// LS Central WS2 : SetGroupAdditionalCharges
         /// </remarks>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
+        /// Include minimum data needed to be able to process the request
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Activity/2017">
+        ///    <soapenv:Header/>
+        ///    <soapenv:Body>
+        ///       <ser:ActivityGroupAdditionalChargesSet>
+        ///          <ser:reqest>
+        ///             <ns:ActivityNo>ACT0034</ns:ActivityNo>
+        ///             <ns:DiscountPercentage>0.0</ns:DiscountPercentage>
+        ///             <ns:InvoiceReference></ns:InvoiceReference>
+        ///             <ns:ItemNo>40020</ns:ItemNo>
+        ///             <ns:LineNo>1</ns:LineNo>
+        ///             <ns:Optional></ns:Optional>
+        ///             <ns:OptionalComment></ns:OptionalComment>
+        ///             <ns:ParentLine>0</ns:ParentLine>
+        ///             <ns:Price>110.0</ns:Price>
+        ///             <ns:ProductType>Item</ns:ProductType>
+        ///             <ns:Quantity>1.0</ns:Quantity>
+        ///             <ns:TotalAmount>110.0</ns:TotalAmount>
+        ///             <ns:UnitOfMeasure></ns:UnitOfMeasure>
+        ///             <ns:VariantCode></ns:VariantCode>
+        ///          </ser:reqest>
+        ///       </ser:ActivityGroupAdditionalChargesSet>
+        ///    </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="reqest"></param>
         /// <returns></returns>
         [OperationContract]
@@ -3129,6 +3548,38 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Central WS2 : UpdateReservationVx
         /// </remarks>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
+        /// Include minimum data needed to be able to process the request
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Activity/2017">
+        ///   <soapenv:Header/>
+        ///   <soapenv:Body>
+        ///      <ser:ActivityReservationUpdate>
+        ///         <ser:request>
+        ///            <ns1:ContactName>Tom</ns1:ContactName>
+        ///            <ns1:ContactNo>MO000008</ns1:ContactNo>
+        ///            <ns1:Description></ns1:Description>
+        ///            <ns1:Email>tom@xxx.com</ns1:Email>
+        ///            <ns1:EventNo></ns1:EventNo>
+        ///            <ns1:Internalstatus>0</ns1:Internalstatus>
+        ///            <ns1:Location>CAMBRIDGE</ns1:Location>
+        ///            <ns1:NoOfPerson>1</ns1:NoOfPerson>
+        ///            <ns1:ResDateFrom>2019-10-10</ns1:ResDateFrom>
+        ///            <ns1:ResDateTo>2019-10-10</ns1:ResDateTo>
+        ///            <ns1:ResTimeFrom>13:00:00</ns1:ResTimeFrom>
+        ///            <ns1:ResTimeTo>14:00:00</ns1:ResTimeTo>
+        ///            <ns1:ReservationType>SPA</ns1:ReservationType>
+        ///            <ns1:SalesPerson>AH</ns1:SalesPerson>
+        ///            <ns1:Status></ns1:Status>
+        ///         </ser:request>
+        ///      </ser:ActivityReservationUpdate>
+        ///   </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="request"></param>
         /// <returns></returns>
         [OperationContract]
@@ -3249,6 +3700,38 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Central WS2 : InsertGroupReservationVx
         /// </remarks>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
+        /// Include minimum data needed to be able to process the request
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Activity/2017">
+        ///   <soapenv:Header/>
+        ///   <soapenv:Body>
+        ///      <ser:ActivityInsertGroupReservation>
+        ///         <ser:request>
+        ///            <ns1:ContactName>Tom</ns1:ContactName>
+        ///            <ns1:ContactNo>MO000008</ns1:ContactNo>
+        ///            <ns1:Description></ns1:Description>
+        ///            <ns1:Email>tom@xxx.com</ns1:Email>
+        ///            <ns1:EventNo></ns1:EventNo>
+        ///            <ns1:Internalstatus>0</ns1:Internalstatus>
+        ///            <ns1:Location>CAMBRIDGE</ns1:Location>
+        ///            <ns1:NoOfPerson>2</ns1:NoOfPerson>
+        ///            <ns1:ResDateFrom>2019-10-10</ns1:ResDateFrom>
+        ///            <ns1:ResDateTo>2019-10-10</ns1:ResDateTo>
+        ///            <ns1:ResTimeFrom>13:00:00</ns1:ResTimeFrom>
+        ///            <ns1:ResTimeTo>14:00:00</ns1:ResTimeTo>
+        ///            <ns1:ReservationType>SPA</ns1:ReservationType>
+        ///            <ns1:SalesPerson>AH</ns1:SalesPerson>
+        ///            <ns1:Status></ns1:Status>
+        ///         </ser:request>
+        ///      </ser:ActivityInsertGroupReservation>
+        ///   </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="request"></param>
         /// <returns></returns>
         [OperationContract]
@@ -3260,6 +3743,38 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Central WS2 : UpdateGroupReservationVx
         /// </remarks>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
+        /// Include minimum data needed to be able to process the request
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Activity/2017">
+        ///   <soapenv:Header/>
+        ///   <soapenv:Body>
+        ///      <ser:ActivityUpdateGroupReservation>
+        ///         <ser:request>
+        ///            <ns1:ContactName>Tom</ns1:ContactName>
+        ///            <ns1:ContactNo>MO000008</ns1:ContactNo>
+        ///            <ns1:Description></ns1:Description>
+        ///            <ns1:Email>tom@xxx.com</ns1:Email>
+        ///            <ns1:EventNo></ns1:EventNo>
+        ///            <ns1:Internalstatus>0</ns1:Internalstatus>
+        ///            <ns1:Location>CAMBRIDGE</ns1:Location>
+        ///            <ns1:NoOfPerson>2</ns1:NoOfPerson>
+        ///            <ns1:ResDateFrom>2019-10-10</ns1:ResDateFrom>
+        ///            <ns1:ResDateTo>2019-10-10</ns1:ResDateTo>
+        ///            <ns1:ResTimeFrom>13:00:00</ns1:ResTimeFrom>
+        ///            <ns1:ResTimeTo>14:00:00</ns1:ResTimeTo>
+        ///            <ns1:ReservationType>SPA</ns1:ReservationType>
+        ///            <ns1:SalesPerson>AH</ns1:SalesPerson>
+        ///            <ns1:Status></ns1:Status>
+        ///         </ser:request>
+        ///      </ser:ActivityUpdateGroupReservation>
+        ///   </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="request"></param>
         /// <returns></returns>
         [OperationContract]
@@ -3276,6 +3791,41 @@ namespace LSOmni.Service
         /// If [ReservationNo] is blank the system will create new reservation and return the value to ReservationNo.  If ReservationNo is populated parameter then the system will try to add the activity to existing reservation if the reservation exists and is neither canceled or closed.<p/>
         /// [PromoCode] is validated and adjusts pricing accordingly.
         /// </remarks>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
+        /// Include minimum data needed to be able to process the request
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Activity/2017">
+        ///    <soapenv:Header/>
+        ///    <soapenv:Body>
+        ///       <ser:ActivityConfirmGroup>
+        ///          <ser:request>
+        ///             <ns:ActivityTime>2019-12-10T13:00:00</ns:ActivityTime>
+        ///             <ns:ContactAccount></ns:ContactAccount>
+        ///             <ns:ContactName>Tom</ns:ContactName>
+        ///             <ns:ContactNo>MO000008</ns:ContactNo>
+        ///             <ns:Email>tom@comp.com</ns:Email>
+        ///             <ns:GroupNo></ns:GroupNo>
+        ///             <ns:Location>CAMBRIDGE</ns:Location>
+        ///             <ns:NoOfPeople>1</ns:NoOfPeople>
+        ///             <ns:OptionalComment></ns:OptionalComment>
+        ///             <ns:OptionalResource></ns:OptionalResource>
+        ///             <ns:Paid>false</ns:Paid>
+        ///             <ns:ProductNo>MASSAGE30</ns:ProductNo>
+        ///             <ns:PromoCode></ns:PromoCode>
+        ///             <ns:Quantity>1</ns:Quantity>
+        ///             <ns:ReservationNo>RES0045</ns:ReservationNo>
+        ///             <ns:SetGroupReservation></ns:SetGroupReservation>
+        ///             <ns:Token></ns:Token>
+        ///             <ns:UnitPrice>0.0</ns:UnitPrice>
+        ///          </ser:request>
+        ///       </ser:ActivityConfirmGroup>
+        ///    </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="request"></param>
         /// <returns>Activity Number and Booking Reference</returns>
         [OperationContract]
@@ -3537,11 +4087,38 @@ namespace LSOmni.Service
         string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering);
 
         /// <summary>
-        /// Add Payment token
+        /// Add or delete a payment card token
         /// </summary>
         /// <remarks>
         /// LS Central WS2 : SetTokenEntry, SetMemberCardToken, DeleteMemberCardToken
         /// </remarks>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
+        /// Include minimum data needed to be able to process the request
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Spg/2021">
+        ///    <soapenv:Header/>
+        ///    <soapenv:Body>
+        ///       <ser:TokenEntrySet>
+        ///          <ser:token>
+        ///             <ns:AccountNo>10000</ns:AccountNo>
+        ///             <ns:CardMask>459999XXXXXX0001</ns:CardMask>
+        ///             <ns:ContactNo>MO000008</ns:ContactNo>
+        ///             <ns:DefaultToken>true</ns:DefaultToken>
+        ///             <ns:ExpiryDate>2030-01-01T00:00:00</ns:ExpiryDate>
+        ///             <ns:Token>9F8A7B6C5D4E3F21</ns:Token>
+        ///             <ns:TokenId>TID0001</ns:TokenId>
+        ///             <ns:Type>VISA</ns:Type>
+        ///             <ns:pSPID>PSP01</ns:pSPID>
+        ///          </ser:token>
+        ///          <ser:deleteToken>false</ser:deleteToken>
+        ///       </ser:TokenEntrySet>
+        ///    </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="token"></param>
         /// <param name="deleteToken">Delete token, Send token with token and cardId to delete</param>
         /// <returns></returns>

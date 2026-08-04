@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-using LSRetail.Omni.Domain.DataModel.Base.Retail;
-using LSRetail.Omni.Domain.DataModel.Base.Base;
+﻿using LSRetail.Omni.Domain.DataModel.Base.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
+using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
 
 namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
 {
@@ -366,23 +366,112 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             item.Image = new ImageView(point.ImageId);
             item.Quantity = qty;
 
-            if (point is HierarchyLeaf leaf)
+            if (point is HierarchyNode recipeNode && recipeNode.Type == HierarchyDealType.Recipe)
             {
                 item.OnelistSubLines = new List<OneListItemSubLine>();
 
-                foreach (var leafModifier in leaf.Modifiers)
+                foreach (var modifier in recipeNode.ModifierGroups)
                 {
-                    item.OnelistSubLines.Add(new OneListItemSubLine()
+                    if (modifier.Selection != 0)
                     {
-                        ModifierGroupCode = leafModifier.Code,
-                        ModifierSubCode = leafModifier.SubCode,
-                        VariantId = leafModifier.VariantCode,
-                        Description = leafModifier.Description,
-                        Uom = leafModifier.UnitOfMeasure,
-                        Quantity = leafModifier.Selection,
-                        Type = SubLineType.Modifier,
-                        ItemId = point.Id,
-                    });
+                        item.OnelistSubLines.Add(new OneListItemSubLine()
+                        {
+                            ModifierGroupCode = recipeNode.Id,
+                            ModifierSubCode = modifier.Id,
+                            VariantId = modifier.VariantCode,
+                            Description = modifier.Description,
+                            Uom = modifier.UnitOfMeasure,
+                            Quantity = modifier.Selection,
+                            Type = SubLineType.Modifier,
+                            ItemId = point.Id,
+
+                        });
+                    }
+                }
+            }
+            else if (point is HierarchyNode dealNode && dealNode.Type == HierarchyDealType.Deal)
+            {
+                item.IsADeal = true;
+                foreach (var hierarchyNode in dealNode.Nodes)
+                {
+                    if (hierarchyNode.Type == HierarchyDealType.Modifier)
+                    {
+                        var selectedNode = hierarchyNode.Leafs.FirstOrDefault(n => n.Selected) ??
+                                     hierarchyNode.Leafs.First();
+
+                        item.OnelistSubLines.Add(new OneListItemSubLine()
+                        {
+                            VariantId = selectedNode.VariantCode,
+                            Description = selectedNode.Description,
+                            Uom = selectedNode.UnitOfMeasure,
+                            Quantity = 1,
+                            Type = SubLineType.Deal,
+                            ItemId = point.Id,
+                            DealLineId = hierarchyNode.LineNo,
+                            DealModLineId = selectedNode.ItemUOMs[0].DealModLine
+
+                        });
+
+                        if (selectedNode.HasModifiers)
+                        {
+                            foreach (var modifier in selectedNode.Modifiers)
+                            {
+                                if (modifier.Selection != 0)
+                                {
+                                    item.OnelistSubLines.Add(new OneListItemSubLine()
+                                    {
+                                        ModifierGroupCode = hierarchyNode.Id,
+                                        ModifierSubCode = modifier.Id,
+                                        VariantId = modifier.VariantCode,
+                                        Description = modifier.Description,
+                                        Uom = modifier.UnitOfMeasure,
+                                        Quantity = modifier.Selection,
+                                        Type = SubLineType.Modifier,
+                                        ItemId = point.Id,
+                                        DealLineId = hierarchyNode.LineNo,
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        item.OnelistSubLines.Add(new OneListItemSubLine()
+                        {
+                            VariantId = hierarchyNode.VariantCode,
+                            Description = hierarchyNode.Description,
+                            Uom = hierarchyNode.UnitOfMeasure,
+                            Quantity = 1,
+                            Type = SubLineType.Deal,
+                            ItemId = point.Id,
+                            DealLineId = hierarchyNode.LineNo,
+                        });
+
+                        foreach (var hierarchyNodeLeaf in hierarchyNode.Leafs)
+                        {
+                            if (hierarchyNodeLeaf.HasModifiers)
+                            {
+                                foreach (var modifier in hierarchyNodeLeaf.Modifiers)
+                                {
+                                    if (modifier.Selection != 0)
+                                    {
+                                        item.OnelistSubLines.Add(new OneListItemSubLine()
+                                        {
+                                            ModifierGroupCode = hierarchyNode.Id,
+                                            ModifierSubCode = modifier.Id,
+                                            VariantId = modifier.VariantCode,
+                                            Description = modifier.Description,
+                                            Uom = modifier.UnitOfMeasure,
+                                            Quantity = modifier.Selection,
+                                            Type = SubLineType.Modifier,
+                                            ItemId = point.Id,
+                                            DealLineId = hierarchyNode.LineNo,
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
