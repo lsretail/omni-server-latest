@@ -17,7 +17,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 {
     public class TransactionRepository : BaseRepository
     {
-        public TransactionRepository(BOConfiguration config) : base(config)
+        public TransactionRepository(BOConfiguration config, Version version) : base(config, version)
         {
         }
 

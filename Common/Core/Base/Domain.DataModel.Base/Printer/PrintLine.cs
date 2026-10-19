@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Printer
 {
@@ -14,6 +15,60 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Printer
         PrintBitmap,
         [EnumMember]
         LineFeed
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2020")]
+    public class PrinterConfig
+    {
+        [JsonProperty]
+        public string DeviceID { get; set; }
+        [JsonProperty]
+        public string DeviceHost { get; set; }
+        [JsonProperty]
+        public string DeviceName { get; set; }
+        [JsonProperty]
+        public int PrinterType { get; set; }
+        [JsonProperty]
+        public string Logo { get; set; }
+        [JsonProperty]
+        public int LogoAlign { get; set; }
+        [JsonProperty]
+        public int LogoSize { get; set; }
+        [JsonProperty]
+        public int LogoType { get; set; }
+        [JsonProperty]
+        public int BitmapNo { get; set; }
+        [JsonProperty]
+        public int LineFeedsAtEnd { get; set; }
+        [JsonProperty]
+        public string CharacterSet { get; set; }
+        [JsonProperty]
+        public int PrinterDocInsertRemovalTimeOut { get; set; }
+
+
+        [JsonProperty]
+        public string PrinterNormal { get; set; }
+        [JsonProperty]
+        public string PrinterBold { get; set; }
+        [JsonProperty]
+        public string PrinterWide { get; set; }
+        [JsonProperty]
+        public string PrinterHigh { get; set; }
+        [JsonProperty]
+        public string PrinterHighWide { get; set; }
+        [JsonProperty]
+        public string PrinterItalic { get; set; }
+
+        [JsonProperty]
+        public int PrinterLeftMargin { get; set; }
+        [JsonProperty]
+        public int LineFeedsAtReceiptEnd { get; set; }
+        [JsonProperty]
+        public int LineFeedsAtInvoiceTop { get; set; }
+        [JsonProperty]
+        public int CutPercentage { get; set; }
+        [JsonProperty]
+        public string PropertiesProfile { get; set; }
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]

@@ -51,6 +51,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         OfflinePrintTemplate = 650,
 
         GiftCard_DataEntryType = 700,
+        Tip_IncExpAccount = 701,
 
         //server only
         Currency_Code = 1021,

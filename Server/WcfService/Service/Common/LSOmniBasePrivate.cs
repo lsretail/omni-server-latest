@@ -144,85 +144,87 @@ namespace LSOmni.Service
 
         private BOConfiguration GetConfig(BOConfiguration config)
         {
-            ConfigBLL bll = new ConfigBLL();
-            string token = config.SecurityToken;
-            bool json = config.IsJson;
-            if (string.IsNullOrEmpty(serverUri))
+            using (ConfigBLL bll = new ConfigBLL())
             {
-                return null;
-            }
-
-            //Check default LSNAV Appsettings values (single tenant)
-            if (ConfigSetting.KeyExists("BOConnection.Nav.UserName"))
-            {
-                //Get default configuration
-                config = bll.ConfigGet("");
-                config.IsJson = json;
-                config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOUser.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.UserName");
-
-                if (ConfigSetting.KeyExists("BOConnection.Nav.Password"))
+                string token = config.SecurityToken;
+                bool json = config.IsJson;
+                if (string.IsNullOrEmpty(serverUri))
                 {
-                    string pwd = ConfigSetting.GetString("BOConnection.Nav.Password");
-                
-                    //check if the password has been encrypted by our LSOmniPasswordGenerator.exe
-                    if (DecryptConfigValue.IsEncryptedPwd(pwd))
-                    {
-                        pwd = DecryptConfigValue.DecryptString(pwd, ConfigSetting.GetEncrCode());
-                    }
-                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOPassword.ToString()).Value = pwd;
+                    return null;
                 }
 
-                if (ConfigSetting.KeyExists("BOConnection.Nav.Url"))
-                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOUrl.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.Url");
-                if (ConfigSetting.KeyExists("BOConnection.Nav.QryUrl"))
-                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOQryUrl.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.QryUrl");
-                if (ConfigSetting.KeyExists("BOConnection.Nav.ODataUrl"))
-                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOODataUrl.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.ODataUrl");
+                //Check default LSNAV Appsettings values (single tenant)
+                if (ConfigSetting.KeyExists("BOConnection.Nav.UserName"))
+                {
+                    //Get default configuration
+                    config = bll.ConfigGet("");
+                    config.IsJson = json;
+                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOUser.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.UserName");
 
-                if (ConfigSetting.KeyExists("BOConnection.Nav.Protocol"))
-                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOProtocol.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.Protocol");
-                if (ConfigSetting.KeyExists("BOConnection.Nav.Tenant"))
-                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOTenant.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.Tenant");
-                if (ConfigSetting.KeyExists("BOConnection.Nav.CompanyId"))
-                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOCompanyID.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.CompanyId");
+                    if (ConfigSetting.KeyExists("BOConnection.Nav.Password"))
+                    {
+                        string pwd = ConfigSetting.GetString("BOConnection.Nav.Password");
 
-                if (ConfigSetting.KeyExists("SqlConnectionString.Nav"))
-                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOSql.ToString()).Value = ConfigSetting.GetString("SqlConnectionString.Nav");
+                        //check if the password has been encrypted by our LSOmniPasswordGenerator.exe
+                        if (DecryptConfigValue.IsEncryptedPwd(pwd))
+                        {
+                            pwd = DecryptConfigValue.DecryptString(pwd, ConfigSetting.GetEncrCode());
+                        }
+                        config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOPassword.ToString()).Value = pwd;
+                    }
 
-                //TimeoutInSeconds from client can overwrite BOConnection.NavSQL.Timeout
-                if (ConfigSetting.KeyExists("BOConnection.Nav.Timeout"))
-                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOTimeout.ToString()).Value = (ConfigSetting.GetInt("BOConnection.Nav.Timeout")).ToString();  //millisecs,  60 seconds
-                if (ConfigSetting.KeyExists("BOConnection.Nav.Encoding"))
-                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOEncode.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.Encoding");  //millisecs,  60 seconds
+                    if (ConfigSetting.KeyExists("BOConnection.Nav.Url"))
+                        config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOUrl.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.Url");
+                    if (ConfigSetting.KeyExists("BOConnection.Nav.QryUrl"))
+                        config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOQryUrl.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.QryUrl");
+                    if (ConfigSetting.KeyExists("BOConnection.Nav.ODataUrl"))
+                        config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOODataUrl.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.ODataUrl");
 
-                if (ConfigSetting.KeyExists("ECom.Url"))
-                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.EComUrl.ToString()).Value = ConfigSetting.GetString("ECom.Url");
+                    if (ConfigSetting.KeyExists("BOConnection.Nav.Protocol"))
+                        config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOProtocol.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.Protocol");
+                    if (ConfigSetting.KeyExists("BOConnection.Nav.Tenant"))
+                        config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOTenant.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.Tenant");
+                    if (ConfigSetting.KeyExists("BOConnection.Nav.CompanyId"))
+                        config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOCompanyID.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.CompanyId");
 
-                if (ConfigSetting.KeyExists("Security.Validatetoken"))
-                    config.SecurityCheck = ConfigSetting.GetBoolean("Security.Validatetoken");
+                    if (ConfigSetting.KeyExists("SqlConnectionString.Nav"))
+                        config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOSql.ToString()).Value = ConfigSetting.GetString("SqlConnectionString.Nav");
+
+                    //TimeoutInSeconds from client can overwrite BOConnection.NavSQL.Timeout
+                    if (ConfigSetting.KeyExists("BOConnection.Nav.Timeout"))
+                        config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOTimeout.ToString()).Value = (ConfigSetting.GetInt("BOConnection.Nav.Timeout")).ToString();  //millisecs,  60 seconds
+                    if (ConfigSetting.KeyExists("BOConnection.Nav.Encoding"))
+                        config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOEncode.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.Encoding");  //millisecs,  60 seconds
+
+                    if (ConfigSetting.KeyExists("ECom.Url"))
+                        config.Settings.FirstOrDefault(x => x.Key == ConfigKey.EComUrl.ToString()).Value = ConfigSetting.GetString("ECom.Url");
+
+                    if (ConfigSetting.KeyExists("Security.Validatetoken"))
+                        config.SecurityCheck = ConfigSetting.GetBoolean("Security.Validatetoken");
+                }
+                else if (bll.ConfigKeyExists(ConfigKey.LSKey, config.LSKey.Key))
+                {
+                    //check in db
+                    config = bll.ConfigGet(config.LSKey.Key);
+                }
+                else if (serverUri.Contains("PortalService.svc") || serverUri.Contains("PortalJson.svc"))
+                {
+                    config = bll.ConfigGet("");
+                }
+                else
+                {
+                    throw new LSOmniServiceException(StatusCode.LSKeyInvalid, " Invalid LSRETAIL-KEY");
+                }
+
+                if (ConfigSetting.KeyExists("Security.EncrCode"))
+                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.EncrCode.ToString()).Value = ConfigSetting.GetEncrCode();
+
+                //Validate securitytoken if not ecommerce
+                //TODO: add settings in db for sec token validation
+                //config.SecurityCheck = serverUri.ToUpper().Contains("UCSERVICE") == false;
+                config.SecurityToken = token;
+                return config;
             }
-            else if (bll.ConfigKeyExists(ConfigKey.LSKey, config.LSKey.Key))
-            {
-                //check in db
-                config = bll.ConfigGet(config.LSKey.Key);
-            }
-            else if (serverUri.Contains("PortalService.svc") || serverUri.Contains("PortalJson.svc"))
-            {
-                config = bll.ConfigGet("");
-            }
-            else
-            {
-                throw new LSOmniServiceException(StatusCode.LSKeyInvalid, " Invalid LSRETAIL-KEY");
-            }
-
-            if (ConfigSetting.KeyExists("Security.EncrCode"))
-                config.Settings.FirstOrDefault(x => x.Key == ConfigKey.EncrCode.ToString()).Value = ConfigSetting.GetEncrCode();
-
-            //Validate securitytoken if not ecommerce
-            //TODO: add settings in db for sec token validation
-            //config.SecurityCheck = serverUri.ToUpper().Contains("UCSERVICE") == false;
-            config.SecurityToken = token;
-            return config;
         }
 
         private void MenuSetLocation(MobileMenu mobileMenu)

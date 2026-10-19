@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using LSOmni.Common.Util;
+﻿using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
 {
@@ -15,46 +17,38 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
             IsJson = json;
         }
 
-        public SalesEntry GetSalesEntry(string ret, out string resCode, out string resErr)
+        public SalesEntry GetSalesEntry(string ret, string tipAccount, out string resCode, out string resErr)
         {
             SalesEntry rec = null;
             WSODataCollection result = null;
 
-            try
+            result = JsonToWSOData(ret, "SelectedSalesDocDaCo", out resCode, out resErr);
+            if (result == null)
+                return rec;
+
+            // get header data
+            List<SalesEntry> list = LoadSaleEntries(result.GetDataSet(10000818));
+            if (list.Count == 0)
+                return rec;
+
+            rec = list.FirstOrDefault();
+            LoadSaleEntryLines(result, rec, tipAccount);
+            rec.DiscountLines = LoadSaleDiscounts(result.GetDataSet(10000836));
+
+            switch (rec.IdType)
             {
-                result = JsonToWSOData(ret, "SelectedSalesDocDaCo", out resCode, out resErr);
-                if (result == null)
-                    return rec;
-
-                // get header data
-                List<SalesEntry> list = LoadSaleEntries(result.GetDataSet(10000818));
-                if (list.Count == 0)
-                    return rec;
-
-                rec = list.FirstOrDefault();
-                LoadSaleEntryLines(result, rec);
-                rec.DiscountLines = LoadSaleDiscounts(result.GetDataSet(10000836));
-
-                switch (rec.IdType)
-                {
-                    case DocumentIdType.Receipt:
-                        rec.LineItemCount = (int)rec.Lines.Sum(q => q.Quantity);
-                        rec.Quantity = rec.LineItemCount;
-                        rec.LineCount = rec.Lines.Count;
-                        break;
-                    case DocumentIdType.Order:
-                        if (rec.Lines != null && rec.Lines.Count > 0)
-                        {
-                            rec.StoreId = rec.Lines[0].StoreId;
-                            rec.StoreName = rec.Lines[0].StoreName;
-                        }
-                        break;
-                }
-            }
-            finally
-            {
-                result?.Dispose();
-                result = null;
+                case DocumentIdType.Receipt:
+                    rec.LineItemCount = (int)rec.Lines.Sum(q => q.Quantity);
+                    rec.Quantity = rec.LineItemCount;
+                    rec.LineCount = rec.Lines.Count;
+                    break;
+                case DocumentIdType.Order:
+                    if (rec.Lines != null && rec.Lines.Count > 0)
+                    {
+                        rec.StoreId = rec.Lines[0].StoreId;
+                        rec.StoreName = rec.Lines[0].StoreName;
+                    }
+                    break;
             }
             return rec;
         }
@@ -64,59 +58,199 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
             List<SalesEntry> list = new List<SalesEntry>();
             WSODataCollection result = null;
 
-            try
-            {
-                result = JsonToWSOData(ret, "MemberContactSalesHistoryDaCo", out resCode, out resErr);
-                if (result == null)
-                    return list;
+            result = JsonToWSOData(ret, "MemberContactSalesHistoryDaCo", out resCode, out resErr);
+            if (result == null)
+                return list;
 
-                // get data
-                list = LoadSaleEntries(result.GetDataSet(10000818));
-            }
-            finally
-            {
-                result?.Dispose();
-                result = null;
-            }
+            // get data
+            list = LoadSaleEntries(result.GetDataSet(10000818));
             return list;
         }
 
-        public SalesEntryList GetSalesEntrySales(string ret, bool getCardId, out string cardId, out string resCode, out string resErr)
+        public SalesEntryList GetSalesEntrySales(string ret, bool getCardId, string tipAccount, out string cardId, out string resCode, out string resErr)
         {
             cardId = string.Empty;
             SalesEntryList entry = new SalesEntryList();
             WSODataCollection result = null;
 
-            try
+            result = JsonToWSOData(ret, "SalesInfoDaCo", out resCode, out resErr);
+            if (result == null)
+                return entry;
+
+            if (getCardId)
+                cardId = GetJsonValue(ret, "CardNo", out resCode, out resErr);
+
+            List<SalesEntry> entries = LoadSaleEntries(result.GetDataSet(10000818));
+            foreach (SalesEntry rec in entries)
             {
-                result = JsonToWSOData(ret, "SalesInfoDaCo", out resCode, out resErr);
-                if (result == null)
-                    return entry;
-
-                if (getCardId)
-                    cardId = GetJsonValue(ret, "CardNo", out resCode, out resErr);
-
-                List<SalesEntry> entries = LoadSaleEntries(result.GetDataSet(10000818));
-                foreach (SalesEntry rec in entries)
-                {
-                    LoadSaleEntryLines(result, rec);
-                    rec.DiscountLines = LoadSaleDiscounts(result.GetDataSet(10000836));
-                }
-                entry.Order = entries.Find(e => e.IdType == DocumentIdType.Order);
-                entry.SalesEntries = entries.FindAll(e => e.IdType == DocumentIdType.Receipt);
-                entry.Shipments = LoadShipment(result.GetDataSet(110));
-                List<SalesEntryShipmentLine> shipLines = LoadShipmentLine(result.GetDataSet(111));
-                foreach (SalesEntryShipment rec in entry.Shipments)
-                {
-                    rec.Lines = shipLines.FindAll(l => l.DocId == rec.Id);
-                }
+                LoadSaleEntryLines(result, rec, tipAccount);
+                rec.DiscountLines = LoadSaleDiscounts(result.GetDataSet(10000836));
             }
-            finally
+            entry.Order = entries.Find(e => e.IdType == DocumentIdType.Order);
+            entry.SalesEntries = entries.FindAll(e => e.IdType == DocumentIdType.Receipt);
+            entry.Shipments = LoadShipment(result.GetDataSet(110));
+            List<SalesEntryShipmentLine> shipLines = LoadShipmentLine(result.GetDataSet(111));
+            foreach (SalesEntryShipment rec in entry.Shipments)
             {
-                result?.Dispose();
-                result = null;
+                rec.Lines = shipLines.FindAll(l => l.DocId == rec.Id);
             }
             return entry;
+        }
+
+        public string MapOneListToApiList(OneList oneList)
+        {
+            JObject body = new JObject()
+            {
+                { "cardNo", oneList.CardId },
+                { "name", oneList.Description },
+                { "calculationType", (oneList.IsHospitality) ? "Hospitality" : "Basket" }
+            };
+            return body.ToString();
+        }
+
+        public string MapOneListToApiItem(OneListItem oneItem, bool remove)
+        {
+            JObject body = new JObject()
+            {
+                { "itemNo", oneItem.ItemId },
+                { "lineNo", oneItem.LineNumber },
+                { "quantity", oneItem.Quantity },
+                { "variantCode", oneItem.VariantId },
+                { "unitOfMeasureCode", oneItem.UnitOfMeasureId },
+                { "barcode", oneItem.BarcodeId },
+                { "remove", remove }
+            };
+            return body.ToString();
+        }
+
+        public string MapOneListToApiLink(string cardId, string contactNo, LinkStatus status)
+        {
+            JObject body = new JObject()
+            {
+                { "cardNo", cardId },
+                { "status", status.ToString() },
+                { "canEdit", true },
+                { "contactNo", contactNo }
+            };
+            return body.ToString();
+        }
+
+        public void GetWishListId(string ret, out string listId, out string listNo, out string resCode, out string resErr)
+        {
+            listId = string.Empty;
+            listNo = string.Empty;
+
+            string result = GetJsonPageValue(ret, out resCode, out resErr, out bool isArray);
+            if (result == null || isArray)
+                return;
+
+            JObject item = JObject.Parse(result);
+            if (item == null)
+                return;
+
+            if (item.ContainsKey("id"))
+                listId = item.Value<string>("id");
+            if (item.ContainsKey("no"))
+                listNo = item.Value<string>("no");
+        }
+
+        public List<string> GetWishListNumbers(string ret, out string resCode, out string resErr)
+        {
+            List<string> list = new List<string>();
+            string result = GetJsonPageValue(ret, out resCode, out resErr, out bool isArray);
+            if (result == null || isArray == false)
+                return list;
+
+            JArray links = JArray.Parse(result);
+            if (links == null)
+                return list;
+            
+            foreach (JObject link in links.Cast<JObject>())
+                list.Add(link.Value<string>("wishListNo"));
+
+            return list;
+        }
+
+        public List<OneList> GetWishList(string ret, bool includeLines, out string resCode, out string resErr)
+        {
+            List<OneList> list = new List<OneList>();
+            string result = GetJsonPageValue(ret, out resCode, out resErr, out bool isArray);
+            if (result == null)
+                return list;
+            
+            if (isArray)
+            {
+                foreach (JObject head in JArray.Parse(result).Cast<JObject>())
+                {
+                    list.Add(AddToOneList(head, includeLines));
+                }
+                return list;
+            }
+
+            JObject olist = JObject.Parse(result);
+            if (olist == null)
+                return list;
+
+            return new List<OneList>()
+            {
+                AddToOneList(olist, includeLines)
+            };
+        }
+
+        private OneList AddToOneList(JObject head, bool includeLines)
+        {
+            string listId = head.Value<string>("id");
+            OneList oneList = new OneList()
+            {
+                Id = listId,
+                ListNo = head.Value<string>("no"),
+                IsHospitality = head.Value<string>("calculationType") == "Hospitality",
+                ListType = ListType.Basket,
+                Description = head.Value<string>("name"),
+                CardId = head.Value<string>("cardNo")
+            };
+
+            if (includeLines == false)
+                return oneList;
+
+            var token = head.SelectToken("wishListLines");
+            JArray array = JArray.Parse(token.ToString());
+            if (array == null)
+                throw new LSOmniServiceException(StatusCode.NavODataError, "wishListLines Array element not found in result");
+
+            foreach (JObject rec in array.Cast<JObject>())
+            {
+                OneListItem item = new OneListItem()
+                {
+                    Id = rec.Value<string>("id"),
+                    OneListId = listId,
+                    LineNumber = rec.Value<int>("lineNo"),
+                    ItemId = rec.Value<string>("itemNo"),
+                    VariantId = rec.Value<string>("variantCode"),
+                    UnitOfMeasureId = rec.Value<string>("unitOfMeasureCode"),
+                    Quantity = rec.Value<int>("quantity"),
+                    IsADeal = rec.Value<bool>("isDeal")
+                };
+                oneList.Items.Add(item);
+            }
+
+            token = head.SelectToken("wishListLinks");
+            array = JArray.Parse(token.ToString());
+            if (array == null)
+                throw new LSOmniServiceException(StatusCode.NavODataError, "wishListLinks Array element not found in result");
+
+            foreach (JObject rec in array.Cast<JObject>())
+            {
+                OneListLink link = new OneListLink()
+                {
+                    Id = rec.Value<string>("id"),
+                    CardId = rec.Value<string>("cardNo"),
+                    Owner = rec.Value<bool>("owner"),
+                    Status = (LinkStatus)EnumHelper.StringToEnum(typeof(LinkStatus), rec.Value<string>("status"))
+                };
+                oneList.CardLinks.Add(link);
+            }
+            return oneList;
         }
 
         private List<SalesEntry> LoadSaleEntries(ReplODataSetRecRef dynDataSet)
@@ -225,7 +359,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
             return list;
         }
 
-        private void LoadSaleEntryLines(WSODataCollection result, SalesEntry entry)
+        private void LoadSaleEntryLines(WSODataCollection result, SalesEntry entry, string tipAccount)
         {
             ReplODataSetRecRef dynDataSet = result.GetDataSet(10000835);
             if (dynDataSet == null || dynDataSet.DataSetRows.Count == 0)
@@ -304,6 +438,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                 }
                 else
                 {
+                    if (rec.LineType == LineType.IncomeExpense && rec.ItemId != tipAccount)
+                        continue;
+
                     entry.Lines.Add(rec);
                 }
             }

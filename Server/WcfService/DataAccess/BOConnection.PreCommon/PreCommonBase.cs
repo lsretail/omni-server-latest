@@ -19,7 +19,7 @@ using System.Xml.Linq;
 namespace LSOmni.DataAccess.BOConnection.PreCommon
 {
     //Navision back office connection
-    public partial class PreCommonBase
+    public partial class PreCommonBase : IDisposable
     {
         private int TimeoutSec = 0;
         public int TimeOutInSeconds
@@ -42,8 +42,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     centralQryWS25.Timeout = (value - 2) * 1000;
                 if (activityWS != null)
                     activityWS.Timeout = (value - 2) * 1000;
-                if (odataWS != null)
-                    odataWS.Timeout = (value - 2) * 1000;
             }
         }
 
@@ -59,11 +57,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         public LSCentral.OmniWrapper centralQryWS = null;
         public LSCentral25.OmniWrapper centralQryWS25 = null;
         public LSActivity.Activity activityWS = null;
-        public LSOData.ODataRequest odataWS = null;
         private readonly int base64ConversionMinLength = 1024 * 100; //50KB 75KB  minimum length to base64 conversion
 
         public Version LSCVersion = null; //use this in code to check Nav version
         public string NavCompany = string.Empty;
+        public string NavCompanyId = string.Empty;
 
         protected BOConfiguration config = null;
 
@@ -88,6 +86,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             int sp = url.ToLower().IndexOf("/ws/");
             int ep = url.ToLower().IndexOf("/codeunit");
             NavCompany = HttpUtility.UrlDecode(url.Substring(sp + 4, ep - sp - 4));
+            NavCompanyId = config.SettingsGetByKey(ConfigKey.BOCompanyID);
 
             //navWsVersion is Unknown for the first time 
             if (LSCVersion != null)
@@ -154,7 +153,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             centralQryWS = new LSCentral.OmniWrapper();
             centralQryWS25 = new LSCentral25.OmniWrapper();
             activityWS = new LSActivity.Activity();
-            odataWS = new LSOData.ODataRequest();
 
             centralWS.Url = url.Replace("RetailWebServices", "OmniWrapper");
             centralWS.Timeout = config.SettingsIntGetByKey(ConfigKey.BOTimeout) * 1000;  //millisecs,  60 seconds
@@ -181,11 +179,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             activityWS.PreAuthenticate = true;
             activityWS.AllowAutoRedirect = true;
 
-            odataWS.Url = string.IsNullOrEmpty(qryurl) ? url.Replace("RetailWebServices", "ODataRequest") : qryurl.Replace("RetailWebServices", "ODataRequest");
-            odataWS.Timeout = config.SettingsIntGetByKey(ConfigKey.BOTimeout) * 1000;  //millisecs,  60 seconds
-            odataWS.PreAuthenticate = true;
-            odataWS.AllowAutoRedirect = true;
-
             string token = config.SettingsGetByKey(ConfigKey.Central_Token);
             if (protocol.ToUpper().Equals("S2S") && string.IsNullOrEmpty(token) == false)
             {
@@ -197,7 +190,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 centralQryWS.GetType().GetProperty("AuthToken").SetValue(centralQryWS, token);
                 centralQryWS25.GetType().GetProperty("AuthToken").SetValue(centralQryWS25, token);
                 activityWS.GetType().GetProperty("AuthToken").SetValue(activityWS, token);
-                odataWS.GetType().GetProperty("AuthToken").SetValue(odataWS, token);
             }
             else
             {
@@ -212,7 +204,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     centralQryWS.Credentials = credentials;
                     centralQryWS25.Credentials = credentials;
                     activityWS.Credentials = credentials;
-                    odataWS.Credentials = credentials;
                 }
             }
 
@@ -226,26 +217,70 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 centralQryWS.Proxy = GetWebProxy();
                 centralQryWS25.Proxy = GetWebProxy();
                 activityWS.Proxy = GetWebProxy();
-                odataWS.Proxy = GetWebProxy();
             }
             NavVersionToUse(false, out string cVer);
         }
 
-        public string SendToOData(string command, string data, bool sendget, bool pageWS = false)
+        private bool disposed = false;
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+
+            if (disposing)
+            {
+                // these are Component-derived SOAP client proxies (System.Web.Services.Protocols.SoapHttpClientProtocol),
+                // freshly created per BO connection instance - dispose them so their connections/finalizers don't pile up
+                // across the many distinct tenants a single SaaS worker process serves.
+                navWebReference?.Dispose();
+                navWebQryReference?.Dispose();
+                centralWS?.Dispose();
+                centralWS25?.Dispose();
+                centralQryWS?.Dispose();
+                centralQryWS25?.Dispose();
+                activityWS?.Dispose();
+            }
+            disposed = true;
+        }
+
+        public string SendToOData(string command, string data, bool sendget)
+        {
+            return SendToOData(command, data, (sendget) ? APIPageMethod.GET : APIPageMethod.POST, false);
+        }
+
+        public string SendToOData(string command, string data, APIPageMethod method, bool pageWS)
         {
             try
             {
-                Uri url;
+                string urlstr;
                 if (pageWS)
-                    url = new Uri(string.Format("{0}/{1}", config.SettingsGetByKey(ConfigKey.BOODataUrl).Replace("ODataV4", "api/lsRetail"), command));
+                    urlstr = string.Format("{0}/{1}", config.SettingsGetByKey(ConfigKey.BOODataUrl).Replace("ODataV4", "api/lsRetail"), command);
                 else
-                    url = new Uri(string.Format("{0}/{1}?company={2}", config.SettingsGetByKey(ConfigKey.BOODataUrl), command, NavCompany));
+                { 
+                    urlstr = string.Format("{0}/{1}?company={2}", config.SettingsGetByKey(ConfigKey.BOODataUrl), command, NavCompany);
+                    string ten = config.SettingsGetByKey(ConfigKey.BOTenant);
+                    if (string.IsNullOrEmpty(ten) == false)
+                    {
+                        urlstr += "&tenant=" + ten;
+                    }
+                }
 
+                Uri url = new Uri(urlstr);
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                 httpWebRequest.ContentType = "application/json";
-                httpWebRequest.Method = (sendget) ? "GET" : "POST";
+                httpWebRequest.Method = method.ToString();
                 httpWebRequest.PreAuthenticate = true;
                 httpWebRequest.AllowAutoRedirect = true;
+
+                if (pageWS && (method == APIPageMethod.PATCH || method == APIPageMethod.DELETE))
+                    httpWebRequest.Headers.Add("If-Match", "*");
 
                 string token = config.SettingsGetByKey(ConfigKey.Central_Token);
                 string protocol = config.SettingsGetByKey(ConfigKey.BOProtocol);
@@ -283,7 +318,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
                 logger.Debug(config.LSKey.Key, "OData {0} To {1} - Command:{2} ReqData:[{3}]", 
                     httpWebRequest.Method, url.Host + url.LocalPath, command, data);
-                if (sendget == false)
+                if (method == APIPageMethod.POST || method == APIPageMethod.PATCH)
                 {
                     using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
                     {
@@ -376,7 +411,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         public string NavVersionToUse(bool foreceCall, out string centralVersion)
         {
             if (LSCVersion == null)
-                LSCVersion = new Version("28.0");
+                LSCVersion = new Version("29.0");
 
             centralVersion = LSCVersion.ToString();
             if (centralWS == null)
@@ -800,13 +835,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 }
             }
             logger.StatisticEndSub(ref stat, statIndex);
-            throw new LSOmniServiceException(statusCode, respCode, errText);
+            throw new LSOmniServiceException(statusCode, respCode, $"{funcName} > {errText}");
         }
 
         protected string HandleWJsonResponseCode(string jsondata, string funcName, out string respCode, out string errText, ref Statistics stat, int statIndex, string[] codesToHandle = null)
         {
             respCode = "0000";
             errText = string.Empty;
+            if (string.IsNullOrEmpty(jsondata))
+                return string.Empty;
 
             JObject parsed;
             try
@@ -1278,6 +1315,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 case "7750":  //Percassi only
                     statusCode = StatusCode.SuspendFailure;
                     break;
+                case "9900":
+                    statusCode = StatusCode.OdataCommunicationFailure;
+                    break;
                 default:
                     break;
             }
@@ -1314,5 +1354,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         }
 
         #endregion private members
+    }
+
+    public enum APIPageMethod
+    {
+        GET,
+        POST,
+        PATCH,
+        DELETE
     }
 }

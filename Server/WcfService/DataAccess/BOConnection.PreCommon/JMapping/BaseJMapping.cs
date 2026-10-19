@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
 {
@@ -14,7 +15,19 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
         protected static LSLogger logger = new LSLogger();
         protected Version LSCVersion = new Version("27.0");
 
-        public void SetKeys(bool fullRepl, ref string lastKey, out int lastEntry)
+        // BC API pages serialize Option/Enum fields by their caption, EDM-encoding any character that isn't a valid
+        // identifier char as _xHHHH_ (hex code point) - e.g. a blank caption of " " comes back as literal "_x0020_",
+        // and "Mobile POS" as "Mobile_x0020_POS". Decodes that back to the real caption text (trimmed).
+        protected static string DecodeEdmEnumCaption(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                return string.Empty;
+
+            string decoded = Regex.Replace(value, "_x([0-9A-Fa-f]{4})_", m => ((char)Convert.ToInt32(m.Groups[1].Value, 16)).ToString());
+            return decoded.Trim();
+        }
+
+        public string SetKeys(bool fullRepl, int batchSize, ref string lastKey, out int lastEntry)
         {
             if (string.IsNullOrEmpty(lastKey))
                 lastKey = "0";
@@ -30,11 +43,48 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                 lastEntry = Convert.ToInt32(lastKey);
                 lastKey = string.Empty;
             }
+
+            JObject body = new JObject()
+            {
+                { "batchSize", batchSize },
+                { "fullRepl", fullRepl },
+                { "lastKey", lastKey },
+                { "lastEntryNo", lastEntry }
+            };
+            return body.ToString();
+        }
+
+        public string SetKeys(string storeId, bool fullRepl, int batchSize, ref string lastKey, out int lastEntry)
+        {
+            if (string.IsNullOrEmpty(lastKey))
+                lastKey = "0";
+
+            lastEntry = 0;
+            if (fullRepl)
+            {
+                if (lastKey == "0")
+                    lastKey = string.Empty;
+            }
+            else
+            {
+                lastEntry = Convert.ToInt32(lastKey);
+                lastKey = string.Empty;
+            }
+
+            JObject body = new JObject()
+            {
+                { "storeNo", storeId },
+                { "batchSize", batchSize },
+                { "fullRepl", fullRepl },
+                { "lastKey", lastKey },
+                { "lastEntryNo", lastEntry }
+            };
+            return body.ToString();
         }
 
         public ReplOTableData JsonToTableData(string ret, ref string lastKey, ref int recordsRemaining)
         {
-            ReplOTableData result = JsonConvert.DeserializeObject<ReplOTableData>(ret);
+            ReplOTableData result = JsonConvert.DeserializeObject<ReplOTableData>(GetValue(ret));
             if (result == null || result.TableData == null || result.TableData.TableDataUpd == null || result.TableData.TableDataUpd.RecRefJson == null)
             {
                 if (result?.Status == "OnError")
@@ -49,19 +99,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
 
         public string GetJsonValue(string ret, string valueMemberCode, out string resCode, out string resErr)
         {
-            JObject parsed;
-            try
-            {
-                parsed = JObject.Parse(ret);
-            }
-            catch (Exception)
-            {
-                throw new LSOmniServiceException(StatusCode.NavODataError, "OData4 Error:" + ret);
-            }
-
-            var token = parsed.SelectToken("value");
-            parsed = JObject.Parse(token.ToString());
-            token = parsed.SelectToken(valueMemberCode);
+            JObject parsed = JObject.Parse(GetValue(ret));
+            var token = parsed.SelectToken(valueMemberCode);
             if (token == null)
                 throw new LSOmniServiceException(StatusCode.NavODataError, $"{valueMemberCode} element not found in result");
 
@@ -70,10 +109,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
             return token.ToString();
         }
 
-        public string GetJsonPageValue(string ret, out string resCode, out string resErr)
+        public string GetJsonPageValue(string ret, out string resCode, out string resErr, out bool isArray)
         {
             resCode = "0000";
             resErr = string.Empty;
+            isArray = false;
 
             if (ret.StartsWith("ERROR"))
             {
@@ -92,11 +132,20 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                 throw new LSOmniServiceException(StatusCode.NavODataError, "OData4 Error:" + ret);
             }
 
-            var token = parsed.SelectToken("value");
-            if (token == null)
-                throw new LSOmniServiceException(StatusCode.NavODataError, "Value element not found in result");
+            var err = parsed.SelectToken("error");
+            if (err != null)
+            {
+                resCode = err.SelectToken("code").Value<string>();
+                resErr = err.SelectToken("message").Value<string>();
+                return null;
+            }
 
-            return token.ToString();
+            var value = parsed.SelectToken("value");
+            if (value == null)
+                return parsed.ToString();
+
+            isArray = true;
+            return value.ToString();
         }
 
         public WSODataCollection JsonToWSOData(string ret, string valueMemberCode, out string resCode, out string resErr)
@@ -111,7 +160,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
 
         public ReplODataSet JsonToDataSet(string ret, ref string lastKey, ref int recordsRemaining)
         {
-            ReplODataSet result = JsonConvert.DeserializeObject<ReplODataSet>(ret);
+            ReplODataSet result = JsonConvert.DeserializeObject<ReplODataSet>(GetValue(ret));
             if (result == null || result.DataSet == null || result.DataSet.DataSetUpd == null || result.DataSet.DataSetUpd.DynDataSet == null)
             {
                 if (result.Status == "OnError")
@@ -122,6 +171,30 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
             lastKey = (result.LastEntryNo == 0) ? result.LastKey : result.LastEntryNo.ToString();
             recordsRemaining = (result.EndOfTable) ? 0 : 1;
             return result;
+        }
+
+        private string GetValue(string ret)
+        {
+            JObject parsed;
+            try
+            {
+                parsed = JObject.Parse(ret);
+            }
+            catch (Exception)
+            {
+                throw new LSOmniServiceException(StatusCode.NavODataError, "OData4 Error:" + ret);
+            }
+
+            var err = parsed.SelectToken("error");
+            if (err != null)
+            {
+                string errCode = err.SelectToken("code")?.Value<string>();
+                string errMsg = err.SelectToken("message")?.Value<string>();
+                throw new LSOmniServiceException(StatusCode.NavODataError, errCode, errMsg);
+            }
+
+            var token = parsed.SelectToken("value");
+            return token.ToString();
         }
 
         public string LoadOneValue(ReplODataSetRecRef dynDataSet, string lookupField, string lookupValue, string returnField)

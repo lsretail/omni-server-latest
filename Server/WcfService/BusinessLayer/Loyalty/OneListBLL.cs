@@ -70,18 +70,19 @@ namespace LSOmni.BLL.Loyalty
                 return list;
 
             CheckItemSetup(list);
+            if (config.SettingsBoolGetByKey(ConfigKey.UseCentralWishList))
+            {
+                list.Id = BOLoyConnection.OneListSave(list, out string listNo, stat);
+                list.ListNo = listNo;
+                return list;
+            }
+
             if (calculate)
             {
                 if (list.IsHospitality)
                     list = CalculateHospList(list, stat);
                 else
                     list = CalculateList(list, stat);
-            }
-
-            if (config.SettingsBoolGetByKey(ConfigKey.UseCentralWishList))
-            {
-                list.Id = BOLoyConnection.OneListSave(list, stat);
-                return list;
             }
 
             if (string.IsNullOrEmpty(list.Name) && !string.IsNullOrEmpty(list.CardId))

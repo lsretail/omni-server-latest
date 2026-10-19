@@ -447,7 +447,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             }
         }
 
-        public List<SalesEntryLine> TransSalesEntryLinesGet(string receiptId, string orderId, string storeNo, string termNo, int transNo, Statistics stat)
+        public List<SalesEntryLine> TransSalesEntryLinesGet(string orderId, string storeNo, string termNo, int transNo, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
             List<SalesEntryLine> list = new List<SalesEntryLine>();
@@ -455,12 +455,10 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-
                     command.CommandText =
                        "SELECT " +
                        "ml.[Store No_],st.[Name],ml.[Transaction No_],ml.[Item No_],ml.[Variant Code],ml.[Unit of Measure]," +
-                       "ml.[Deal Modifier Line No_],ml.[Deal Header Line No_]," +
-                       "ml.[Quantity],ml.[UOM Quantity],ml.[Price]," +
+                       "ml.[Deal Modifier Line No_],ml.[Deal Header Line No_],ml.[Quantity],ml.[UOM Quantity],ml.[Price]," +
                        "ml.[Net Price],ml.[Net Amount],ml.[Discount Amount],ml.[VAT Amount],ml.[Refund Qty_]," +
                        "ml.[Line No_],ml.[Parent Line No_],ml.[Serial No_],ml.[Lot No_],i.[Description]," +
                        "v.[Variant Dimension 1],v.[Variant Dimension 2],v.[Variant Dimension 3],v.[Variant Dimension 4],v.[Variant Dimension 5]," +
@@ -470,38 +468,24 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                        "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_] = ml.[Store No_] " +
                        "LEFT JOIN [" + navCompanyName + "LSC Item Variant Registration$5ecfc871-5d82-43f1-9c54-59685e82318d] v " +
                        "ON v.[Item No_]=ml.[Item No_] AND v.[Variant]=ml.[Variant Code] " +
-                       "WHERE ml.[Store No_]=@sid " +
-                       "AND ml.[POS Terminal No_]=@tid " +
-                       "AND ml.[Transaction No_]=@id " +
-                       "AND ml.[Receipt No_]=@ReceiptNo " +
+                       "WHERE ml.[Store No_]=@sid AND ml.[POS Terminal No_]=@tid AND ml.[Transaction No_]=@id " +
                        "UNION ALL " +
                        "SELECT " +
                        "ie.[Store No_],'' AS [Name],ie.[Transaction No_],ie.[No_],'' AS [Variant Code],'' AS [Unit of Measure]," +
-                       "0 AS [Deal Modifier Line No_],0 AS [Deal Header Line No_]," +
-                       "ABS(SUM(ie.[Counter])) AS [Quantity]," +
-                       "ABS(SUM(ie.[Counter])) AS [UOM Quantity]," +
-                       "ABS(SUM(ie.[Amount])) AS [Price]," +
-                       "ABS(SUM(ie.[Amount])) AS [Net Price]," +
-                       "ABS(SUM(ie.[Net Amount] * -1)) AS [Net Amount]," +
-                       "0 AS [Discount Amount]," +
-                       "ABS(SUM(ie.[VAT Amount])) AS [VAT Amount]," +
-                       "0 AS [Refund Qty_]," +
-                       "ie.[Line No_] AS [Line No_]," +
+                       "0 AS [Deal Modifier Line No_],0 AS [Deal Header Line No_],ABS(SUM(ie.[Counter])) AS [Quantity],ABS(SUM(ie.[Counter])) AS [UOM Quantity]," +
+                       "ABS(SUM(ie.[Amount])) AS [Price],ABS(SUM(ie.[Amount])) AS [Net Price],ABS(SUM(ie.[Net Amount] * -1)) AS [Net Amount]," +
+                       "0 AS [Discount Amount],ABS(SUM(ie.[VAT Amount])) AS [VAT Amount],0 AS [Refund Qty_],ie.[Line No_] AS [Line No_]," +
                        "0 AS [Parent Line No_],'' AS [Serial No_],'' AS [Lot No_]," +
                        ((LSCVersion >= new Version("24.0") ? "MAX(ie.[POS Line Description]) AS [Description]," : "NULL,")) +
-                       "NULL,NULL,NULL,NULL,NULL," +
-                       "'IncomeExpense' AS [Entry Type] " +
+                       "NULL,NULL,NULL,NULL,NULL,'IncomeExpense' AS [Entry Type] " +
                        "FROM [" + navCompanyName + "LSC Trans_ Inc__Exp_ Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] ie " +
-                       "WHERE ie.[Store No_]=@sid " +
-                       "AND ie.[POS Terminal No_]=@tid " +
-                       "AND ie.[Receipt  No_]=@ReceiptNo " +
-                       "GROUP BY " +
-                       "ie.[Store No_],ie.[Receipt  No_],ie.[No_],ie.[Line No_],ie.[Transaction No_]";
+                       "WHERE ie.[Store No_]=@sid AND ie.[POS Terminal No_]=@tid AND ie.[Transaction No_]=@id AND ie.[No_]=@TipAct " +
+                       "GROUP BY ie.[Store No_],ie.[No_],ie.[Line No_],ie.[Transaction No_]";
 
                     command.Parameters.AddWithValue("@sid", storeNo);
                     command.Parameters.AddWithValue("@tid", termNo);
                     command.Parameters.AddWithValue("@id", transNo);
-                    command.Parameters.AddWithValue("@ReceiptNo", receiptId);
+                    command.Parameters.AddWithValue("@TipAct", config.SettingsGetByKey(ConfigKey.Tip_IncExpAccount));
                     TraceSqlCommand(command);
                     connection.Open();
 
@@ -869,7 +853,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             entry.PointsRewarded = rewarded;
             entry.PointsUsedInOrder = used;
 
-            entry.Lines = TransSalesEntryLinesGet(entry.Id, entry.CustomerOrderNo, entry.StoreId, entry.TerminalId, transNo, stat);
+            entry.Lines = TransSalesEntryLinesGet(entry.CustomerOrderNo, entry.StoreId, entry.TerminalId, transNo, stat);
             entry.DiscountLines = DiscountLineGet(entry.Id, stat);
             entry.Payments = TransSalesEntryPaymentGet(entry.Id, entry.CustomerOrderNo, stat);
             entry.LineCount = entry.Lines.Count;
@@ -1090,9 +1074,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             string entryType = SQLHelper.GetString(reader["Entry Type"]);
 
             if (string.Equals(entryType, "IncomeExpense", StringComparison.OrdinalIgnoreCase))
-            {
                 line.LineType = LineType.IncomeExpense;
-            }
 
             decimal uomqty = Math.Abs(SQLHelper.GetDecimal(reader["UOM Quantity"], true));
             if (uomqty != 0)

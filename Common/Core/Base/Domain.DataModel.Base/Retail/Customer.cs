@@ -55,6 +55,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
             : base(id)
         {
             Name = string.Empty;
+            Address = new Address();
         }
 
         public override bool Equals(object obj)

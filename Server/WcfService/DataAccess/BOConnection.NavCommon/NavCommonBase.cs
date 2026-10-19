@@ -16,7 +16,7 @@ using LSRetail.Omni.Domain.DataModel.Base;
 namespace LSOmni.DataAccess.BOConnection.NavCommon
 {
     //Navision back office connection
-    public partial class NavCommonBase
+    public partial class NavCommonBase : IDisposable
     {
         private int TimeoutSec = 0;
         public int TimeOutInSeconds
@@ -207,6 +207,31 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             if (NAVVersion > new Version("14.2"))
                 pgtablename = "Retail Product Group";
+        }
+
+        private bool disposed = false;
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+
+            if (disposing)
+            {
+                navWebReference?.Dispose();
+                navWebQryReference?.Dispose();
+                navWS?.Dispose();
+                navQryWS?.Dispose();
+                activityWS?.Dispose();
+                activity15WS?.Dispose();
+            }
+            disposed = true;
         }
 
         public XMLTableData DoReplication(int tableid, string storeId, string appid, string apptype, int batchSize, ref string lastKey, out int totalrecs)
@@ -1045,6 +1070,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     break;
                 case "7750":  //Percassi only
                     statusCode = StatusCode.SuspendFailure;
+                    break;
+                case "9900":
+                    statusCode = StatusCode.OdataCommunicationFailure;
                     break;
 
                 default:

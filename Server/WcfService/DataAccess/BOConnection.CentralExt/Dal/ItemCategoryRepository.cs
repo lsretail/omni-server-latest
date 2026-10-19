@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-
-using LSOmni.Common.Util;
+﻿using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data.SqlClient;
 
 namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
 {
@@ -175,7 +175,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return list;
         }
 
-        public List<ItemCategory> ItemCategoriesGetAll(string storeId, string culture, Statistics stat)
+        public List<ItemCategory> ItemCategoryGet(string id, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
             List<ItemCategory> list = new List<ItemCategory>();
@@ -183,20 +183,19 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT DISTINCT " + sqlcolumns + sqlfrom + 
-                            " WHERE EXISTS(" +
-                            " SELECT 1 FROM [" + navCompanyName + "LSC Retail Product Group$5ecfc871-5d82-43f1-9c54-59685e82318d] pg " +
-                            " INNER JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] i ON i.[LSC Retail Product Code$5ecfc871-5d82-43f1-9c54-59685e82318d]=pg.[Code] " +
-                            " WHERE mt.[Code]=pg.[Item Category Code])" +
-                            GetSQLStoreDist("it.[No_]", storeId, true) +
-                            " ORDER BY mt.[Description]";
-                    TraceSqlCommand(command);
+                    command.CommandText = "SELECT " + sqlcolumns + " FROM [" + navCompanyName + "Item Category$437dbf0e-84ff-417a-965d-ed2bb9650972] mt";
+                    if (string.IsNullOrEmpty(id) == false)
+                    {
+                        command.CommandText += " WHERE mt.[Code]=@id";
+                        command.Parameters.AddWithValue("@id", id);
+                    }
                     connection.Open();
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToLoyItemCategory(reader, culture, stat));
+                            list.Add(ReaderToLoyItemCategory(reader, stat));
                         }
                         reader.Close();
                     }
@@ -205,33 +204,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             }
             logger.StatisticEndSub(ref stat, index);
             return list;
-        }
-
-        public ItemCategory ItemCategoryGetById(string id, Statistics stat)
-        {
-            logger.StatisticStartSub(false, ref stat, out int index);
-            ItemCategory cat = new ItemCategory();
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    connection.Open();
-                    command.CommandText = "SELECT " + sqlcolumns + " FROM [" + navCompanyName + "Item Category$437dbf0e-84ff-417a-965d-ed2bb9650972] mt WHERE mt.[Code]=@id";
-                    command.Parameters.AddWithValue("@id", id);
-                    TraceSqlCommand(command);
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            cat = ReaderToLoyItemCategory(reader, string.Empty, stat);
-                        }
-                        reader.Close();
-                    }
-                }
-                connection.Close();
-            }
-            logger.StatisticEndSub(ref stat, index);
-            return cat;
         }
 
         public List<ItemCategory> ItemCategorySearch(string search, Statistics stat)
@@ -253,7 +225,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToLoyItemCategory(reader, string.Empty, stat));
+                            list.Add(ReaderToLoyItemCategory(reader, stat));
                         }
                         reader.Close();
                     }
@@ -275,7 +247,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             };
         }
 
-        private ItemCategory ReaderToLoyItemCategory(SqlDataReader reader, string culture, Statistics stat)
+        private ItemCategory ReaderToLoyItemCategory(SqlDataReader reader, Statistics stat)
         {
             //item table data
             ItemCategory itemcategory = new ItemCategory()
@@ -285,7 +257,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             };
 
             ProductGroupRepository prdrep = new ProductGroupRepository(config, LSCVersion);
-            itemcategory.ProductGroups = prdrep.ProductGroupGetByItemCategoryId(itemcategory.Id, culture, false, false, stat);
+            itemcategory.ProductGroups = prdrep.ProductGroupGetByItemCategoryId(itemcategory.Id, stat);
 
             ImageRepository imgrep = new ImageRepository(config, LSCVersion);
             itemcategory.Images = imgrep.ImageGetByKey("Item Category", itemcategory.Id, string.Empty, string.Empty, 0, false);

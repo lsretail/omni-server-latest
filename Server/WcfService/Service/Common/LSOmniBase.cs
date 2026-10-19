@@ -120,8 +120,10 @@ namespace LSOmni.Service
                 config.Settings.Add(new TenantSetting(ConfigKey.EncrCode.ToString(), ConfigSetting.GetEncrCode(), string.Empty, "string", false, true));
 
                 config = GetConfig(config);
-                ConfigBLL bll = new ConfigBLL(config);
-                bll.CheckToken(config);
+                using (ConfigBLL bll = new ConfigBLL(config))
+                {
+                    bll.CheckToken(config);
+                }
             }
             catch (Exception ex)
             {
@@ -184,6 +186,10 @@ namespace LSOmni.Service
                 navDb = string.Format("[Failed to connect to LS Central DB {0}]", ex.Message);
                 logger.Error(config.LSKey.Key, ex, navDb);
             }
+            finally
+            {
+                bll?.Dispose();
+            }
 
             string omniVer = string.Format(" CS:{0}", Version());
 
@@ -227,13 +233,15 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config.LSKey.Key, "EnvironmentGet()");
-                CurrencyBLL bll = new CurrencyBLL(config, clientTimeOutInSeconds);
-                return new OmniEnvironment()
+                using (CurrencyBLL bll = new CurrencyBLL(config, clientTimeOutInSeconds))
                 {
-                    Currency = bll.CurrencyGetLocal(new Statistics()),
-                    Version = this.Version(),
-                    PasswordPolicy = config.SettingsGetByKey(ConfigKey.Password_Policy)
-                };
+                    return new OmniEnvironment()
+                    {
+                        Currency = bll.CurrencyGetLocal(new Statistics()),
+                        Version = this.Version(),
+                        PasswordPolicy = config.SettingsGetByKey(ConfigKey.Password_Policy)
+                    };
+                }
             }
             catch (Exception ex)
             {

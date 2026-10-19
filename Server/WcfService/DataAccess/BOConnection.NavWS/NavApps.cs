@@ -43,20 +43,6 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.DiscountsGet(storeId, schemeCode, itemIds, stat);
         }
 
-        public virtual UnitOfMeasure UnitOfMeasureGetById(string id, Statistics stat)
-        {
-            logger.Warn(config.LSKey.Key, "Not supported by LS central version for SaaS");
-            return new UnitOfMeasure();
-        }
-
-        public virtual VariantRegistration VariantRegGetById(string id, string itemId, Statistics stat)
-        {
-            if (NAVVersion < new Version("17.5"))
-                return NavWSBase.VariantRegGetById(id, itemId);
-
-            return LSCWSBase.VariantRegGetById(id, itemId, stat);
-        }
-
         public virtual Currency CurrencyGetById(string id, string culture, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))

@@ -163,9 +163,7 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup
         public string GooglePayConnectionId { get; set; }
         public bool UseOnlineSearch { get; set; } = default;
         public bool EnableNotifications { get; set; }
-
-        //Hospitality, hardcoded, connection to LS Central not added yet since it's not feature complete
-        public bool HospitalityEnabled { get; set; } = true;
+        public bool SpgHospitalityEnabled { get; set; }
 
         //Force Update
         public string ForceUpdateVersion { get; set; } = default;

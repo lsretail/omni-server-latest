@@ -7,7 +7,7 @@ using LSOmni.DataAccess.BOConnection.PreCommon;
 namespace LSOmni.DataAccess.BOConnection.CentralExt
 {
     //Navision back office connection
-    public class NavBase
+    public class NavBase : IDisposable
     {
         private int TimeoutSec = 0;
         protected int TimeOutInSeconds
@@ -24,10 +24,10 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
         }
 
         protected static LSLogger logger = new LSLogger();
-        protected static BOConfiguration config = null;
+        protected BOConfiguration config = null;
 
-        public static Version LSCVersion = null; //use this in code to check Nav version
-        public static PreCommonBase LSCentralWSBase = null;
+        public Version LSCVersion = null; //use this in code to check Nav version
+        public PreCommonBase LSCentralWSBase = null;
 
         public NavBase(BOConfiguration configuration)
         {
@@ -35,6 +35,24 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
 
             LSCentralWSBase = new PreCommonBase(configuration);
             LSCVersion = LSCentralWSBase.LSCVersion;
+        }
+
+        private bool disposed = false;
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+
+            if (disposing)
+                LSCentralWSBase?.Dispose();
+            disposed = true;
         }
     }
 }

@@ -60,8 +60,9 @@
       <Link>Properties\Version.cs</Link>
     </Compile>
     <Compile Include="JMapping\ContactJMapping.cs" />
-    <Compile Include="JMapping\OrderJMapping.cs" />
+    <Compile Include="JMapping\InventoryJMapping.cs" />
     <Compile Include="JMapping\StoreJMapping.cs" />
+    <Compile Include="JMapping\OrderJMapping.cs" />
     <Compile Include="Mapping25\BaseMapping.cs" />
     <Compile Include="Mapping25\ContactMapping.cs" />
     <Compile Include="Mapping25\OrderMapping.cs" />
@@ -96,11 +97,6 @@
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
     <Compile Include="Web References\LSCentral25\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.map</DependentUpon>
-    </Compile>
-    <Compile Include="Web References\LSOData\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
@@ -724,11 +720,6 @@
     <None Include="Web References\LSCentral\RootStoreInventoryGetLines1.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
-    <None Include="Web References\LSOData\ODataRequest.wsdl" />
-    <None Include="Web References\LSOData\Reference.map">
-      <Generator>MSDiscoCodeGenerator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
     <None Include="Web References\NavWebReference\Reference.map" />
     <None Include="Web References\NavWebReference\RetailWebServices.wsdl" />
     <None Include="Web References\LSCentral\OmniWrapper.wsdl" />
@@ -776,17 +767,6 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://dhqsrvomni001:9047/LSCentralMaster/WS/Codeunit/ODataRequest">
-      <UrlBehavior>Dynamic</UrlBehavior>
-      <RelPath>Web References\LSOData\</RelPath>
-      <UpdateFromURL>http://dhqsrvomni001:9047/LSCentralMaster/WS/Codeunit/ODataRequest</UpdateFromURL>
-      <ServiceLocationURL>
-      </ServiceLocationURL>
-      <CachedDynamicPropName>
-      </CachedDynamicPropName>
-      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
-      <CachedSettingsPropName>LSOmni_DataAccess_BOConnection_PreCommon_LSOData_ODataRequest</CachedSettingsPropName>
-    </WebReferenceUrl>
     <WebReferenceUrl Include="http://dhqsrvomni001:9047/LSCentralMaster/WS/Codeunit/OmniWrapper">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\LSCentral\</RelPath>

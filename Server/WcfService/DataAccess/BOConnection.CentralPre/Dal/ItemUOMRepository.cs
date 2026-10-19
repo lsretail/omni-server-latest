@@ -22,9 +22,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             sqlcolumns = "mt.[Item No_],mt.[Code],mt.[Qty_ per Unit of Measure],mt.[Length],mt.[Width],mt.[Height],mt.[Cubage],mt.[Weight]," +
                          "mt2.[LSC POS Selection],mt2.[LSC Count as 1 on Receipt],mt2.[LSC Order],um.[Description]";
 
-            if (LSCVersion >= new Version("20.3"))
-                sqlcolumns += ",mt2.[LSC Ecom Selection]";
-
             sqlfrom = " FROM [" + navCompanyName + "Item Unit of Measure$437dbf0e-84ff-417a-965d-ed2bb9650972] mt" +
                       " JOIN [" + navCompanyName + "Item Unit of Measure$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2" +
                       " ON mt2.[Item No_]=mt.[Item No_] AND mt2.[Code]=mt.[Code]" +
@@ -204,10 +201,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 CountAsOne = SQLHelper.GetBool(reader["LSC Count as 1 on Receipt"]),
                 Order = SQLHelper.GetInt32(reader["LSC Order"])
             };
-            
-            if (LSCVersion >= new Version("20.3"))
-                uom.EComSelection = SQLHelper.GetInt32(reader["LSC Ecom Selection"]);
-
             return uom;
         }
 

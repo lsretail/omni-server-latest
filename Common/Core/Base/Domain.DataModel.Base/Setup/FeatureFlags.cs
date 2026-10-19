@@ -155,6 +155,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                     flagName = FeatureFlagName.EnableNotifications;
                     break;
 
+                case "SCAN PAY GO HOSPITALITY":
+                    flagName = FeatureFlagName.SpgHospitality;
+                    break;
+
                 //AUDKENNI SPG
                 case "AUDKENNI BASE URL":
                     flagName = FeatureFlagName.AudkenniBaseURL;
@@ -366,6 +370,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
 
         ForceUpdateVersion = 228,
         ForceUpdateAppStoreId = 229,
+
+        SpgHospitality = 230,
 
         //ScanPayGoPaymentFlags
         EnablePlatformPayment = 300,

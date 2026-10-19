@@ -125,7 +125,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        public List<ProductGroup> ProductGroupGetByItemCategoryId(string itemcategoryId, string culture, bool includeChildren, bool includeItems, Statistics stat)
+        public List<ProductGroup> ProductGroupGetByItemCategoryId(string itemcategoryId, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
             List<ProductGroup> list = new List<ProductGroup>();
@@ -141,7 +141,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToLoyProductGroups(reader, culture, includeChildren, includeItems, stat));
+                            list.Add(ReaderToLoyProductGroups(reader, string.Empty, false, false, stat));
                         }
                         reader.Close();
                     }

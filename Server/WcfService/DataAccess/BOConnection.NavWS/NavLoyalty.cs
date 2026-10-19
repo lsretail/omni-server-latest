@@ -449,12 +449,12 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.MemberCardGetPoints(cardId, stat);
         }
 
-        public virtual decimal GetPointRate(string currency, Statistics stat)
+        public virtual decimal CurExchangeRateGet(string currency, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
-                return NavWSBase.GetPointRate();
+                return NavWSBase.CurExchangeRateGet();
 
-            return LSCWSBase.GetPointRate(currency, stat);
+            return LSCWSBase.CurExchangeRateGet(currency, stat);
         }
 
         public virtual List<PointEntry> PointEntriesGet(string cardNo, DateTime dateFrom, Statistics stat)
@@ -519,6 +519,9 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual LoyItem ItemGetById(string id, string storeId, string culture, bool includeDetails, Statistics stat)
         {
+            if (string.IsNullOrEmpty(id))
+                return new LoyItem();
+
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ItemGetById(id);
 
@@ -567,12 +570,12 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         #region ItemCategory and ProductGroup and Hierarchy
 
-        public virtual List<ItemCategory> ItemCategoriesGet(string storeId, string culture, Statistics stat)
+        public virtual List<ItemCategory> ItemCategoriesGetAll(Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ItemCategories();
 
-            return LSCWSBase.ItemCategories(stat);
+            return LSCWSBase.ItemCategoriesGet(string.Empty, stat);
         }
 
         public virtual ItemCategory ItemCategoriesGetById(string id, Statistics stat)
@@ -585,15 +588,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             }
             else
             {
-                icat = LSCWSBase.ItemCategoriesGetById(id, stat);
-                icat.ProductGroups = LSCWSBase.ProductGroupGetByItemCategory(icat.Id, stat);
+                List<ItemCategory> list = LSCWSBase.ItemCategoriesGet(id, stat);
+                icat = (list != null && list.Count > 0) ? icat = list[0] : new ItemCategory();
             }
             return icat;
-        }
-
-        public virtual List<ProductGroup> ProductGroupGetByItemCategoryId(string itemcategoryId, string culture, bool includeChildren, bool includeItems, Statistics stat)
-        {
-            return null;
         }
 
         public virtual ProductGroup ProductGroupGetById(string id, string culture, bool includeItems, bool includeItemDetail, Statistics stat)
@@ -602,12 +600,12 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("17.5"))
             {
                 pgrp = NavWSBase.ProductGroupGetById(id);
-                pgrp.Items = NavWSBase.ItemsGetByProductGroup(pgrp.Id);
+                if (includeItems)
+                    pgrp.Items = NavWSBase.ItemsGetByProductGroup(pgrp.Id);
             }
             else
             {
-                pgrp = LSCWSBase.ProductGroupGetById(id, stat);
-                pgrp.Items = LSCWSBase.ItemsGetByProductGroup(pgrp.Id, stat);
+                pgrp = LSCWSBase.ProductGroupGetById(id, includeItems, includeItemDetail, stat);
             }
             return pgrp;
         }
@@ -800,12 +798,13 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.BasketCalcToOrder(list, stat);
         }
 
-        public virtual string OneListSave(OneList oneList, Statistics stat)
+        public virtual string OneListSave(OneList oneList, out string listNo, Statistics stat)
         {
+            listNo = null;
             if (NAVVersion < new Version("17.5"))
                 return string.Empty;
 
-            return LSCWSBase.OneListSave(oneList, stat);
+            return LSCWSBase.OneListSave(oneList, out listNo, stat);
         }
 
         public virtual void OneListModify(string listId, OneListItem line, bool remove, Statistics stat)

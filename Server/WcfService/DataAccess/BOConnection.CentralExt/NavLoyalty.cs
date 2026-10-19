@@ -308,7 +308,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
             return LSCentralWSBase.MemberCardGetPoints(cardId, stat);
         }
 
-        public virtual decimal GetPointRate(string currency, Statistics stat)
+        public virtual decimal CurExchangeRateGet(string currency, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
 
@@ -439,22 +439,17 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
 
         #region ItemCategory and ProductGroup and Hierarchy
 
-        public virtual List<ItemCategory> ItemCategoriesGet(string storeId, string culture, Statistics stat)
+        public virtual List<ItemCategory> ItemCategoriesGetAll(Statistics stat)
         {
             ItemCategoryRepository rep = new ItemCategoryRepository(config, LSCVersion);
-            return rep.ItemCategoriesGetAll(storeId, culture, stat);
+            return rep.ItemCategoryGet(string.Empty, stat);
         }
 
         public virtual ItemCategory ItemCategoriesGetById(string id, Statistics stat)
         {
             ItemCategoryRepository rep = new ItemCategoryRepository(config, LSCVersion);
-            return rep.ItemCategoryGetById(id, stat);
-        }
-
-        public virtual List<ProductGroup> ProductGroupGetByItemCategoryId(string itemcategoryId, string culture, bool includeChildren, bool includeItems, Statistics stat)
-        {
-            ProductGroupRepository rep = new ProductGroupRepository(config, LSCVersion);
-            return rep.ProductGroupGetByItemCategoryId(itemcategoryId, culture, includeChildren, includeItems, stat);
+            List<ItemCategory> cat = rep.ItemCategoryGet(id, stat);
+            return (cat != null && cat.Count > 0) ? cat[0] : new ItemCategory();
         }
 
         public virtual ProductGroup ProductGroupGetById(string id, string culture, bool includeItems, bool includeItemDetail, Statistics stat)
@@ -539,6 +534,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
         {
             if (LSCVersion.Major < 24)
                 return false;
+            if (LSCVersion.Major > 28)
+                return true;
 
             OrderRepository repo = new OrderRepository(config, LSCVersion);
             return repo.CompressCOActive(stat);
@@ -583,9 +580,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
             return LSCentralWSBase.OrderUpdatePayment(orderId, storeId, payment, stat);
         }
 
-        public virtual string OneListSave(OneList oneList, Statistics stat)
+        public virtual string OneListSave(OneList oneList, out string listNo, Statistics stat)
         {
-            return LSCentralWSBase.OneListSave(oneList, stat);
+            return LSCentralWSBase.OneListSave(oneList, out listNo, stat);
         }
 
         public virtual void OneListModify(string listId, OneListItem line, bool remove, Statistics stat)
@@ -610,7 +607,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
 
         public virtual SalesEntry SalesEntryGet(string entryId, DocumentIdType type, Statistics stat)
         {
-            SalesEntry entry;
+            SalesEntry entry = null;
             if (type == DocumentIdType.Receipt)
             {
                 SalesEntryRepository trepo = new SalesEntryRepository(config, LSCVersion);

@@ -15,8 +15,10 @@ namespace LSOmni.Service
             {
                 logger.Debug("ADMINPORTAL", string.Format("PortalLogin() - user:{0}", username));
 
-                PortalBLL bll = new PortalBLL(config);
-                return bll.PortalLogin(username, password);
+                using (PortalBLL bll = new PortalBLL(config))
+                {
+                    return bll.PortalLogin(username, password);
+                }
             }
             catch (Exception ex)
             {
@@ -31,8 +33,10 @@ namespace LSOmni.Service
             {
                 logger.Debug("ADMINPORTAL", string.Format("SaveConfig() - Description:{0}", config.LSKey.Description));
 
-                PortalBLL bll = new PortalBLL(config);
-                return bll.SaveConfig(configuration);
+                using (PortalBLL bll = new PortalBLL(config))
+                {
+                    return bll.SaveConfig(configuration);
+                }
             }
             catch (Exception ex)
             {
@@ -47,8 +51,10 @@ namespace LSOmni.Service
             {
                 logger.Debug("ADMINPORTAL", string.Format("GetConfig() - LSKey:{0}", lskey));
 
-                PortalBLL bll = new PortalBLL(config);
-                return bll.GetConfig(lskey);
+                using (PortalBLL bll = new PortalBLL(config))
+                {
+                    return bll.GetConfig(lskey);
+                }
             }
             catch (Exception ex)
             {
@@ -63,8 +69,10 @@ namespace LSOmni.Service
             {
                 logger.Debug("ADMINPORTAL", string.Format("PortalChangePassword() - Token:{0}", config.SecurityToken));
 
-                PortalBLL bll = new PortalBLL(config);
-                bll.ChangePassword(currentPassword, newPassword);
+                using (PortalBLL bll = new PortalBLL(config))
+                {
+                    bll.ChangePassword(currentPassword, newPassword);
+                }
             }
             catch (Exception ex)
             {
@@ -78,8 +86,10 @@ namespace LSOmni.Service
             {
                 logger.Debug("ADMINPORTAL", string.Format("CreatePortalUser() - Token: {0}, user:{0}", config.SecurityToken, user.UserName));
 
-                PortalBLL bll = new PortalBLL(config);
-                return bll.CreatePortalUser(user);
+                using (PortalBLL bll = new PortalBLL(config))
+                {
+                    return bll.CreatePortalUser(user);
+                }
             }
             catch (Exception ex)
             {
@@ -94,8 +104,10 @@ namespace LSOmni.Service
             {
                 logger.Debug("ADMINPORTAL", string.Format("SavePortalUser() - Token:{0}, savedUser:{1}", config.SecurityToken, user.UserName));
 
-                PortalBLL bll = new PortalBLL(config);
-                bll.SavePortalUser( user);
+                using (PortalBLL bll = new PortalBLL(config))
+                {
+                    bll.SavePortalUser( user);
+                }
             }
             catch (Exception ex)
             {
@@ -109,8 +121,10 @@ namespace LSOmni.Service
             {
                 logger.Debug("ADMINPORTAL", string.Format("GetPortalUsers() - Token:{0}", config.SecurityToken));
 
-                PortalBLL bll = new PortalBLL(config);
-                return bll.GetUsers();
+                using (PortalBLL bll = new PortalBLL(config))
+                {
+                    return bll.GetUsers();
+                }
             }
             catch (Exception ex)
             {
@@ -125,8 +139,10 @@ namespace LSOmni.Service
             {
                 logger.Debug("ADMINPORTAL", string.Format("GetPortalLSKeys() - Token:{0}", config.SecurityToken));
 
-                PortalBLL bll = new PortalBLL(config);
-                return bll.GetAllKeys();
+                using (PortalBLL bll = new PortalBLL(config))
+                {
+                    return bll.GetAllKeys();
+                }
             }
             catch (Exception ex)
             {
@@ -141,8 +157,10 @@ namespace LSOmni.Service
             {
                 logger.Debug("ADMINPORTAL", string.Format("ToggleLSKey() - Token:{0}, lskey:{1}, toggle:{2}", config.SecurityToken, lskey, toggle.ToString()));
 
-                PortalBLL bll = new PortalBLL(config);
-                bll.ToggleLSKey(lskey, toggle);
+                using (PortalBLL bll = new PortalBLL(config))
+                {
+                    bll.ToggleLSKey(lskey, toggle);
+                }
             }
             catch (Exception ex)
             {
@@ -156,8 +174,10 @@ namespace LSOmni.Service
             {
                 logger.Debug("ADMINPORTAL", string.Format("ResetDefault() - Token:{0}, lskey:{1}", config.SecurityToken, lskey));
 
-                PortalBLL bll = new PortalBLL(config);
-                return bll.ResetDefault(lskey);
+                using (PortalBLL bll = new PortalBLL(config))
+                {
+                    return bll.ResetDefault(lskey);
+                }
             }
             catch (Exception ex)
             {
@@ -172,8 +192,10 @@ namespace LSOmni.Service
             {
                 logger.Debug("ADMINPORTAL", string.Format("DeleteTenant() - Token:{0}, lskey:{1}", config.SecurityToken, lskey));
 
-                PortalBLL bll = new PortalBLL(config);
-                bll.DeleteTenant(lskey);
+                using (PortalBLL bll = new PortalBLL(config))
+                {
+                    bll.DeleteTenant(lskey);
+                }
             }
             catch (Exception ex)
             {
@@ -187,8 +209,10 @@ namespace LSOmni.Service
             {
                 logger.Debug("ADMINPORTAL", string.Format("DeleteUser() - Token:{0}, user:{1}", config.SecurityToken, username));
 
-                PortalBLL bll = new PortalBLL(config);
-                bll.DeleteUser(username);
+                using (PortalBLL bll = new PortalBLL(config))
+                {
+                    bll.DeleteUser(username);
+                }
             }
             catch (Exception ex)
             {
@@ -202,8 +226,10 @@ namespace LSOmni.Service
             {
                 logger.Debug("ADMINPORTAL", string.Format("ResetPassword() - Token:{0}, user:{1}", config.SecurityToken, username));
 
-                PortalBLL bll = new PortalBLL(config);
-                return bll.ResetPassword(username);
+                using (PortalBLL bll = new PortalBLL(config))
+                {
+                    return bll.ResetPassword(username);
+                }
             }
             catch (Exception ex)
             {
@@ -218,8 +244,10 @@ namespace LSOmni.Service
             {
                 logger.Debug("ADMINPORTAL", string.Format("ToggleUser() - Token:{0}, user:{1}", config.SecurityToken, username));
 
-                PortalBLL bll = new PortalBLL(config);
-                bll.ToggleUser(username, toggle);
+                using (PortalBLL bll = new PortalBLL(config))
+                {
+                    bll.ToggleUser(username, toggle);
+                }
             }
             catch (Exception ex)
             {
@@ -233,8 +261,10 @@ namespace LSOmni.Service
             {
                 logger.Debug("ADMINPORTAL", string.Format("Logout() - Token:{0}", config.SecurityToken));
 
-                PortalBLL bll = new PortalBLL(config);
-                bll.Logout();
+                using (PortalBLL bll = new PortalBLL(config))
+                {
+                    bll.Logout();
+                }
             }
             catch (Exception ex)
             {
@@ -291,6 +321,10 @@ namespace LSOmni.Service
             {
                 navDb = string.Format("[Failed to connect to LS Central DB {0}]", ex.Message);
                 logger.Error(config.LSKey.Key, ex, navDb);
+            }
+            finally
+            {
+                bll?.Dispose();
             }
 
             string omniver = string.Format(" CS:{0}", Version());

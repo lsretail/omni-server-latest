@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
@@ -10,7 +11,7 @@ using System.Drawing.Imaging;
 
 namespace LSOmni.BLL
 {
-    public abstract class BaseBLL
+    public abstract class BaseBLL : IDisposable
     {
         private static Assembly dalAssembly = null;
         private static Assembly boAssembly = null;
@@ -18,11 +19,47 @@ namespace LSOmni.BLL
 
         protected static LSLogger logger = new LSLogger();
 
+        // BO/DAL connection objects created via GetDbRepository<T>/GetBORepository<T> below (e.g. NavBase-derived
+        // classes) hold SOAP client proxies that should be disposed rather than left for the finalizer queue -
+        // tracked here so Dispose() can release them regardless of which derived BLL/interface type was created.
+        private readonly List<IDisposable> disposables = new List<IDisposable>();
+
         public virtual string DeviceId { get; set; }    //DeviceId is used everywhere...
 
         public BaseBLL(BOConfiguration config)
         {
             this.config = config;
+        }
+
+        private bool disposed = false;
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+
+            if (disposing)
+            {
+                foreach (IDisposable d in disposables)
+                {
+                    try
+                    {
+                        d.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Warn(config?.LSKey?.Key, ex, "Failed to dispose BO/DAL connection");
+                    }
+                }
+                disposables.Clear();
+            }
+            disposed = true;
         }
 
         #region protected
@@ -49,6 +86,9 @@ namespace LSOmni.BLL
                 string cls = myType.FullName;
                 if (instance == null)
                     throw new ApplicationException("dalAssembly.CreateInstance() failed for settings: " + cls);
+
+                if (instance is IDisposable disposable)
+                    disposables.Add(disposable);
 
                 return instance;
             }
@@ -117,6 +157,9 @@ namespace LSOmni.BLL
 
                 if (instance == null)
                     throw new ApplicationException("boAssembly.CreateInstance() failed for settings: " + cls);
+
+                if (instance is IDisposable disposable)
+                    disposables.Add(disposable);
 
                 return instance;
             }

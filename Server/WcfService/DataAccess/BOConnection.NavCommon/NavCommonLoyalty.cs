@@ -325,19 +325,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         #region Item Related
 
-        public VariantRegistration VariantRegGetById(string id, string itemId)
-        {
-            NAVWebXml xml = new NAVWebXml();
-            string xmlRequest = xml.GetGeneralWebRequestXML("Item Variant Registration", "Variant", id, "Item No.", itemId);
-            string xmlResponse = RunOperation(xmlRequest, true);
-            HandleResponseCode(ref xmlResponse);
-            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
-
-            ItemRepository rep = new ItemRepository(config);
-            List<VariantRegistration> list = rep.GetVariantRegistrations(table);
-            return (list.Count == 0) ? null : list[0];
-        }
-
         public ProductGroup ProductGroupGetById(string id)
         {
             NAVWebXml xml = new NAVWebXml();
@@ -1105,7 +1092,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             };
         }
 
-        public decimal GetPointRate()
+        public decimal CurExchangeRateGet()
         {
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Currency Exchange Rate", "Currency Code", "LOY");

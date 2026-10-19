@@ -274,7 +274,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return NavWSBase.MemberCardGetPoints(cardId);
         }
 
-        public virtual decimal GetPointRate(string currency, Statistics stat)
+        public virtual decimal CurExchangeRateGet(string currency, Statistics stat)
         {
             CurrencyExchRateRepository rep = new CurrencyExchRateRepository(config);
             string loyCur = config.SettingsGetByKey(ConfigKey.Currency_LoyCode);
@@ -371,22 +371,16 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
 
         #region ItemCategory and ProductGroup and Hierarchy
 
-        public virtual List<ItemCategory> ItemCategoriesGet(string storeId, string culture, Statistics stat)
+        public virtual List<ItemCategory> ItemCategoriesGetAll(Statistics stat)
         {
             ItemCategoryRepository rep = new ItemCategoryRepository(config, NAVVersion);
-            return rep.ItemCategoriesGetAll(storeId, culture);
+            return rep.ItemCategoriesGetAll();
         }
 
         public virtual ItemCategory ItemCategoriesGetById(string id, Statistics stat)
         {
             ItemCategoryRepository rep = new ItemCategoryRepository(config, NAVVersion);
             return rep.ItemCategoryGetById(id);
-        }
-
-        public virtual List<ProductGroup> ProductGroupGetByItemCategoryId(string itemcategoryId, string culture, bool includeChildren, bool includeItems, Statistics stat)
-        {
-            ProductGroupRepository rep = new ProductGroupRepository(config, NAVVersion);
-            return rep.ProductGroupGetByItemCategoryId(itemcategoryId, culture, includeChildren, includeItems);
         }
 
         public virtual ProductGroup ProductGroupGetById(string id, string culture, bool includeItems, bool includeItemDetail, Statistics stat)
@@ -506,7 +500,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             throw new NotImplementedException();
         }
 
-        public virtual string OneListSave(OneList oneList, Statistics stat)
+        public virtual string OneListSave(OneList oneList, out string listNo, Statistics stat)
         {
             throw new NotImplementedException();
         }

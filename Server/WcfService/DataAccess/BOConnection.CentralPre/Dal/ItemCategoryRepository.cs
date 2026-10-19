@@ -121,7 +121,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        public List<ItemCategory> ItemCategoriesGetAll(string storeId, string culture, Statistics stat)
+        public List<ItemCategory> ItemCategoriesGetAll(Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
             List<ItemCategory> list = new List<ItemCategory>();
@@ -134,7 +134,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                             " SELECT 1 FROM [" + navCompanyName + "LSC Retail Product Group$5ecfc871-5d82-43f1-9c54-59685e82318d] pg " +
                             " INNER JOIN [" + navCompanyName + "Item$5ecfc871-5d82-43f1-9c54-59685e82318d] i ON i.[LSC Retail Product Code]=pg.[Code] " +
                             " WHERE mt.[Code]=pg.[Item Category Code])" +
-                            GetSQLStoreDist("it.[No_]", storeId, true) +
                             " ORDER BY mt.[Description]";
                     TraceSqlCommand(command);
                     connection.Open();
@@ -142,7 +141,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToLoyItemCategory(reader, culture, stat));
+                            list.Add(ReaderToLoyItemCategory(reader, stat));
                         }
                         reader.Close();
                     }
@@ -169,7 +168,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         if (reader.Read())
                         {
-                            cat = ReaderToLoyItemCategory(reader, string.Empty, stat);
+                            cat = ReaderToLoyItemCategory(reader, stat);
                         }
                         reader.Close();
                     }
@@ -199,7 +198,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToLoyItemCategory(reader, string.Empty, stat));
+                            list.Add(ReaderToLoyItemCategory(reader, stat));
                         }
                         reader.Close();
                     }
@@ -221,7 +220,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             };
         }
 
-        private ItemCategory ReaderToLoyItemCategory(SqlDataReader reader, string culture, Statistics stat)
+        private ItemCategory ReaderToLoyItemCategory(SqlDataReader reader, Statistics stat)
         {
             //item table data
             ItemCategory itemcategory = new ItemCategory()
@@ -231,7 +230,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             };
 
             ProductGroupRepository prdrep = new ProductGroupRepository(config, LSCVersion);
-            itemcategory.ProductGroups = prdrep.ProductGroupGetByItemCategoryId(itemcategory.Id, culture, false, false, stat);
+            itemcategory.ProductGroups = prdrep.ProductGroupGetByItemCategoryId(itemcategory.Id, stat);
 
             ImageRepository imgrep = new ImageRepository(config, LSCVersion);
             itemcategory.Images = imgrep.ImageGetByKey("Item Category", itemcategory.Id, string.Empty, string.Empty, 0, false);

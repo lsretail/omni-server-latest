@@ -86,6 +86,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
             AvgColor = string.Empty;
             ImgBytes = null;  // used on server only, not on client
             ModifiedTime = DateTime.MinValue.ToUniversalTime();
+            LinkType = string.Empty;
+            ImageDescription = string.Empty;
         }
 
         public ImageView() : this(string.Empty)
@@ -119,7 +121,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
                 Crossfade = Crossfade,
                 LocationType = LocationType,
                 ImgBytes = ImgBytes,
-                AvgColor = AvgColor
+                AvgColor = AvgColor,
+                LinkType = LinkType,
+                ImageDescription = ImageDescription
             };
         }
 
@@ -148,6 +152,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
         public ImageSize ImgSize { get; set; }
         [DataMember]
         public string Format { get; set; }
+        [DataMember]
+        public string LinkType { get; set; }
+        [DataMember]
+        public string ImageDescription { get; set; }
 
         //not all data goes to WCF clients
         public byte[] ImgBytes { get; set; }

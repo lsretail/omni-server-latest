@@ -17,6 +17,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
 
         public OneList(string id) : base(id)
         {
+            ListNo = string.Empty;
             Description = string.Empty;
             CardId = string.Empty;
             CustomerId = string.Empty;
@@ -76,6 +77,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             }
         }
 
+        [DataMember]
+        public string ListNo { get; set; }
         [DataMember(IsRequired = true)]
         public string StoreId { get; set; }
         [DataMember]

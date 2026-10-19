@@ -19,6 +19,91 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
             IsJson = json;
         }
 
+        public List<StoreHours> GetStoreOpeningHours(string ret, string storeId, int offset, out string resCode, out string resErr)
+        {
+            List<StoreHours> list = new List<StoreHours>();
+            string result = GetJsonPageValue(ret, out resCode, out resErr, out bool isArray);
+            if (result == null || isArray == false)
+                return list;
+
+            JArray links = JArray.Parse(result);
+            foreach (JObject link in links)
+            {
+                JToken lines = link.SelectToken("retailCalendar.lines");
+                if (lines != null)
+                    list.AddRange(MapOpeningHoursLines((JArray)lines, storeId, offset));
+            }
+            return list;
+        }
+
+        public List<StoreHours> GetRetailCalendarOpeningHours(string ret, string storeId, int offset, out string resCode, out string resErr)
+        {
+            List<StoreHours> list = new List<StoreHours>();
+            string result = GetJsonPageValue(ret, out resCode, out resErr, out bool isArray);
+            if (result == null || isArray == false)
+                return list;
+
+            JArray calendars = JArray.Parse(result);
+            foreach (JObject calendar in calendars)
+            {
+                JToken lines = calendar.SelectToken("lines");
+                if (lines != null)
+                    list.AddRange(MapOpeningHoursLines((JArray)lines, storeId, offset));
+            }
+            return list;
+        }
+
+        private static List<StoreHours> MapOpeningHoursLines(JArray lines, string storeId, int offset)
+        {
+            List<StoreHours> list = new List<StoreHours>();
+            foreach (JObject line in lines)
+            {
+                int dayNo = line.Value<int>("dayNo");
+                string reasonClosed = line.Value<string>("reasonClosed");
+                StoreHours storehr = new StoreHours(storeId)
+                {
+                    CalendarType = ParseCalendarType(line.Value<string>("calendarType")),
+                    NameOfDay = line.Value<string>("dayName"),
+                    Type = ParseOpeningType(line.Value<string>("lineType")),
+                    DayOfWeek = (dayNo == 7) ? 0 : dayNo,   //NAV starts with Sunday as 1 but .Net Sunday=0
+                };
+                storehr.Description = string.IsNullOrEmpty(reasonClosed) ? storehr.NameOfDay : reasonClosed;
+                storehr.OpenFrom = ConvertTo.SafeDateTime(ConvertTo.SafeTime(line.Value<string>("timeFrom")).AddHours(offset));
+                storehr.OpenTo = ConvertTo.SafeDateTime(ConvertTo.SafeTime(line.Value<string>("timeTo")).AddHours(offset));
+                storehr.StartDate = ConvertTo.SafeDateTime(ConvertTo.SafeDateTime(line.Value<string>("startingDate")).AddHours(offset));
+                storehr.EndDate = ConvertTo.SafeDateTime(ConvertTo.SafeDateTime(line.Value<string>("endingDate")).AddHours(offset));
+
+                list.Add(storehr);
+            }
+            return list;
+        }
+
+        // AL Option "Normal,Temporary,Closed" on LSC Retail Calendar Line."Line Type"
+        private static StoreHourOpeningType ParseOpeningType(string value)
+        {
+            switch (DecodeEdmEnumCaption(value))
+            {
+                case "Temporary": return StoreHourOpeningType.Temporary;
+                case "Closed": return StoreHourOpeningType.Closed;
+                default: return StoreHourOpeningType.Normal;
+            }
+        }
+
+        // AL Enum "lscRetailCalendarType": All,Opening Hours,Receiving,Rest. Order Taking,,,,Other,Self Service Kiosk
+        // BC EDM-encodes the caption, e.g. "Rest. Order Taking" comes back as "Rest_x002E__x0020_Order_x0020_Taking"
+        private static StoreHourCalendarType ParseCalendarType(string value)
+        {
+            switch (DecodeEdmEnumCaption(value))
+            {
+                case "Opening Hours": return StoreHourCalendarType.OpeningHours;
+                case "Receiving": return StoreHourCalendarType.Receiving;
+                case "Rest. Order Taking": return StoreHourCalendarType.RestOrderTaking;
+                case "Other": return StoreHourCalendarType.Other;
+                case "Self Service Kiosk": return StoreHourCalendarType.SelfServiceKiosk;
+                default: return StoreHourCalendarType.All;
+            }
+        }
+
         public List<Store> GetStores(string ret, int offset, out string resCode, out string resErr)
         {
             List<Store> list = new List<Store>();
@@ -119,8 +204,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
         public List<ReturnPolicy> GetReturnPolicy(string ret, out string resCode, out string resErr)
         {
             List<ReturnPolicy> list = new List<ReturnPolicy>();
-            string result = GetJsonPageValue(ret, out resCode, out resErr);
-            if (result == null)
+            string result = GetJsonPageValue(ret, out resCode, out resErr, out bool isArray);
+            if (result == null || isArray == false)
                 return list;
 
             JArray items = JArray.Parse(result);
@@ -141,6 +226,25 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     Message1 = item.Value<string>("message1"),
                     Message2 = item.Value<string>("message2"),
                     ReturnPolicyHTML = item.Value<string>("returnPolicyHTML")
+                });
+            }
+            return list;
+        }
+
+        public List<ReplStore> GetInventoryTerminalStores(string ret, out string resCode, out string resErr)
+        {
+            List<ReplStore> list = new List<ReplStore>();
+            string result = GetJsonPageValue(ret, out resCode, out resErr, out bool isArray);
+            if (result == null || isArray == false)
+                return list;
+
+            JArray items = JArray.Parse(result);
+            foreach (JObject item in items)
+            {
+                list.Add(new ReplStore()
+                {
+                    Id = item.Value<string>("store"),
+                    Name = item.Value<string>("storeName")
                 });
             }
             return list;

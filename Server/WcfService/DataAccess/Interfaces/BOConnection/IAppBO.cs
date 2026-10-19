@@ -14,8 +14,6 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         int TimeoutInSeconds { set; }
 
         Terminal TerminalGetById(string terminalId, Statistics stat);
-        UnitOfMeasure UnitOfMeasureGetById(string id, Statistics stat);
-        VariantRegistration VariantRegGetById(string id, string itemId, Statistics stat);
         Currency CurrencyGetById(string id, string culture, Statistics stat);
         List<InventoryResponse> ItemInStockGet(string itemId, string variantId, int arrivingInStockInDays, List<string> locationIds, bool skipUnAvailableStores, Statistics stat);
         List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId, bool useSourcingLocation, Statistics stat);

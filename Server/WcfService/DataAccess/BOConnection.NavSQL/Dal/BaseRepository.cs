@@ -11,22 +11,25 @@ using LSRetail.Omni.Domain.DataModel.Base.Setup;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
-    public abstract class BaseRepository 
+    public abstract class BaseRepository
     {
-        protected static string connectionString = null;
-        protected static string navConnectionString = "";
-        protected static string navCompanyName = null;
-        protected static string databaseName = "";
-        protected static string dbCollation = null;
+        // per-tenant connection/company state - MUST be instance-scoped (not static): a fresh
+        // BaseRepository is constructed per WCF call from the request's own BOConfiguration, and
+        // this was previously cached once (ever) into static fields, so under multi-tenant SaaS
+        // hosting only the FIRST tenant's connection string/company/database was ever used - every
+        // other tenant silently ran queries against the wrong company.
+        protected string connectionString = null;
+        protected string navConnectionString = "";
+        protected string navCompanyName = null;
+        protected string databaseName = "";
+        protected string dbCollation = null;
 
-        protected static Currency CurrencyLocalUnit = null;
-        protected static CultureInfo CultInfo = CultureInfo.CurrentUICulture;
+        protected Currency CurrencyLocalUnit = null;
+        protected CultureInfo CultInfo = CultureInfo.CurrentUICulture;
         protected static LSLogger logger = new LSLogger();
-        protected static BOConfiguration config = null;
+        protected BOConfiguration config = null;
 
-        private static readonly Object myLock = new Object();
-
-        public static Version NavVersion = new Version("14.0");
+        public Version NavVersion = new Version("14.0");
 
         public BaseRepository(BOConfiguration config, Version navVersion) : this(config)
         {
@@ -38,59 +41,53 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         {
             config = configuration;
 
-            if (connectionString == null)
+            connectionString = config.SettingsGetByKey(ConfigKey.BOSql);
+            if (DecryptConfigValue.IsEncryptedPwd(connectionString))
             {
-                lock (myLock)
+                connectionString = DecryptConfigValue.DecryptString(connectionString, config.SettingsGetByKey(ConfigKey.EncrCode));
+            }
+
+            navConnectionString = connectionString;
+
+            System.Data.Common.DbConnectionStringBuilder builder = new System.Data.Common.DbConnectionStringBuilder();
+            builder.ConnectionString = connectionString;
+
+            //string server = builder["Data Source"] as string;
+            if (builder.ContainsKey("Password"))
+            {
+                string tmpPwd = builder["Password"] as string;
+                tmpPwd = tmpPwd.Trim();
+                //
+                if (DecryptConfigValue.IsEncryptedPwd(tmpPwd))
                 {
-                    connectionString = config.SettingsGetByKey(ConfigKey.BOSql);
-                    if (DecryptConfigValue.IsEncryptedPwd(connectionString))
-                    {
-                        connectionString = DecryptConfigValue.DecryptString(connectionString, config.SettingsGetByKey(ConfigKey.EncrCode));
-                    }
-
-                    navConnectionString = connectionString;
-
-                    System.Data.Common.DbConnectionStringBuilder builder = new System.Data.Common.DbConnectionStringBuilder();
-                    builder.ConnectionString = connectionString;
-
-                    //string server = builder["Data Source"] as string;
-                    if (builder.ContainsKey("Password"))
-                    {
-                        string tmpPwd = builder["Password"] as string;
-                        tmpPwd = tmpPwd.Trim();
-                        //
-                        if (DecryptConfigValue.IsEncryptedPwd(tmpPwd))
-                        {
-                            //decrypt the pwd
-                            builder["Password"] = DecryptConfigValue.DecryptString(tmpPwd, config.SettingsGetByKey(ConfigKey.EncrCode));
-                        }
-                    }
-
-                    navCompanyName = "";
-                    if (builder.ContainsKey("NAVCompanyName"))
-                    {
-                        navCompanyName = builder["NAVCompanyName"] as string; //get the 
-                        navCompanyName = navCompanyName.Trim();
-                        //NAV company name must end with a $
-                        if (navCompanyName.EndsWith("$") == false)
-                            navCompanyName += "$";
-
-                        SQLHelper.CheckForSQLInjection(navCompanyName, 1);
-                    }
-
-                    if (builder.ContainsKey("Initial Catalog"))
-                    {
-                        databaseName = builder["Initial Catalog"] as string; //get the 
-                        databaseName = databaseName.Trim();
-                    }
-                    
-                    builder.Remove("NAVCompanyName");
-                    connectionString = builder.ConnectionString;
+                    //decrypt the pwd
+                    builder["Password"] = DecryptConfigValue.DecryptString(tmpPwd, config.SettingsGetByKey(ConfigKey.EncrCode));
                 }
             }
+
+            navCompanyName = "";
+            if (builder.ContainsKey("NAVCompanyName"))
+            {
+                navCompanyName = builder["NAVCompanyName"] as string; //get the
+                navCompanyName = navCompanyName.Trim();
+                //NAV company name must end with a $
+                if (navCompanyName.EndsWith("$") == false)
+                    navCompanyName += "$";
+
+                SQLHelper.CheckForSQLInjection(navCompanyName, 1);
+            }
+
+            if (builder.ContainsKey("Initial Catalog"))
+            {
+                databaseName = builder["Initial Catalog"] as string; //get the
+                databaseName = databaseName.Trim();
+            }
+
+            builder.Remove("NAVCompanyName");
+            connectionString = builder.ConnectionString;
         }
 
-        internal static string FormatAmount(decimal amount, string culture, bool absValue = true)
+        internal string FormatAmount(decimal amount, string culture, bool absValue = true)
         {
             if (absValue)
                 amount = Math.Abs(amount); //no negative values returned

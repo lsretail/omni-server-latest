@@ -146,7 +146,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                 Currency = header.CurrencyCode,
                 CardId = header.MemberCardNo,
                 StoreId = header.StoreId,
-                SalesType = header.SalesType
+                SalesType = header.SalesType,
+                PointAmount = header.BasketInPoints,
+                PointBalance = header.PointBalance,
+                PointCashAmountNeeded = header.AmountRemaining,
+                PointsUsedInOrder = header.PointsUsedInBasket,
+                PointsRewarded = header.IssuedPoints
             };
 
             //now loop through the lines

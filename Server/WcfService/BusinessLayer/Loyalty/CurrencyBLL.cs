@@ -26,9 +26,9 @@ namespace LSOmni.BLL.Loyalty
             return BOAppConnection.CurrencyGetById(code, culture, stat);
         }
 
-        public virtual decimal GetPointRate(string currency, Statistics stat)
+        public virtual decimal CurExchangeRateGet(string currency, Statistics stat)
         {
-            return this.BOLoyConnection.GetPointRate(currency, stat);
+            return this.BOLoyConnection.CurExchangeRateGet(currency, stat);
         }
 
         public virtual GiftCard GiftCardGetBalance(string cardNo, int pin, string entryType, Statistics stat)

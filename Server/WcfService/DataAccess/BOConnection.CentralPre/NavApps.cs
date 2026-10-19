@@ -64,21 +64,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return data;
         }
 
-        public virtual UnitOfMeasure UnitOfMeasureGetById(string id, Statistics stat)
-        {
-            logger.StatisticStartSub(false, ref stat, out int index);
-            UnitOfMeasureRepository rep = new UnitOfMeasureRepository(config);
-            UnitOfMeasure data = rep.UnitOfMeasureGetById(id);
-            logger.StatisticEndSub(ref stat, index);
-            return data;
-        }
-
-        public virtual VariantRegistration VariantRegGetById(string id, string itemId, Statistics stat)
-        {
-            ItemVariantRegistrationRepository rep = new ItemVariantRegistrationRepository(config, LSCVersion);
-            return rep.VariantRegGetById(id, itemId, stat);
-        }
-
         public virtual Currency CurrencyGetById(string id, string culture, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);

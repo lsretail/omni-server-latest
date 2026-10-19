@@ -590,13 +590,13 @@ namespace LSRetail.Omni.Domain.DataModel.Base
 
             // Add Special Parameters (Tenant for On-Prem, Page, Company)
             if (!isSaas && !string.IsNullOrWhiteSpace(Tenant))
-                finalQueryParams.Add($"{TenantParam}={WebUtility.UrlEncode(Tenant)}");
+                finalQueryParams.Add($"{TenantParam}={Uri.EscapeDataString(Tenant)}");
 
             if (!string.IsNullOrWhiteSpace(Page))
-                finalQueryParams.Add($"{PageParam}={WebUtility.UrlEncode(Page)}");
+                finalQueryParams.Add($"{PageParam}={Uri.EscapeDataString(Page)}");
 
             if (!string.IsNullOrWhiteSpace(Company))
-                finalQueryParams.Add($"{CompanyParam}={WebUtility.UrlEncode(Company)}");
+                finalQueryParams.Add($"{CompanyParam}={Uri.EscapeDataString(Company)}");
 
             // Add OtherSettings
             if (!string.IsNullOrWhiteSpace(otherSettingsRaw))

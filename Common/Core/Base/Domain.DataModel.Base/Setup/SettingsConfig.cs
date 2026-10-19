@@ -61,6 +61,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         private int serviceUpdateTimer;
         private bool windowFullScreen;
 
+        // Initialised so an absent XML element deserialises to fullscreen rather than false.
+        private bool mainWindowFullScreen = DefaultFullScreen;
+        private bool dualDisplayWindowFullScreen = DefaultFullScreen;
+
         private bool requireAuthentication;
         private string settingsUsername;
         private string settingsPassword;
@@ -91,7 +95,12 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         public const string AutoUpdateKey = "AutoUpdateKey";
         public const string AutoUpdatePathKey = "AutoUpdatePathKey";
         public const string ServiceUpdateTimerKey = "ServiceUpdateTimerKey";
+        // Legacy. Migration source, and the value exported for older AppShell builds to import.
         public const string WindowFullScreenKey = "WindowFullScreenKey";
+        public const string MainWindowFullScreenKey = "MainWindowFullScreenKey";
+        public const string DualDisplayWindowFullScreenKey = "DualDisplayWindowFullScreenKey";
+        public const bool DefaultFullScreen = true;
+
         public const string RequireAuthenticationKey = "RequireAuthenticationKey";
         public const string SettingsUsernameKey = "SettingsUsernameKey";
         public const string SettingsPasswordKey = "SettingsPasswordKey";
@@ -114,6 +123,11 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         public const string DisableStartupLoadingOverlayKey = "DisableStartupLoadingOverlayKey";
 
         public const string WebView2RuntimeLocationKey = "WebView2RuntimeLocationKey";
+
+        public const string AppInsightsEnabledKey = "AppInsightsEnabledKey";
+        public const string AppInsightsConnectionStringKey = "AppInsightsConnectionStringKey";
+        public const string AppInsightsSendUsageKey = "AppInsightsSendUsageKey";
+        public const string AppInsightsSendExceptionsKey = "AppInsightsSendExceptionsKey";
 
         [System.Xml.Serialization.XmlElementAttribute("AutoUpdate")]
         public bool AutoUpdate
@@ -154,6 +168,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             }
         }
 
+        // Legacy combined flag. Keeps its own backing field: XmlSerializer assigns in document
+        // order, so sharing one with MainWindowFullScreen would let the elements overwrite each other.
         [System.Xml.Serialization.XmlElementAttribute("LSStartFullScreen")]
         public bool WindowFullScreen
         {
@@ -165,6 +181,29 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             }
         }
 
+        [System.Xml.Serialization.XmlElementAttribute("MainWindowFullScreen")]
+        public bool MainWindowFullScreen
+        {
+            get => mainWindowFullScreen;
+            set
+            {
+                mainWindowFullScreen = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        [System.Xml.Serialization.XmlElementAttribute("DualDisplayWindowFullScreen")]
+        public bool DualDisplayWindowFullScreen
+        {
+            get => dualDisplayWindowFullScreen;
+            set
+            {
+                dualDisplayWindowFullScreen = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        [System.Xml.Serialization.XmlElementAttribute("ToggleFullScreen")]
         public bool ToggleFullScreen
         {
             get => toggleFullScreen;
@@ -340,6 +379,50 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             }
         }
 
+        [System.Xml.Serialization.XmlElementAttribute("AppInsightsEnabled")]
+        public bool AppInsightsEnabled
+        {
+            get => appInsightsEnabled;
+            set
+            {
+                appInsightsEnabled = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        [System.Xml.Serialization.XmlElementAttribute("AppInsightsConnectionString")]
+        public string AppInsightsConnectionString
+        {
+            get => appInsightsConnectionString;
+            set
+            {
+                appInsightsConnectionString = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        [System.Xml.Serialization.XmlElementAttribute("AppInsightsSendUsage")]
+        public bool AppInsightsSendUsage
+        {
+            get => appInsightsSendUsage;
+            set
+            {
+                appInsightsSendUsage = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        [System.Xml.Serialization.XmlElementAttribute("AppInsightsSendExceptions")]
+        public bool AppInsightsSendExceptions
+        {
+            get => appInsightsSendExceptions;
+            set
+            {
+                appInsightsSendExceptions = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         public AppSettings ShallowCopy()
         {
             return (AppSettings) MemberwiseClone();
@@ -371,6 +454,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         private bool tabletMode;
         private string tenant;
         private SettingsConfigUrlType urlType;
+        private bool manualAuthentication;
         private string userName;
         private string password;
         private string hexColor;
@@ -393,6 +477,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         private string serviceTierPassword;
 
         private string webView2Arguments;
+        private BrowserType browserType = BrowserType.Internal;
 
         private SettingsConfigServiceStatus serviceStatus;
         private string serviceStatusMessage;
@@ -407,6 +492,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
 
         private string lsCentralWsUrl = string.Empty;
         private string lsCentralOdataUrl = string.Empty;
+        private string lsCentralCompanyId = string.Empty;
         private string lsCentralTenantId = string.Empty;
         private string lsCentralClientId = string.Empty;
         private string lsCentralClientSecret = string.Empty;
@@ -497,9 +583,13 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
 
             lsCentralWsUrl = config.lsCentralWsUrl;
             lsCentralOdataUrl = config.lsCentralOdataUrl;
+            lsCentralCompanyId = config.lsCentralCompanyId;
             lsCentralTenantId = config.lsCentralTenantId;
             lsCentralClientId = config.lsCentralClientId;
             lsCentralClientSecret = config.lsCentralClientSecret;
+            LsCentralProtocol = config.LsCentralProtocol;
+
+            browserType = config.browserType;
         }
 
         private void Init()
@@ -847,6 +937,17 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         }
 
         //User settings
+        [System.Xml.Serialization.XmlElementAttribute("ManualAuthentication")]
+        public bool ManualAuthentication
+        {
+            get => manualAuthentication;
+            set
+            {
+                manualAuthentication = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         [System.Xml.Serialization.XmlElementAttribute("UserName")]
         public string UserName
         {
@@ -1087,6 +1188,17 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             }
         }
 
+        [System.Xml.Serialization.XmlElementAttribute("BrowserType")]
+        public BrowserType BrowserType
+        {
+            get => browserType;
+            set
+            {
+                browserType = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         //Payment settings
         [System.Xml.Serialization.XmlElementAttribute("EftSelectedDevice")]
         public int EftSelectedDevice { get; set; }
@@ -1193,6 +1305,22 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             }
         }
 
+        /// <summary>
+        /// LS Central company id used by the OData <c>companies({id})</c> segment. Optional - an absent
+        /// or blank element leaves the consumer's configured company id alone, so a config reload
+        /// cannot clear a company that only some deployments need to set.
+        /// </summary>
+        [XmlElementAttribute("LSCentralCompanyId")]
+        public string LsCentralCompanyId
+        {
+            get => lsCentralCompanyId;
+            set
+            {
+                lsCentralCompanyId = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         [XmlElementAttribute("LSCentralTenantId")]
         public string LsCentralTenantId
         {
@@ -1236,6 +1364,13 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                 NotifyPropertyChanged();
             }
         }
+
+        /// <summary>
+        /// LS Central connection protocol: <c>S2S</c> for SaaS, any other value for on-premises.
+        /// Optional - when the element is absent the consumer keeps whatever protocol it already has.
+        /// </summary>
+        [XmlElementAttribute("LSCentralProtocol")]
+        public string LsCentralProtocol { get; set; }
 
         [System.Xml.Serialization.XmlIgnore]
         public int Level

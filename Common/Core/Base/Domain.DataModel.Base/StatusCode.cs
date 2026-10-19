@@ -202,6 +202,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         /// </summary>
         [EnumMember]
         CommunicationFailure = 200,
+        [EnumMember]
+        OdataCommunicationFailure = 201,
 
         [EnumMember]
         GeneralErrorCode = 1001,

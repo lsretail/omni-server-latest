@@ -76,7 +76,7 @@ namespace LSOmni.BLL.Loyalty
 
         public virtual List<ItemCategory> ItemCategoriesGetAll(Statistics stat)
         {
-            return BOLoyConnection.ItemCategoriesGet("", string.Empty, stat);
+            return BOLoyConnection.ItemCategoriesGetAll(stat);
         }
 
         public virtual ItemCategory ItemCategoriesGetById(string id, Statistics stat)

@@ -18,8 +18,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityConfirm(request);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityConfirm(request);
+                }
             }
             catch (Exception ex)
             {
@@ -38,8 +40,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityCancel(activityNo);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityCancel(activityNo);
+                }
             }
             catch (Exception ex)
             {
@@ -58,8 +62,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityAvailabilityGet(locationNo, productNo, activityDate, contactNo, contactAccount, optionalResource, promoCode, activityNo, noOfPersons, guestType);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityAvailabilityGet(locationNo, productNo, activityDate, contactNo, contactAccount, optionalResource, promoCode, activityNo, noOfPersons, guestType);
+                }
             }
             catch (Exception ex)
             {
@@ -78,8 +84,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityAdditionalChargesGet(activityNo);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityAdditionalChargesGet(activityNo);
+                }
             }
             catch (Exception ex)
             {
@@ -98,8 +106,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityProductChargesGet(locationNo, productNo, dateOfBooking);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityProductChargesGet(locationNo, productNo, dateOfBooking);
+                }
             }
             catch (Exception ex)
             {
@@ -118,8 +128,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityAdditionalChargesSet(request);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityAdditionalChargesSet(request);
+                }
             }
             catch (Exception ex)
             {
@@ -138,8 +150,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityReservationAdditionalChargesGet(reservationNo);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityReservationAdditionalChargesGet(reservationNo);
+                }
             }
             catch (Exception ex)
             {
@@ -158,8 +172,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityGroupAdditionalChargesSet(reqest);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityGroupAdditionalChargesSet(reqest);
+                }
             }
             catch (Exception ex)
             {
@@ -178,8 +194,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityGroupReservationAdditionalChargesGet(reservationNo, memberNo);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityGroupReservationAdditionalChargesGet(reservationNo, memberNo);
+                }
             }
             catch (Exception ex)
             {
@@ -198,8 +216,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityGroupMemberSet(reservationNo, memberSequence, contact, name, email, phone, guestType, optionalComment);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityGroupMemberSet(reservationNo, memberSequence, contact, name, email, phone, guestType, optionalComment);
+                }
             }
             catch (Exception ex)
             {
@@ -218,8 +238,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityGroupMemberAssign(reservationNo, memberSequence, lineNo);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityGroupMemberAssign(reservationNo, memberSequence, lineNo);
+                }
             }
             catch (Exception ex)
             {
@@ -238,8 +260,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityGroupMemberRemove(reservationNo, memberSequence, lineNo);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityGroupMemberRemove(reservationNo, memberSequence, lineNo);
+                }
             }
             catch (Exception ex)
             {
@@ -258,8 +282,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityAttributesGet(type, linkNo);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityAttributesGet(type, linkNo);
+                }
             }
             catch (Exception ex)
             {
@@ -278,8 +304,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityAttributeSet(type, linkNo, attributeCode, attributeValue);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityAttributeSet(type, linkNo, attributeCode, attributeValue);
+                }
             }
             catch (Exception ex)
             {
@@ -298,8 +326,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityReservationInsert(request);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityReservationInsert(request);
+                }
             }
             catch (Exception ex)
             {
@@ -318,8 +348,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityUpdateReservationStatus(reservationNo, setStatusCode);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityUpdateReservationStatus(reservationNo, setStatusCode);
+                }
             }
             catch (Exception ex)
             {
@@ -338,8 +370,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityUpdateActivityStatus(activityNo, setStatusCode);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityUpdateActivityStatus(activityNo, setStatusCode);
+                }
             }
             catch (Exception ex)
             {
@@ -358,8 +392,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityReservationUpdate(request);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityReservationUpdate(request);
+                }
             }
             catch (Exception ex)
             {
@@ -378,8 +414,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityMembershipSell(contactNo, membersShipType);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityMembershipSell(contactNo, membersShipType);
+                }
             }
             catch (Exception ex)
             {
@@ -398,8 +436,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityMembershipCancel(contactNo, memberShipNo, comment);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityMembershipCancel(contactNo, memberShipNo, comment);
+                }
             }
             catch (Exception ex)
             {
@@ -418,8 +458,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityResourceAvailabilityGet(locationNo, activityDate, resourceNo, intervalType, noOfDays);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityResourceAvailabilityGet(locationNo, activityDate, resourceNo, intervalType, noOfDays);
+                }
             }
             catch (Exception ex)
             {
@@ -438,8 +480,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityResourceGroupAvailabilityGet(locationNo, activityDate, groupNo, intervalType, noOfDays);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityResourceGroupAvailabilityGet(locationNo, activityDate, groupNo, intervalType, noOfDays);
+                }
             }
             catch (Exception ex)
             {
@@ -458,8 +502,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityCheckAccess(searchReference, locationNo, gateNo, registerAccessEntry, checkType, out messageString);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityCheckAccess(searchReference, locationNo, gateNo, registerAccessEntry, checkType, out messageString);
+                }
             }
             catch (Exception ex)
             {
@@ -479,8 +525,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityGetAvailabilityToken(locationNo, productNo, activityTime, optionalResource, quantity);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityGetAvailabilityToken(locationNo, productNo, activityTime, optionalResource, quantity);
+                }
             }
             catch (Exception ex)
             {
@@ -499,8 +547,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityExtendToken(tokenId, seconds);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityExtendToken(tokenId, seconds);
+                }
             }
             catch (Exception ex)
             {
@@ -519,8 +569,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityCancelToken(tokenId);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityCancelToken(tokenId);
+                }
             }
             catch (Exception ex)
             {
@@ -539,8 +591,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityInsertGroupReservation(request);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityInsertGroupReservation(request);
+                }
             }
             catch (Exception ex)
             {
@@ -559,8 +613,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityUpdateGroupReservation(request);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityUpdateGroupReservation(request);
+                }
             }
             catch (Exception ex)
             {
@@ -579,8 +635,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityConfirmGroup(request);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityConfirmGroup(request);
+                }
             }
             catch (Exception ex)
             {
@@ -599,8 +657,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityDeleteGroup(groupNo, lineNo);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityDeleteGroup(groupNo, lineNo);
+                }
             }
             catch (Exception ex)
             {
@@ -619,8 +679,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityUpdateGroupHeaderStatus(groupNo, statusCode);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityUpdateGroupHeaderStatus(groupNo, statusCode);
+                }
             }
             catch (Exception ex)
             {
@@ -639,8 +701,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityPreSellProduct(locationNo, productNo, productNo, contactNo, quantity);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityPreSellProduct(locationNo, productNo, productNo, contactNo, quantity);
+                }
             }
             catch (Exception ex)
             {
@@ -663,8 +727,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityProductsGet();
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityProductsGet();
+                }
             }
             catch (Exception ex)
             {
@@ -683,8 +749,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityTypesGet();
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityTypesGet();
+                }
             }
             catch (Exception ex)
             {
@@ -703,8 +771,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityLocationsGet();
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityLocationsGet();
+                }
             }
             catch (Exception ex)
             {
@@ -723,8 +793,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityReservationsGet(reservationNo, contactNo, activityType);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityReservationsGet(reservationNo, contactNo, activityType);
+                }
             }
             catch (Exception ex)
             {
@@ -743,8 +815,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityReservationsHeaderGet(reservationNo, reservationType, status, locationNo, fromDate);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityReservationsHeaderGet(reservationNo, reservationType, status, locationNo, fromDate);
+                }
             }
             catch (Exception ex)
             {
@@ -763,8 +837,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityPromotionsGet();
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityPromotionsGet();
+                }
             }
             catch (Exception ex)
             {
@@ -783,8 +859,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityAllowancesGet(contactNo);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityAllowancesGet(contactNo);
+                }
             }
             catch (Exception ex)
             {
@@ -803,8 +881,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityCustomerEntriesGet(contactNo, customerNo);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityCustomerEntriesGet(contactNo, customerNo);
+                }
             }
             catch (Exception ex)
             {
@@ -823,8 +903,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityMembershipProductsGet();
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityMembershipProductsGet();
+                }
             }
             catch (Exception ex)
             {
@@ -843,8 +925,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivitySubscriptionChargesGet(contactNo);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivitySubscriptionChargesGet(contactNo);
+                }
             }
             catch (Exception ex)
             {
@@ -863,8 +947,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityAdmissionEntriesGet(contactNo);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityAdmissionEntriesGet(contactNo);
+                }
             }
             catch (Exception ex)
             {
@@ -883,8 +969,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityMembershipsGet(contactNo);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityMembershipsGet(contactNo);
+                }
             }
             catch (Exception ex)
             {
@@ -903,8 +991,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityGetByResource(locationNo, resourceNo, fromDate, toDate);
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityGetByResource(locationNo, resourceNo, fromDate, toDate);
+                }
             }
             catch (Exception ex)
             {
@@ -923,8 +1013,10 @@ namespace LSOmni.Service
 
             try
             {
-                ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityResourceGet();
+                using (ActivityBLL bll = new ActivityBLL(config))
+                {
+                    return bll.ActivityResourceGet();
+                }
             }
             catch (Exception ex)
             {

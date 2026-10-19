@@ -18,8 +18,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommBarcodes(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommBarcodes(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -33,8 +35,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommCurrency(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommCurrency(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -48,8 +52,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommCurrencyRate(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommCurrencyRate(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -63,8 +69,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommExtendedVariants(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommExtendedVariants(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -78,8 +86,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommImageLinks(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommImageLinks(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -93,8 +103,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommImages(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommImages(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -108,8 +120,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommItemCategories(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommItemCategories(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -123,8 +137,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommItems(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommItems(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -138,8 +154,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommItemUnitOfMeasures(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommItemUnitOfMeasures(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -153,8 +171,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommItemVariantRegistrations(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommItemVariantRegistrations(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -168,8 +188,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommItemVariants(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommItemVariants(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -183,8 +205,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommPrices(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommPrices(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -198,8 +222,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommBasePrices(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommBasePrices(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -213,8 +239,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommProductGroups(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommProductGroups(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -228,8 +256,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommStores(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommStores(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -243,8 +273,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommUnitOfMeasures(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommUnitOfMeasures(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -258,8 +290,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommCollection(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommCollection(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -273,8 +307,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommVendor(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommVendor(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -288,8 +324,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommVendorItemMapping(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommVendorItemMapping(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -303,8 +341,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommAttribute(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommAttribute(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -318,8 +358,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommAttributeValue(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommAttributeValue(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -333,8 +375,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommAttributeOptionValue(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommAttributeOptionValue(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -348,8 +392,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommDataTranslation(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommDataTranslation(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -363,8 +409,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommItemHtmlTranslation(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommItemHtmlTranslation(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -378,8 +426,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommDealHtmlTranslation(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommDealHtmlTranslation(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -393,8 +443,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommDataTranslationLangCode(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommDataTranslationLangCode(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -408,8 +460,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommValidationSchedule(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommValidationSchedule(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -423,8 +477,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommHierarchy(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommHierarchy(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -438,8 +494,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommHierarchyNode(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommHierarchyNode(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -453,8 +511,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommHierarchyLeaf(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommHierarchyLeaf(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -468,8 +528,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommHierarchyHospDeal(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommHierarchyHospDeal(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -483,8 +545,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommHierarchyHospDealLine(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommHierarchyHospDealLine(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -498,8 +562,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplicateItemRecipe(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplicateItemRecipe(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -513,8 +579,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommItemModifier(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommItemModifier(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -528,8 +596,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommInventoryStatus(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommInventoryStatus(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -543,8 +613,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommFullItem(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommFullItem(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -558,8 +630,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommDiscount(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommDiscount(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -573,8 +647,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommMixAndMatch(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommMixAndMatch(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -588,8 +664,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommDiscountSetup(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommDiscountSetup(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -603,8 +681,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommDiscountValidation(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommDiscountValidation(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -618,8 +698,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommMember(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommMember(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -633,8 +715,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommCustomer(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommCustomer(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -648,8 +732,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommShippingAgent(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommShippingAgent(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -663,8 +749,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommCountryCode(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommCountryCode(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -678,8 +766,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommStoreTenderTypes(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommStoreTenderTypes(replRequest);
+                }
             }
             catch (Exception ex)
             {
@@ -693,8 +783,10 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config, LogJson(replRequest));
-                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommTaxSetup(replRequest);
+                using (ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds))
+                {
+                    return bll.ReplEcommTaxSetup(replRequest);
+                }
             }
             catch (Exception ex)
             {

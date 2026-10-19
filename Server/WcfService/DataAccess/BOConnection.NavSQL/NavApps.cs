@@ -59,18 +59,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return rep.TerminalBaseGetById(terminalId);
         }
 
-        public virtual UnitOfMeasure UnitOfMeasureGetById(string id, Statistics stat)
-        {
-            UnitOfMeasureRepository rep = new UnitOfMeasureRepository(config);
-            return rep.UnitOfMeasureGetById(id);
-        }
-
-        public virtual VariantRegistration VariantRegGetById(string id, string itemId, Statistics stat)
-        {
-            ItemVariantRegistrationRepository rep = new ItemVariantRegistrationRepository(config);
-            return rep.VariantRegGetById(id, itemId);
-        }
-
         public virtual Currency CurrencyGetById(string id, string culture, Statistics stat)
         {
             CurrencyRepository rep = new CurrencyRepository(config, NAVVersion);

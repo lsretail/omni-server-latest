@@ -75,7 +75,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
 
         Card CardGetById(string id, Statistics stat);
         long MemberCardGetPoints(string cardId, Statistics stat);
-        decimal GetPointRate(string currency, Statistics stat);
+        decimal CurExchangeRateGet(string currency, Statistics stat);
         GiftCard GiftCardGetBalance(string cardNo, int pin, string entryType, Statistics stat);
         List<GiftCardEntry> GiftCardGetHistory(string cardNo, int pin, string entryType, Statistics stat);
         List<PointEntry> PointEntriesGet(string cardNo, DateTime dateFrom, Statistics stat);
@@ -152,7 +152,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         string OrderEdit(Order request, ref string orderId, OrderEditType editType, Statistics stat);
         bool OrderUpdatePayment(string orderId, string storeId, OrderPayment payment, Statistics stat);
         Order BasketCalcToOrder(OneList list, Statistics stat);
-        string OneListSave(OneList oneList, Statistics stat);
+        string OneListSave(OneList oneList, out string listNo, Statistics stat);
         void OneListModify(string listId, OneListItem line, bool remove, Statistics stat);
         void OneListLink(string listId, string cardId, string contactNo, LinkStatus status, Statistics stat);
         List<OneList> OneListGet(string listId, string cardId, bool includeLines, Statistics stat);
@@ -173,9 +173,8 @@ namespace LSOmni.DataAccess.Interface.BOConnection
 
         #region ItemCategory and ProductGroup and Hierarchy
 
-        List<ItemCategory> ItemCategoriesGet(string storeId, string culture, Statistics stat);
+        List<ItemCategory> ItemCategoriesGetAll(Statistics stat);
         ItemCategory ItemCategoriesGetById(string id, Statistics stat);
-        List<ProductGroup> ProductGroupGetByItemCategoryId(string itemcategoryId, string culture, bool includeChildren, bool includeItems, Statistics stat);
         ProductGroup ProductGroupGetById(string id, string culture, bool includeItems, bool includeItemDetail, Statistics stat);
         List<Hierarchy> HierarchyGet(string storeId, Statistics stat);
         List<Hierarchy> HierarchyContentGet(string storeNo, string languageCode, Statistics stat);

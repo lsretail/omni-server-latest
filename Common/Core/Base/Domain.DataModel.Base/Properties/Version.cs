@@ -17,9 +17,9 @@ using System.Reflection;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("2026.8.0")]
-[assembly: AssemblyFileVersion("2026.8.0")]
-[assembly: AssemblyInformationalVersion("Commerce Service for LS Central 2026.8.0")]
+[assembly: AssemblyVersion("2026.10.0")]
+[assembly: AssemblyFileVersion("2026.10.0")]
+[assembly: AssemblyInformationalVersion("Commerce Service for LS Central 2026.10.0")]
 
 #if ANDROID
 [assembly: System.Runtime.Versioning.SupportedOSPlatform("Android21.0")]

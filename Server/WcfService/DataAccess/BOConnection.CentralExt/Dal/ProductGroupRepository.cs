@@ -186,7 +186,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return list;
         }
 
-        public List<ProductGroup> ProductGroupGetByItemCategoryId(string itemcategoryId, string culture, bool includeChildren, bool includeItems, Statistics stat)
+        public List<ProductGroup> ProductGroupGetByItemCategoryId(string itemcategoryId, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
             List<ProductGroup> list = new List<ProductGroup>();
@@ -202,7 +202,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToLoyProductGroups(reader, culture, includeChildren, includeItems, stat));
+                            list.Add(ReaderToLoyProductGroups(reader, string.Empty, false, false, stat));
                         }
                         reader.Close();
                     }
@@ -299,8 +299,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             {
                 ItemRepository itrep = new ItemRepository(config, LSCVersion);
                 prgr.Items = itrep.ItemsGetByProductGroupId(prgr.Id, culture, includeItemDetail, stat);
-                ImageRepository imrep = new ImageRepository(config, LSCVersion);
-                prgr.Images = imrep.ImageGetByKey("LSC Retail Product Group", prgr.ItemCategoryId, prgr.Id, string.Empty, 0, false);
             }
             else
             {

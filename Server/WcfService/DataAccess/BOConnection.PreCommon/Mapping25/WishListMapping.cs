@@ -1,9 +1,9 @@
-﻿using System;
+﻿using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
-using LSOmni.Common.Util;
 
 namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
 {
@@ -24,7 +24,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                 {
                     WishListNo = string.Empty,
                     CalculationType = (oneList.IsHospitality) ? "1" : "0",
-                    WishListName = oneList.Name,
+                    WishListName = oneList.Description,
                     NoOfTimesVisited = 0, // Not tracked in LS Omni
                     Barcode = null, // Not supported in LS Omni
                     ContactNo = oneList.CustomerId,
@@ -67,9 +67,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping25
                 OneList onelist = new OneList()
                 {
                     Id = header.WishListNo,
+                    ListNo = header.WishListNo,
                     ListType = ListType.Wish,
                     IsHospitality = (header.CalculationType == "1"),
-                    Name = header.WishListName,
+                    Description = header.WishListName,
                     CustomerId = header.ContactNo,
                     CreateDate = header.DateCreated,
                 };

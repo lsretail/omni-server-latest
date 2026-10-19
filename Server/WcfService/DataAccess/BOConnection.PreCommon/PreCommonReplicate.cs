@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using LSOmni.Common.Util;
+﻿using LSOmni.Common.Util;
 using LSOmni.DataAccess.BOConnection.PreCommon.JMapping;
 using LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping;
 using LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication;
@@ -11,6 +8,9 @@ using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 using LSRetail.Omni.Domain.DataModel.Pos.Replication;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LSOmni.DataAccess.BOConnection.PreCommon
 {
@@ -22,8 +22,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetWIItemBuffer(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetWIItemBuffer", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplItems(ret, ref lastKey, ref recordsRemaining);
             }
@@ -102,8 +102,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetBarcode(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetBarcode", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplBarcode(ret, ref lastKey, ref recordsRemaining);
             }
@@ -120,8 +120,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetBarcodeMaskSegment(batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetBarcodeMaskSegment", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplBarcodeSegment(ret, ref lastKey, ref recordsRemaining);
             }
@@ -138,8 +138,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetBarcodeMask(batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetBarcodeMask", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplBarcodeMask(ret, ref lastKey, ref recordsRemaining);
             }
@@ -156,8 +156,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetExtdVariantValues(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetExtdVariantValues", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplExtVariants(ret, ref lastKey, ref recordsRemaining);
             }
@@ -221,18 +221,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret;
+                string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetItemUnitOfMeasure", body, false);
+                logger.Trace(config.LSKey.Key, ret);
                 if (LSCVersion >= new Version("20.3"))
                 {
-                    ret = odataWS.GetItemUnitOfMeasure(storeId, batchSize, fullRepl, lastKey, lastEntry);
-                    logger.Trace(config.LSKey.Key, ret);
                     return map.GetReplItemUOM2(ret, ref lastKey, ref recordsRemaining);
                 }
                 else
                 {
-                    ret = odataWS.GetItemUnitOfMeasure(storeId, batchSize, fullRepl, lastKey, lastEntry);
-                    logger.Trace(config.LSKey.Key, ret);
                     return map.GetReplItemUOM(ret, ref lastKey, ref recordsRemaining);
                 }
             }
@@ -267,17 +264,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
+                string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
                 string ret;
                 if (LSCVersion >= new Version("20.1"))
                 {
-                    ret = odataWS.GetVariantRegWithStatus(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                    ret = SendToOData("ODataRequest_GetVariantRegWithStatus", body, false);
                     logger.Trace(config.LSKey.Key, ret);
                     return map.GetReplItemVariantWithStatus(ret, ref lastKey, ref recordsRemaining);
                 }
                 else
                 {
-                    ret = odataWS.GetVariantReg(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                    ret = SendToOData("ODataRequest_GetVariantReg", body, false);
                     logger.Trace(config.LSKey.Key, ret);
                     return map.GetReplItemVariantReg(ret, ref lastKey, ref recordsRemaining);
                 }
@@ -295,8 +292,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetItemVariant(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetItemVariant", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplItemVariant(ret, ref lastKey, ref recordsRemaining);
             }
@@ -317,8 +314,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetVendor(batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetVendor", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplVendor(ret, ref lastKey, ref recordsRemaining);
             }
@@ -335,8 +332,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetVendorItem(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetVendorItem", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplVendorItem(ret, ref lastKey, ref recordsRemaining);
             }
@@ -366,9 +363,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             if (LSCVersion >= new Version("19.3"))
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
-
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetCurrency(batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetCurrency", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplCurrency(ret, ref lastKey, ref recordsRemaining);
             }
@@ -385,8 +381,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetCurrencyExchRate(batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetCurrencyExchRate", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplCurrencyExchRate(ret, ref lastKey, ref recordsRemaining);
             }
@@ -403,8 +399,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetItemCategory(batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetItemCategory", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplItemCategory(ret, ref lastKey, ref recordsRemaining);
             }
@@ -421,8 +417,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetWIItemLocationBuffer(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetWIItemLocationBuffer", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplItemLocation(ret, ref lastKey, ref recordsRemaining);
             }
@@ -438,8 +434,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             if (LSCVersion >= new Version("19.3"))
             {
                 ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetWIPrice(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetWIPrice", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplPrice(ret, ref lastKey, ref recordsRemaining);
             }
@@ -522,7 +518,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         public virtual List<ReplPrice> ReplicateBasePrice(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
         {
             ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
-            map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
+            string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
 
             bool usePriceLine = true;
             if (config.SettingsKeyExists(ConfigKey.UseSalesPrice))
@@ -531,19 +527,19 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             string ret;
             if (LSCVersion >= new Version("28.0") && usePriceLine)
             {
-                ret = odataWS.GetPriceListLine2(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                ret = SendToOData("ODataRequest_GetPriceListLine2", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplPriceListLine2(ret, storeId, ref lastKey, ref recordsRemaining);
             }
             
             if (LSCVersion >= new Version("26.0") && usePriceLine)
             {
-                ret = odataWS.GetPriceListLine(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                ret = SendToOData("ODataRequest_GetPriceListLine", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplPriceListLine(ret, storeId, ref lastKey, ref recordsRemaining);
             }
 
-            ret = odataWS.GetSalesPrice(storeId, batchSize, fullRepl, lastKey, lastEntry);
+            ret = SendToOData("ODataRequest_GetSalesPrice", body, false);
             logger.Trace(config.LSKey.Key, ret);
             return map.GetReplBasePrice(ret, storeId, ref lastKey, ref recordsRemaining);
         }
@@ -554,8 +550,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetProductGroup(batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetProductGroup", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplProductGroup(ret, ref lastKey, ref recordsRemaining);
             }
@@ -592,8 +588,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetStoreBuffer(batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetStoreBuffer", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplStore(ret, ref lastKey, ref recordsRemaining);
             }
@@ -646,13 +642,26 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             }
 
             //Get all storeIds linked to this terminal
-            NAVWebXml xml = new NAVWebXml(storeId, appId, appType);
-            string xmlRequest = xml.GetGeneralWebRequestXML("LSC Inventory Terminal-Store");
-            string xmlResponse = RunOperation(xmlRequest, true);
-            HandleResponseCode(ref xmlResponse);
-            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
-            ReplicateRepository rep = new ReplicateRepository(config);
-            List<ReplStore> list = rep.ReplicateInvStores(table, terminalId);
+            List<ReplStore> list;
+            if (string.IsNullOrEmpty(NavCompanyId))
+            {
+                NAVWebXml xml = new NAVWebXml(storeId, appId, appType);
+                string xmlRequest = xml.GetGeneralWebRequestXML("LSC Inventory Terminal-Store");
+                string xmlResponse = RunOperation(xmlRequest, true);
+                HandleResponseCode(ref xmlResponse);
+                XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+                ReplicateRepository rep = new ReplicateRepository(config);
+                list = rep.ReplicateInvStores(table, terminalId);
+            }
+            else
+            {
+                string cmd = $"retailCore/v1.0/companies({NavCompanyId})/inventoryTerminalStores?$filter=terminalNo eq '{Escape(terminalId)}'&$select=store,storeName";
+                string ret = SendToOData(cmd, string.Empty, APIPageMethod.GET, true);
+                StoreJMapping map = new StoreJMapping(config.IsJson);
+                list = map.GetInventoryTerminalStores(ret, out string resCode, out string resErr);
+                Statistics stat = new Statistics();
+                HandleWS2ResponseCode("inventoryTerminalStores", resCode, resErr, ref stat, 0);
+            }
 
             //Get all stores
             List<ReplStore> allStores = ReplicateStores(appId, appType, storeId, 0, fullReplication, ref lastKey, ref recordsRemaining);
@@ -683,8 +692,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetUnitOfMeasure(batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetUnitOfMeasure", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplUOM(ret, ref lastKey, ref recordsRemaining);
             }
@@ -701,8 +710,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetCollection(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetCollection", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplCollection(ret, ref lastKey, ref recordsRemaining);
             }
@@ -718,8 +727,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             if (LSCVersion >= new Version("19.3"))
             {
                 ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetWIDiscounts(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetWIDiscounts", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplDiscount(ret, ref lastKey, ref recordsRemaining);
             }
@@ -835,12 +844,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         public virtual List<ReplDiscountSetup> ReplicateDiscountSetup(string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
         {
             ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
-            map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
+            string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
             string ret;
+
             if (LSCVersion >= new Version("27.0"))
-                ret = odataWS.GetDiscountSetupWPGLookup(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                ret = SendToOData("ODataRequest_GetDiscountSetupWPGLookup", body, false);
             else
-                ret = odataWS.GetDiscountSetup(batchSize, fullRepl, lastKey, lastEntry);
+                ret = SendToOData("ODataRequest_GetDiscountSetup", body, false);
             logger.Trace(config.LSKey.Key, ret);
             return map.GetReplDiscountSetup(ret, ref lastKey, ref recordsRemaining);
         }
@@ -850,8 +860,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             if (LSCVersion >= new Version("19.3"))
             {
                 ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetWIMixMatch(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetWIMixMatch", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplMixMatch(ret, ref lastKey, ref recordsRemaining);
             }
@@ -950,8 +960,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetValidationPeriod(batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetValidationPeriod", body, false);
                 logger.Trace(config.LSKey.Key, ret);
 
                 string tenderMap = config.SettingsGetByKey(ConfigKey.TenderType_Mapping);
@@ -971,17 +981,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             if (LSCVersion >= new Version("19.3"))
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
+                string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
 
                 string ret;
                 if (LSCVersion >= new Version("26.0"))
                 {
-                    ret = odataWS.GetTenderTypeEx(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                    ret = SendToOData("ODataRequest_GetTenderTypeEx", body, false);
                     logger.Trace(config.LSKey.Key, ret);
                     return map.GetReplTenderTypeEx(ret, tenderMap, ref lastKey, ref recordsRemaining);
                 }
 
-                ret = odataWS.GetTenderType(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                ret = SendToOData("ODataRequest_GetTenderType", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplTenderType(ret, tenderMap, ref lastKey, ref recordsRemaining);
             }
@@ -1002,8 +1012,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetTenderTypeCurrency(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetTenderTypeCurrency", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplTenderTypeCurrency(ret, ref lastKey, ref recordsRemaining);
             }
@@ -1017,8 +1027,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         public virtual List<ReplItemModifier> ReplicateItemModifier(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
         {
             ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
-            map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-            string ret = odataWS.GetWIItemModifier(storeId, batchSize, fullRepl, lastKey, lastEntry);
+            string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
+            string ret = SendToOData("ODataRequest_GetWIItemModifier", body, false);
             logger.Trace(config.LSKey.Key, ret);
             return map.GetReplModifier(ret, ref lastKey, ref recordsRemaining);
         }
@@ -1026,8 +1036,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         public virtual List<ReplItemRecipe> ReplicateItemRecipe(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
         {
             ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
-            map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-            string ret = odataWS.GetWIItemRecipeBuffer(storeId, batchSize, fullRepl, lastKey, lastEntry);
+            string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
+            string ret = SendToOData("ODataRequest_GetWIItemRecipeBuffer", body, false);
             logger.Trace(config.LSKey.Key, ret);
             return map.GetReplRecipe(ret, ref lastKey, ref recordsRemaining);
         }
@@ -1038,8 +1048,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetHierarchy(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetHierarchy", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplHierarchy(ret, ref lastKey, ref recordsRemaining);
             }
@@ -1084,8 +1094,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetHierarchyNodes(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetHierarchyNodes", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplHierarchyNode(ret, ref lastKey, ref recordsRemaining);
             }
@@ -1119,8 +1129,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetHierarchyLeaf(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetHierarchyLeaf", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplHierarchyLeaf(ret, ref lastKey, ref recordsRemaining);
             }
@@ -1190,8 +1200,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         public virtual List<ReplHierarchyHospDeal> ReplicateHierarchyDeal(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
         {
             SetupJMapping map = new SetupJMapping(config.IsJson);
-            map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-            string ret = odataWS.GetHierarchyDeal(storeId, batchSize, fullRepl, lastKey, lastEntry);
+            string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
+            string ret = SendToOData("ODataRequest_GetHierarchyDeal", body, false);
             logger.Trace(config.LSKey.Key, ret);
             return map.GetReplHierarchyDeal(ret, ref lastKey, ref recordsRemaining);
         }
@@ -1199,8 +1209,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         public virtual List<ReplHierarchyHospDealLine> ReplicateHierarchyDealLine(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
         {
             SetupJMapping map = new SetupJMapping(config.IsJson);
-            map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-            string ret = odataWS.GetHierarchyDealLine(storeId, batchSize, fullRepl, lastKey, lastEntry);
+            string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
+            string ret = SendToOData("ODataRequest_GetHierarchyDealLine", body, false);
             logger.Trace(config.LSKey.Key, ret);
             return map.GetReplHierarchyDealLine(ret, ref lastKey, ref recordsRemaining);
         }
@@ -1211,8 +1221,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetImageLink(batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetImageLink", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplImageLink(ret, ref lastKey, ref recordsRemaining);
             }
@@ -1229,8 +1239,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetWIImageBuffer(batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetWIImageBuffer", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplImage(ret, ref lastKey, ref recordsRemaining);
             }
@@ -1247,8 +1257,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetAttribute(batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetAttribute", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplAttribute(ret, ref lastKey, ref recordsRemaining);
             }
@@ -1265,8 +1275,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetAttributeValues(batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetAttributeValues", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplAttributeValue(ret, ref lastKey, ref recordsRemaining);
             }
@@ -1283,8 +1293,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetAttributeOptionValues(batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetAttributeOptionValues", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplAttributeOptionValue(ret, ref lastKey, ref recordsRemaining);
             }
@@ -1301,8 +1311,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetDataTranslation(batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetDataTranslation", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplTranslation(ret, ref lastKey, ref recordsRemaining);
             }
@@ -1316,8 +1326,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         public virtual List<ReplDataTranslation> ReplicateItemHtmlTranslation(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
         {
             ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
-            map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-            string ret = odataWS.GetItemHTML(storeId, batchSize, fullRepl, lastKey, lastEntry);
+            string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
+            string ret = SendToOData("ODataRequest_GetItemHTML", body, false);
             logger.Trace(config.LSKey.Key, ret);
             return map.GetReplHtml(ret, ref lastKey, ref recordsRemaining);
         }
@@ -1325,14 +1335,25 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         public virtual List<ReplDataTranslation> ReplicateDealHtmlTranslation(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
         {
             ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
-            map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-            string ret = odataWS.GetOfferHTML(string.Empty, batchSize, fullRepl, lastKey, lastEntry);
+            string body = map.SetKeys(string.Empty, fullRepl, batchSize, ref lastKey, out int lastEntry);
+            string ret = SendToOData("ODataRequest_GetOfferHTML", body, false);
             logger.Trace(config.LSKey.Key, ret);
             return map.GetReplHtml(ret, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplDataTranslationLangCode> ReplicateDataTranslationLangCode(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
+            if (string.IsNullOrEmpty(NavCompanyId) == false)
+            {
+                string cmd = $"retailCore/v1.0/companies({NavCompanyId})/dataTranslationLanguages?$select=languageCode";
+                string ret = SendToOData(cmd, string.Empty, APIPageMethod.GET, true);
+                SetupJMapping jmap = new SetupJMapping(config.IsJson);
+                List<ReplDataTranslationLangCode> list = jmap.GetReplDataTransLanguages(ret, out string resCode, out string resErr);
+                Statistics stat = new Statistics();
+                HandleWS2ResponseCode("memberSchemes", resCode, resErr, ref stat, 0);
+                return list;
+            }
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("LSC Data Translation Language");
             string xmlResponse = RunOperation(xmlRequest, true);
@@ -1344,6 +1365,18 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         public virtual List<ReplShippingAgent> ReplicateShippingAgent(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
+            List<ReplShippingAgent> list;
+            if (string.IsNullOrEmpty(NavCompanyId) == false)
+            {
+                string cmd = $"customerOrder/v1.0/companies({NavCompanyId})/shippingAgents?$select=code,name,internetAddress,accountNo&$expand=shippingAgentServices($select=code,description,shippingTime)";
+                string ret = SendToOData(cmd, string.Empty, APIPageMethod.GET, true);
+                SetupJMapping jmap = new SetupJMapping(config.IsJson);
+                list = jmap.GetShippingAgents(ret, out string resCode, out string resErr);
+                Statistics stat = new Statistics();
+                HandleWS2ResponseCode("shippingAgents", resCode, resErr, ref stat, 0);
+                return list;
+            }
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Shipping Agent");
             string xmlResponse = RunOperation(xmlRequest, true);
@@ -1351,7 +1384,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             ReplicateRepository rep = new ReplicateRepository(config);
-            List<ReplShippingAgent> list = rep.ReplicateShippingAgent(table);
+            list = rep.ReplicateShippingAgent(table);
 
             foreach (ReplShippingAgent sa in list)
             {
@@ -1366,16 +1399,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
+                string body = map.SetKeys(fullRepl, batchSize, ref lastKey, out int lastEntry);
                 if (LSCVersion >= new Version("22.3"))
                 {
-                    string ret = odataWS.GetContact2(batchSize, fullRepl, lastKey, lastEntry);
+                    string ret = SendToOData("ODataRequest_GetContact2", body, false);
                     logger.Trace(config.LSKey.Key, ret);
                     return map.GetReplMember2(ret, ref lastKey, ref recordsRemaining);
                 }
                 else
                 {
-                    string ret = odataWS.GetContact(batchSize, fullRepl, lastKey, lastEntry);
+                    string ret = SendToOData("ODataRequest_GetContact", body, false);
                     logger.Trace(config.LSKey.Key, ret);
                     return map.GetReplMember(ret, ref lastKey, ref recordsRemaining);
                 }
@@ -1393,8 +1426,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetCustomer(batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetCustomer", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplCustomer(ret, ref lastKey, ref recordsRemaining);
             }
@@ -1411,8 +1444,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetStaff(batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetStaff", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplStaff(ret, ref lastKey, ref recordsRemaining);
             }
@@ -1429,8 +1462,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetStoreStaff(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetStoreStaff", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplStaffStore(ret, ref lastKey, ref recordsRemaining);
             }
@@ -1443,8 +1476,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         public virtual List<ReplStaffPermission> ReplicateStaffPermission(string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
         {
             SetupJMapping map = new SetupJMapping(config.IsJson);
-            map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-            string ret = odataWS.GetStaffPermission(storeId, batchSize, fullRepl, lastKey, lastEntry);
+            string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
+            string ret = SendToOData("ODataRequest_GetStaffPermission", body, false);
             logger.Trace(config.LSKey.Key, ret);
             return map.GetReplStaffPermission(ret, ref lastKey, ref recordsRemaining);
         }
@@ -1455,7 +1488,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
 
-                string ret = odataWS.GetVATPostingSetup(batchSize, true, string.Empty, 0);
+                lastKey = string.Empty;
+                string body = map.SetKeys(true, 0, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetVATPostingSetup", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplTaxSetup(ret, ref lastKey, ref recordsRemaining);
             }
@@ -1474,26 +1509,33 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetPOSTerminal(batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetPOSTerminal", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 List<ReplTerminal> list = map.GetReplTerminal(ret, ref lastKey, ref recordsRemaining);
 
-                List<ReplTerminal> stores = new List<ReplTerminal>();
+                List<ReplTerminal> terms = new List<ReplTerminal>();
                 NAVWebXml xml = new NAVWebXml();
                 foreach (ReplTerminal terminal in list)
                 {
                     if (string.IsNullOrEmpty(storeId) || terminal.StoreId.Equals(storeId))
                     {
-                        string xmlRequest = xml.GetGeneralWebRequestXML("LSC Feature Flags Setup", "POS Terminal", $" |{terminal.Id}", "Store No.", $" |{terminal.StoreId}");
-                        string xmlResponse = RunOperation(xmlRequest, true);
-                        HandleResponseCode(ref xmlResponse);
-                        table = xml.GetGeneralWebResponseXML(xmlResponse);
-                        rep.ReplicateFeatureFlags(table, terminal.Features);
-                        stores.Add(terminal);
+                        if (string.IsNullOrEmpty(NavCompanyId))
+                        {
+                            string xmlRequest = xml.GetGeneralWebRequestXML("LSC Feature Flags Setup", "POS Terminal", $" |{terminal.Id}", "Store No.", $" |{terminal.StoreId}");
+                            string xmlResponse = RunOperation(xmlRequest, true);
+                            HandleResponseCode(ref xmlResponse);
+                            table = xml.GetGeneralWebResponseXML(xmlResponse);
+                            rep.ReplicateFeatureFlags(table, terminal.Features);
+                        }
+                        else
+                        {
+                            FeatureFlagsAdd(terminal.Id, terminal.StoreId, terminal.Features, new Statistics());
+                        }
+                        terms.Add(terminal);
                     }
                 }
-                return stores;
+                return terms;
             }
 
             table = DoReplication(99001471, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
@@ -1506,8 +1548,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetCountryCode(batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetCountryCode", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 List<ReplCountryCode> list = map.GetReplCountry(ret, ref lastKey, ref recordsRemaining);
 
@@ -1565,7 +1607,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
 
-                string ret = odataWS.GetPluBuffer(storeId, 0, true, string.Empty, 0);
+                lastKey = string.Empty;
+                string body = map.SetKeys(storeId, true, 0, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetPluBuffer", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplPlu(ret, ref lastKey, ref recordsRemaining);
             }
@@ -1594,8 +1638,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
-                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetInventoryStatus(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                string body = map.SetKeys(storeId, fullRepl, batchSize, ref lastKey, out int lastEntry);
+                string ret = SendToOData("ODataRequest_GetInventoryStatus", body, false);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplInvStatus(ret, ref lastKey, ref recordsRemaining);
             }

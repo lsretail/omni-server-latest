@@ -11,9 +11,15 @@ namespace LSOmni.DataAccess.Dal
     public abstract class BaseRepository //: MembershipEntities
     {
         protected internal static DateTime MinDate = new DateTime(1970, 1, 1); //min date for json
+        // sqlConnectionString/encrCode legitimately are process-wide: this repository always talks
+        // to the single shared LSOmni admin database (SQLConnectionString.LSOmni from AppSettings),
+        // not a per-tenant BC database, so caching them once for the process is correct by design.
         protected static string sqlConnectionString = null;
         protected static string encrCode = null;
-        protected static BOConfiguration config;
+        // config is per-request (used only for trace/log attribution) so it must stay instance-scoped,
+        // unlike sqlConnectionString above - otherwise log lines under concurrent requests could be
+        // attributed to the wrong tenant.
+        protected BOConfiguration config;
 
         private static readonly object myLock = new object();
         protected static LSLogger logger = new LSLogger();
@@ -27,30 +33,34 @@ namespace LSOmni.DataAccess.Dal
             {
                 lock (myLock)
                 {
-                    sqlConnectionString = ConfigSetting.GetString("SQLConnectionString.LSOmni");
-                    if (config == null)
+                    if (sqlConnectionString == null)
                     {
-                        config = new BOConfiguration();
-                        config.Settings.Add(new TenantSetting(ConfigKey.EncrCode.ToString(), ConfigSetting.GetEncrCode(), string.Empty, "string", false, true));
-                    }
+                        sqlConnectionString = ConfigSetting.GetString("SQLConnectionString.LSOmni");
 
-                    DbConnectionStringBuilder builder = new DbConnectionStringBuilder();
-                    builder.ConnectionString = sqlConnectionString;
+                        DbConnectionStringBuilder builder = new DbConnectionStringBuilder();
+                        builder.ConnectionString = sqlConnectionString;
 
-                    //string server = builder["Data Source"] as string;
-                    if (builder.ContainsKey("Password"))
-                    {
-                        string tmpPwd = builder["Password"] as string;
-                        tmpPwd = tmpPwd.Trim();
-                        //
-                        if (DecryptConfigValue.IsEncryptedPwd(tmpPwd))
+                        //string server = builder["Data Source"] as string;
+                        if (builder.ContainsKey("Password"))
                         {
-                            //decrypt the pwd
-                            builder["Password"] = DecryptConfigValue.DecryptString(tmpPwd, ConfigSetting.GetEncrCode());
+                            string tmpPwd = builder["Password"] as string;
+                            tmpPwd = tmpPwd.Trim();
+                            //
+                            if (DecryptConfigValue.IsEncryptedPwd(tmpPwd))
+                            {
+                                //decrypt the pwd
+                                builder["Password"] = DecryptConfigValue.DecryptString(tmpPwd, ConfigSetting.GetEncrCode());
+                            }
                         }
+                        sqlConnectionString = builder.ConnectionString;
                     }
-                    sqlConnectionString = builder.ConnectionString;
                 }
+            }
+
+            if (config == null)
+            {
+                config = new BOConfiguration();
+                config.Settings.Add(new TenantSetting(ConfigKey.EncrCode.ToString(), ConfigSetting.GetEncrCode(), string.Empty, "string", false, true));
             }
         }
 

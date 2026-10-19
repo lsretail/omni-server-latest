@@ -50,8 +50,8 @@ namespace LSOmni.Service
         /// Get Published Offers for Member Card Id
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : LOAD_MEMBER_DIR_MARK_INFO<p/>
-        /// LS Central WS2 : GetDirectMarketingInfo
+        /// LS Nav WS1: LOAD_MEMBER_DIR_MARK_INFO<p/>
+        /// LS Central WS2: GetDirectMarketingInfo
         /// </remarks>
         /// <param name="cardId">Member Card Id to look for</param>
         /// <param name="itemId">Only show Offers for this item</param>
@@ -64,7 +64,8 @@ namespace LSOmni.Service
         /// Get related items in a published offer
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : LOAD_PUBLISHED_OFFER_ITEMS
+        /// LS Nav WS1: LOAD_PUBLISHED_OFFER_ITEMS<p/>
+        /// LS Central PageWS:publishedOffers
         /// </remarks>
         /// <param name="pubOfferId">Published offer id</param>
         /// <param name="numberOfItems">Number of items to return</param>
@@ -76,7 +77,7 @@ namespace LSOmni.Service
         /// Get discounts for items. Send in empty string for loyaltySchemeCode if getting anonymously.
         /// </summary>
         /// <remarks>
-        /// LS Central OData : GetDiscount
+        /// LS Central OData: GetDiscount
         /// </remarks>
         /// <param name="storeId">Store Id</param>
         /// <param name="itemIds">List of item ids to check for discounts</param>
@@ -89,7 +90,7 @@ namespace LSOmni.Service
         /// Get balance of a gift card.
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetDataEntryBalanceV2 (LS Central 24.0+); earlier versions read POS Data Entry directly
+        /// LS Central WS2: GetDataEntryBalanceV2 (LS Central 24.0+); earlier versions read POS Data Entry directly
         /// </remarks>
         /// <param name="cardNo">Gift card number</param>
         /// <param name="pin">Gift card pin number</param>
@@ -102,7 +103,7 @@ namespace LSOmni.Service
         /// Get activity history for Gift Card
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetVoucherEntriesV2 (LS Central 24.0+), GetVoucherEntries (earlier)
+        /// LS Central WS2: GetVoucherEntriesV2 (LS Central 24.0+), GetVoucherEntries (earlier)
         /// </remarks>
         /// <param name="cardNo">Gift card number</param>
         /// <param name="pin">Gift card pin number</param>
@@ -122,8 +123,8 @@ namespace LSOmni.Service
         /// Get all Order Notification for a Contact
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : LOAD_MEMBER_DIR_MARK_INFO<p/>
-        /// LS Central WS2 : GetDirectMarketingInfo
+        /// LS Nav WS1: LOAD_MEMBER_DIR_MARK_INFO<p/>
+        /// LS Central WS2: GetDirectMarketingInfo
         /// </remarks>
         /// <param name="cardId">Card Id</param>
         /// <param name="numberOfNotifications">Number of notifications to return</param>
@@ -174,6 +175,10 @@ namespace LSOmni.Service
         /// <summary>
         /// Delete Basket or Wish List By OneList Id
         /// </summary>
+        /// <remarks>
+        /// LS Central WS2: WishListDeleteByID<p/>
+        /// LS Central PageWS: wishLists
+        /// </remarks>
         /// <param name="oneListId"></param>
         [OperationContract]
         bool OneListDeleteById(string oneListId);
@@ -181,6 +186,10 @@ namespace LSOmni.Service
         /// <summary>
         /// Get Basket or all Wish Lists by Member Card Id
         /// </summary>
+        /// <remarks>
+        /// LS Central WS2: WishListGetDetail<p/>
+        /// LS Central PageWS: wishLists
+        /// </remarks>
         /// <param name="cardId">Contact Id</param>
         /// <param name="listType">0=Basket,1=Wish</param>
         /// <param name="includeLines">Include detail lines</param>
@@ -191,6 +200,10 @@ namespace LSOmni.Service
         /// <summary>
         /// Get Basket or Wish List by OneList Id
         /// </summary>
+        /// <remarks>
+        /// LS Central WS2: WishListItemModify<p/>
+        /// LS Central PageWS: wishLists/ItemModify
+        /// </remarks>
         /// <param name="id">List Id</param>
         /// <param name="includeLines">Include detail lines</param>
         /// <returns></returns>
@@ -201,6 +214,8 @@ namespace LSOmni.Service
         /// Save Basket or Wish List
         /// </summary>
         /// <remarks>
+        /// LS Central WS2: WishListCreate<p/>
+        /// LS Central PageWS: wishLists<p/><p/>
         /// OneList can be saved, for both Member Contact and Anonymous Users.
         /// Member Contact can have one or more Member Cards and each Card can have one WishList and one Basket
         /// For Anonymous User, keep CardId empty and OneListSave will return OneList Id back that should be store with the session for the Anonymous user, 
@@ -253,7 +268,7 @@ namespace LSOmni.Service
         /// Calculates OneList Basket Object and returns Order Object
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : EcomCalculateBasket<p/><p/>
+        /// LS Central WS2: EcomCalculateBasket<p/><p/>
         /// This function can be used to send in Basket and convert it to Order.<p/>
         /// Basic Order data is then set for finalize it by setting the Order setting,
         /// Contact Info, Payment and then it can be posted for Creation<p/>
@@ -301,7 +316,7 @@ namespace LSOmni.Service
         /// Calculates OneList Basket for Hospitality and returns Hospitality Order Object
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : MobilePosCalculate<p/><p/>
+        /// LS Central WS2: MobilePosCalculate<p/><p/>
         /// This function can be used to send in Basket and convert it to Hospitality Order.<p/>
         /// Basic Hospitality Order data is then set for finalize it by setting the Order setting,
         /// Contact Info, Payment and then it can be posted for Creation
@@ -366,6 +381,10 @@ namespace LSOmni.Service
         /// <summary>
         /// Add or remove Item in OneList without sending whole list
         /// </summary>
+        /// <remarks>
+        /// LS Central WS2: WishListItemModify<p/>
+        /// LS Central PageWS: wishLists/ItemModify
+        /// </remarks>
         /// <example>
         /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
         /// Include minimum data needed to be able to process the request
@@ -402,6 +421,10 @@ namespace LSOmni.Service
         /// <summary>
         /// Link or remove a Member to/from existing OneList
         /// </summary>
+        /// <remarks>
+        /// LS Central WS2: WishListLink<p/>
+        /// LS Central PageWS: wishLists/Linking
+        /// </remarks>
         /// <param name="oneListId">OneList Id to link</param>
         /// <param name="cardId">Card Id to link or remove</param>
         /// <param name="email">Email address to look up Card Id when requesting a Linking</param>
@@ -419,7 +442,7 @@ namespace LSOmni.Service
         /// Check the quantity available of items in order for certain store, Use with LS Nav 11.0 and later
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : COQtyAvailabilityV2
+        /// LS Central WS2: COQtyAvailabilityV2
         /// </remarks>
         /// <example>
         /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
@@ -459,7 +482,7 @@ namespace LSOmni.Service
         /// Create Customer Order
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : CustomerOrderCreateVx
+        /// LS Central WS2: CustomerOrderCreateVx
         /// </remarks>
         /// <example>
         /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
@@ -596,7 +619,7 @@ namespace LSOmni.Service
         /// Edit Customer Order
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : CustomerOrderEditV2 (LS Central 28.0+), CustomerOrderEdit (earlier)
+        /// LS Central WS2: CustomerOrderEditV2 (LS Central 28.0+), CustomerOrderEdit (earlier)
         /// </remarks>
         /// <example>
         /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
@@ -658,7 +681,7 @@ namespace LSOmni.Service
         /// Update payments for Customer Order
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : COUpdatePaymentV2 (LS Central 28.0+), COUpdatePayment (earlier)
+        /// LS Central WS2: COUpdatePaymentV2 (LS Central 28.0+), COUpdatePayment (earlier)
         /// </remarks>
         /// <example>
         /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
@@ -702,7 +725,7 @@ namespace LSOmni.Service
         /// Create a Hospitality Order
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : CreateHospOrder
+        /// LS Central WS2: CreateHospOrder
         /// </remarks>
         /// <example>
         /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
@@ -918,7 +941,7 @@ namespace LSOmni.Service
         /// Cancel hospitality order
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : CancelHospOrder
+        /// LS Central WS2: CancelHospOrder
         /// </remarks>
         /// <param name="storeId"></param>
         /// <param name="orderId"></param>
@@ -929,7 +952,7 @@ namespace LSOmni.Service
         /// Get Order status for hospitality order
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetHospOrderEstimatedTime and GetKotStatus
+        /// LS Central WS2: GetHospOrderEstimatedTime and GetKotStatus
         /// </remarks>
         /// <param name="storeId"></param>
         /// <param name="orderId"></param>
@@ -941,7 +964,7 @@ namespace LSOmni.Service
         /// Check Status of a Customer Order
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : CustomerOrderStatusV2 (LS Central 18.2+), CustomerOrderStatus (earlier)
+        /// LS Central WS2: CustomerOrderStatusV2 (LS Central 18.2+), CustomerOrderStatus (earlier)
         /// </remarks>
         /// <param name="orderId"></param>
         /// <returns></returns>
@@ -952,7 +975,7 @@ namespace LSOmni.Service
         /// Cancel Customer Order with lineNo option to cancel individual lines
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : CustomerOrderCancel
+        /// LS Central WS2: CustomerOrderCancel
         /// </remarks>
         /// <param name="orderId">Customer Order Id</param>
         /// <param name="storeId">Web Store Id</param>
@@ -966,7 +989,7 @@ namespace LSOmni.Service
         /// Cancel Customer Order with lineNo and quantity to cancel items from individual lines
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : CustomerOrderCancel
+        /// LS Central WS2: CustomerOrderCancel
         /// </remarks>
         /// <example>
         /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
@@ -1119,7 +1142,7 @@ namespace LSOmni.Service
         /// Create new Member Contact
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : MemberContactCreate<p/><p/>
+        /// LS Central WS2: MemberContactCreate<p/><p/>
         /// Contact will get new Card that should be used when dealing with Orders.  Card Id is the unique identifier for Contacts in LS Central<p/>
         /// Contact will be assigned to a Member Account.
         /// Member Account has Club and Club has Scheme level.<p/>
@@ -1214,7 +1237,7 @@ namespace LSOmni.Service
         /// Update Member Contact
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : MemberContactUpdate<p/><p/>
+        /// LS Central WS2: MemberContactUpdate<p/><p/>
         /// Contact Id, User name and EMail are required values for the update command to work.<p/>
         /// Any field left out or sent in empty will wipe out that information. Always fill out all 
         /// Name field, Address and phone number even if it has not changed so it will not be wiped out from LS Central
@@ -1300,8 +1323,8 @@ namespace LSOmni.Service
         /// To get basic information, use ContactGet.
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetMemberContact2<p/>
-        /// LS Central WS4 : GetMemberContactInfo
+        /// LS Central WS2: GetMemberContact2<p/>
+        /// LS Central WS4: GetMemberContactInfo
         /// </remarks>
         /// <param name="cardId">Card Id</param>
         /// <param name="numberOfTransReturned">Number of Sales History to return, 0 = all</param>
@@ -1333,8 +1356,8 @@ namespace LSOmni.Service
         /// will return any contact that will match the search value.
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetMemberContact2<p/>
-        /// LS Central WS4 : GetMemberContactInfo
+        /// LS Central WS2: GetMemberContact2<p/>
+        /// LS Central WS4: GetMemberContactInfo
         /// </remarks>
         /// <example>
         /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
@@ -1365,8 +1388,8 @@ namespace LSOmni.Service
         /// Search for Member Contact by different searchType methods.
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetMemberContact2<p/>
-        /// LS Central WS4 : GetMemberContactInfo
+        /// LS Central WS2: GetMemberContact2<p/>
+        /// LS Central WS4: GetMemberContactInfo
         /// </remarks>
         /// <example>
         /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
@@ -1395,7 +1418,7 @@ namespace LSOmni.Service
         /// Create new Member Card for existing Member Contact
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : CreateNewCardForContact
+        /// LS Central WS2: CreateNewCardForContact
         /// </remarks>
         /// <param name="contactId"></param>
         /// <param name="accountId"></param>
@@ -1410,7 +1433,7 @@ namespace LSOmni.Service
         /// Add new card to existing Member Contact
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : MemberCardToContact
+        /// LS Central WS2: MemberCardToContact
         /// </remarks>
         /// <param name="contactId"></param>
         /// <param name="cardId"></param>
@@ -1432,7 +1455,7 @@ namespace LSOmni.Service
         /// Get Point balance for Member Card
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetMemberCard
+        /// LS Central WS2: GetMemberCard
         /// </remarks>
         /// <param name="cardId"></param>
         /// <returns></returns>
@@ -1442,6 +1465,9 @@ namespace LSOmni.Service
         /// <summary>
         /// Get Point entries for Member Card
         /// </summary>
+        /// <remarks>
+        /// LS Central PageWS: memberPointEntries
+        /// </remarks>
         /// <param name="cardId"></param>
         /// <param name="dateFrom"></param>
         /// <returns></returns>
@@ -1451,6 +1477,9 @@ namespace LSOmni.Service
         /// <summary>
         /// Gets Rate value for points (f.ex. 1 point = 0.01 Kr)
         /// </summary>
+        /// <remarks>
+        /// LS Central PageWS: currencyExchangeRates
+        /// </remarks>
         /// <param name="currency">Currency to convert Loy points to, if empty Base Currency will be used</param>
         /// <returns></returns>
         [OperationContract]
@@ -1464,7 +1493,7 @@ namespace LSOmni.Service
         /// <p/>NOTE: Its recommended to use PasswordReset and PasswordChange instead
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : MemberPasswordChange
+        /// LS Central WS2: MemberPasswordChange
         /// </remarks>
         /// <param name="userName">user name (LS Central:LoginID)</param>
         /// <param name="newPassword">new password (LS Central:NewPassword)</param>
@@ -1533,7 +1562,7 @@ namespace LSOmni.Service
         /// <p/>NOTE: Its recommended to use PasswordReset and PasswordChange instead
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : MemberPasswordReset<p/><p/>
+        /// LS Central WS2: MemberPasswordReset<p/><p/>
         /// If anything fails, simply ask the user to go through the ForgotPassword again..<p/>
         /// Error PasswordInvalid = ask user for better password<p/>
         /// Error ParameterInvalid = ask user for correct userName since it does not match resetCode<p/>
@@ -1575,7 +1604,7 @@ namespace LSOmni.Service
         /// If sendEmail is true, send only email address, login is not used in this mode
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : MemberPasswordReset
+        /// LS Central WS2: MemberPasswordReset
         /// </remarks>
         /// <param name="userName">Provide Login Id (UserName) to reset existing password</param>
         /// <param name="email">Provide Email to create new login password for new Member Contact</param>
@@ -1588,7 +1617,7 @@ namespace LSOmni.Service
         /// Call PasswordReset first if oldPassword is unknown or no login/password exist for Member Contact
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : MemberPasswordChange<p/><p/>
+        /// LS Central WS2: MemberPasswordChange<p/><p/>
         /// To change password for existing contact: Send userName, newPassword, oldPassword<p/>
         /// To reset password for existing contact: Send userName, token, newPassword<p/>
         /// To register new login/password for new contact: Send userName, token, newPassword<p/>
@@ -1615,7 +1644,7 @@ namespace LSOmni.Service
         /// Change Login Id for Member Contact
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : MM_LOGIN_CHANGE
+        /// LS Nav WS1: MM_LOGIN_CHANGE
         /// </remarks>
         /// <param name="oldUserName">Current Login Id</param>
         /// <param name="newUserName">New Login Id</param>
@@ -1628,7 +1657,8 @@ namespace LSOmni.Service
         /// Login user
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : MemberLogon
+        /// LS Central WS2: MemberLogon
+        /// LS Central PageWS: memberDevices (device block check)
         /// </remarks>
         /// <param name="userName">user name</param>
         /// <param name="password">password</param>
@@ -1663,7 +1693,8 @@ namespace LSOmni.Service
         /// Social authentication login
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : MemberAuthenticatorLogin
+        /// LS Central WS2: MemberAuthenticatorLogin
+        /// LS Central PageWS: memberDevices (device block check)
         /// </remarks>
         /// <param name="authenticator"></param>
         /// <param name="authenticationId"></param>
@@ -1678,7 +1709,8 @@ namespace LSOmni.Service
         /// Login user from web page.  This function is light version of Login and returns less data.
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : MemberLogon
+        /// LS Central WS2: MemberLogon
+        /// LS Central PageWS: memberDevices (device block check)
         /// </remarks>
         /// <param name="userName">user name</param>
         /// <param name="password">password</param>
@@ -1726,7 +1758,8 @@ namespace LSOmni.Service
         /// Get stock status of an item from one or all stores
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetItemInventory<p/><p/>
+        /// LS Central WS2: GetItemInventory<p/>
+        /// LS Central PageWS: itemInventories<p/><p/>
         /// If storeId is empty, only store that are marked in LS Central with check box Loyalty or Mobile checked (Omni Section) will be returned
         /// </remarks>
         /// <param name="storeId">Store to get Stock status for, if empty get status for all stores</param>
@@ -1741,7 +1774,8 @@ namespace LSOmni.Service
         /// Get stock status for list of items from one or all stores
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetInventoryMultiple<p/><p/>
+        /// LS Central WS2: GetInventoryMultiple<p/>
+        /// LS Central PageWS: itemInventories<p/><p/>
         /// If storeId is empty, all store that have item available will be returned
         /// </remarks>
         /// <example>
@@ -1776,7 +1810,8 @@ namespace LSOmni.Service
         /// Get stock status for list of items from Store and/or Sourcing Location
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetInventoryMultipleV2<p/><p/>
+        /// LS Central WS2: GetInventoryMultipleV2<p/>
+        /// LS Central PageWS: itemInventories<p/><p/>
         /// If storeId is empty, all store that have item available will be returned.
         /// If locationId is set, only status for that location will be shown (with or without storeId)
         /// </remarks>
@@ -1872,7 +1907,7 @@ namespace LSOmni.Service
         /// Look up Item by Barcode
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetItemWithBarcode
+        /// LS Central WS2: GetItemWithBarcode
         /// LS Central OData: GetItem
         /// </remarks>
         /// <param name="barcode"></param>
@@ -1881,12 +1916,42 @@ namespace LSOmni.Service
         [OperationContract]
         LoyItem ItemGetByBarcode(string barcode, string storeId);
 
+        /// <summary>
+        /// Gets a page of Items for the mobile PLU (price look-up) list at a store
+        /// </summary>
+        /// <remarks>
+        /// LS Central Main Table data: 99009274 LSC MobilePlu<p/>
+        /// LS Central PageWS: mobilePlus
+        /// </remarks>
+        /// <param name="storeId"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="itemCategoryId"></param>
+        /// <param name="productGroupId"></param>
+        /// <param name="search"></param>
+        /// <param name="includeDetails"></param>
+        /// <returns></returns>
         [OperationContract]
         List<LoyItem> ItemsPage(string storeId, int pageSize, int pageNumber, string itemCategoryId, string productGroupId, string search, bool includeDetails);
 
+        /// <summary>
+        /// Gets all Item Categories
+        /// </summary>
+        /// <remarks>
+        /// LS Central PageWS: itemCategories
+        /// </remarks>
+        /// <returns></returns>
         [OperationContract]
         List<ItemCategory> ItemCategoriesGetAll();
 
+        /// <summary>
+        /// Gets Item Category by Id
+        /// </summary>
+        /// <remarks>
+        /// LS Central PageWS: itemCategories
+        /// </remarks>
+        /// <param name="itemCategoryId"></param>
+        /// <returns></returns>
         [OperationContract]
         ItemCategory ItemCategoriesGetById(string itemCategoryId);
 
@@ -1894,7 +1959,7 @@ namespace LSOmni.Service
         /// Gets customer specific prices
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : EcomGetCustomerPrice
+        /// LS Central WS2: EcomGetCustomerPrice
         /// </remarks>
         /// <example>
         /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
@@ -1928,6 +1993,15 @@ namespace LSOmni.Service
         [OperationContract]
         List<ItemCustomerPrice> ItemCustomerPricesGet(string storeId, string cardId, List<ItemCustomerPrice> items);
 
+        /// <summary>
+        /// Gets Product Group by Id
+        /// </summary>
+        /// <remarks>
+        /// LS Central PageWS: productGroups
+        /// </remarks>
+        /// <param name="productGroupId"></param>
+        /// <param name="includeDetails"></param>
+        /// <returns></returns>
         [OperationContract]
         ProductGroup ProductGroupGetById(string productGroupId, bool includeDetails);
 
@@ -1935,7 +2009,8 @@ namespace LSOmni.Service
         /// Gets Hierarchy setup for a Store with all Leaves and Nodes
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetHierarchy, GetHierarchyNode<p/><p/>
+        /// LS Central WS2: GetHierarchy, GetHierarchyNode<p/>
+        /// LS Central PageWS: hierarchyDates, hierarchiesV2, hierarchies<p/><p/>
         /// It is recommended for large hierarchies to use the hierarchy replication functions.
         /// It will give option on getting only changes, instead of always have to get the whole hierarchy like this function does.
         /// </remarks>
@@ -1980,8 +2055,10 @@ namespace LSOmni.Service
         /// Gets all Member Attributes that are available to assign to a Member Contact
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : MobileGetProfiles<p/><p/>
-        /// Only Member Attributes of type Boolean and Lookup Type None and are valid in Default Club will be selected
+        /// LS Central WS2: MobileGetProfiles<p/>
+        /// LS Central PageWS: mobilePosProfiles<p/><p/>
+        /// Only Member Attributes of type Boolean and Lookup Type None and are valid in Default Club will be selected.
+        /// PageWS does not apply the Default Club fallback - all clubs' matching Member Attributes are returned.
         /// </remarks>
         /// <returns>List of Member Attributes</returns>
         [OperationContract]
@@ -1991,7 +2068,7 @@ namespace LSOmni.Service
         /// Gets all Member Attributes for a Contact
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetMemberCard<p/><p/>
+        /// LS Central WS2: GetMemberCard<p/><p/>
         /// Member Attribute Value has to have Value Yes or No, even in other languages as Commerce Service for LS Central uses that Text to determent if the Attribute is selected or not for the Contact
         /// </remarks>
         /// <param name="cardId"></param>
@@ -2007,7 +2084,7 @@ namespace LSOmni.Service
         /// Get Image by Image Id and resizes the image if set
         /// </summary>
         /// <remarks>
-        /// LS Central WS4 : GetImage
+        /// LS Central WS4: GetImage
         /// </remarks>
         /// <param name="id">Image Id</param>
         /// <param name="imageSize">Resize image to specific size</param>
@@ -2026,6 +2103,9 @@ namespace LSOmni.Service
         /// <summary>
         /// Get all schemes in system
         /// </summary>
+        /// <remarks>
+        /// LS Central PageWS: memberSchemes
+        /// </remarks>
         /// <returns>List of schemes</returns>
         /// <exception cref="LSOmniServiceException">StatusCodes returned:
         /// <list type="bullet">
@@ -2054,7 +2134,7 @@ namespace LSOmni.Service
         /// Get store by Store Id
         /// </summary>
         /// <remarks>
-        /// LS Central OData : GetStores<p/><p/>
+        /// LS Central OData: GetStores<p/><p/>
         /// Data for Store Hours needs to be generated in LS Central by running COMMERCE_XXXX Scheduler Jobs
         /// </remarks>
         /// <param name="storeId">store Id</param>
@@ -2086,7 +2166,7 @@ namespace LSOmni.Service
         /// <param name="includeDetails">Include detail data, like store hours</param>
         /// <param name="includeImages">Include Image Blobs for stores</param>
         /// <remarks>
-        /// LS Central OData : GetStores<p/><p/>
+        /// LS Central OData: GetStores<p/><p/>
         /// Data for Store Hours needs to be generated in LS Central by running COMMERCE_XXXX Scheduler Jobs
         /// </remarks>
         /// <example>
@@ -2131,7 +2211,7 @@ namespace LSOmni.Service
         /// Get all stores
         /// </summary>
         /// <remarks>
-        /// LS Central OData : GetStores<p/><p/>
+        /// LS Central OData: GetStores<p/><p/>
         /// Data for Store Hours needs to be generated in LS Central by running COMMERCE_XXXX Scheduler Jobs
         /// </remarks>
         /// <returns>List of stores</returns>
@@ -2184,7 +2264,7 @@ namespace LSOmni.Service
         /// Gets all Click and Collect stores, within maxDistance from current location (latitude,longitude), that have the item available
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetItemInventory
+        /// LS Central WS2: GetItemInventory
         /// </remarks>
         /// <param name="itemId">item Id</param>
         /// <param name="variantId">variant Id</param>
@@ -2215,8 +2295,8 @@ namespace LSOmni.Service
         /// Gets Return Policy
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetReturnPolicy<p/>
-        /// LS Central PageWS : returnPolicies
+        /// LS Central WS2: GetReturnPolicy<p/>
+        /// LS Central PageWS: returnPolicies
         /// </remarks>
         /// <param name="storeId"></param>
         /// <param name="storeGroupCode"></param>
@@ -2232,6 +2312,9 @@ namespace LSOmni.Service
         /// <summary>
         /// Get Currency by Code
         /// </summary>
+        /// <remarks>
+        /// LS Central PageWS: currencies
+        /// </remarks>
         /// <param name="code"></param>
         /// <returns></returns>
         [OperationContract]
@@ -2246,7 +2329,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 99001451 LSC Barcodes<p/>
-        /// LS Central WS4 : GetBarcode
+        /// LS Central WS4: GetBarcode
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.  
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2266,7 +2349,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 4 Currency<p/>
-        /// LS Central WS4 : GetCurrency
+        /// LS Central WS4: GetCurrency
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2285,7 +2368,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 330 Currency Exchange Rate<p/>
-        /// LS Central WS4 : GetCurrencyExchRate
+        /// LS Central WS4: GetCurrencyExchRate
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2304,7 +2387,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10001413 LSC Extd. Variant Values<p/>
-        /// LS Central WS4 : GetExtdVariantValues
+        /// LS Central WS4: GetExtdVariantValues
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2324,7 +2407,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 99009064 LSC Retail Image Link<p/>
-        /// LS Central WS4 : GetImageLink
+        /// LS Central WS4: GetImageLink
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2343,7 +2426,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 99009063 LSC Retail Image<p/>
-        /// LS Central WS4 : GetWIImageBuffer
+        /// LS Central WS4: GetWIImageBuffer
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2362,7 +2445,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 5722 Item Category<p/>
-        /// LS Central WS4 : GetItemCategory
+        /// LS Central WS4: GetItemCategory
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2383,7 +2466,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Central Main Table data: 27 Item<p/>
         /// LS Central Delta Sub Tables: 10001410 LSC Item HTML ML - 10001404 LSC Item Status Link - 10000704 LSC Item Distribution<p/>
-        /// LS Central WS4 : GetWIItemBuffer
+        /// LS Central WS4: GetWIItemBuffer
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2405,7 +2488,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 5404 Item Unit of Measure<p/>
-        /// LS Central WS4 : GetItemUnitOfMeasure
+        /// LS Central WS4: GetItemUnitOfMeasure
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2426,7 +2509,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Central Main Table data: 10001414 LSC Item Variant Registration<p/>
         /// LS Central Delta Sub Tables: 10001404 LSC Item Status Link<p/>
-        /// LS Central WS4 : GetVariantRegWithStatus
+        /// LS Central WS4: GetVariantRegWithStatus
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2446,7 +2529,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 5401 Item Variant<p/>
-        /// LS Central WS4 : GetItemVariant
+        /// LS Central WS4: GetItemVariant
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2466,7 +2549,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10012861 LSC WI Price<p/>
-        /// LS Central WS4 : GetWIPrice
+        /// LS Central WS4: GetWIPrice
         /// <p/><p/>
         /// Data for this function needs to be generated in LS Central by running either COMMERCE_XXXX Scheduler Jobs.  
         /// This will generate the Best price for product based on date and offers available at the time, and store in LSC WI Price table.<p/><p/>
@@ -2488,7 +2571,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 7002 Sales Price<p/>
-        /// LS Central WS4 : GetSalesPrice, GetPriceListLine
+        /// LS Central WS4: GetSalesPrice, GetPriceListLine
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2508,7 +2591,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10000705 LSC Retail Product Group<p/>
-        /// LS Central WS4 : GetProductGroup
+        /// LS Central WS4: GetProductGroup
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2528,7 +2611,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 99001470 LSC Store<p/>
-        /// LS Central WS4 : GetStoreBuffer
+        /// LS Central WS4: GetStoreBuffer
         /// <p/><p/>
         /// Only store with Loyalty or Mobile Checked will be replicated
         /// <p/><p/>
@@ -2549,7 +2632,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 204 Unit of Measure<p/>
-        /// LS Central WS4 : GetUnitOfMeasure
+        /// LS Central WS4: GetUnitOfMeasure
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2568,7 +2651,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10001430 LSC Collection Framework<p/>
-        /// LS Central WS4 : GetCollection
+        /// LS Central WS4: GetCollection
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2587,7 +2670,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 23 Vendor<p/>
-        /// LS Central WS4 : GetVendor
+        /// LS Central WS4: GetVendor
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2606,7 +2689,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 27 Item (Lookup by [Vendor No_])<p/>
-        /// LS Central WS4 : GetVendorItem
+        /// LS Central WS4: GetVendorItem
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2626,7 +2709,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10000784 LSC Attribute<p/>
-        /// LS Central WS4 : GetAttribute
+        /// LS Central WS4: GetAttribute
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2667,7 +2750,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10000786 LSC Attribute Value<p/>
-        /// LS Central WS4 : GetAttributeValues
+        /// LS Central WS4: GetAttributeValues
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2686,7 +2769,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10000785 LSC Attribute Option Value<p/>
-        /// LS Central WS4 : GetAttributeOptionValues
+        /// LS Central WS4: GetAttributeOptionValues
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2705,7 +2788,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10000971 LSC Data Translation<p/>
-        /// LS Central WS4 : GetDataTranslation
+        /// LS Central WS4: GetDataTranslation
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2724,7 +2807,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10001410 LSC Item HTML ML<p/>
-        /// LS Central WS4 : GetItemHTML
+        /// LS Central WS4: GetItemHTML
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2743,7 +2826,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10001410 LSC Deal HTML ML<p/>
-        /// LS Central WS4 : GetDealHTML
+        /// LS Central WS4: GetDealHTML
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2761,7 +2844,8 @@ namespace LSOmni.Service
         /// Replicate Translation Language Codes
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10000972 LSC Data Translation Language
+        /// LS Central Main Table data: 10000972 LSC Data Translation Language<p/>
+        /// LS Central PageWS: dataTranslationLanguages
         /// <p/><p/>
         /// This will always replicate all Code
         /// </remarks>
@@ -2774,9 +2858,10 @@ namespace LSOmni.Service
         /// Replicate Validation Scheduling data for Hierarchy
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10000955 LSC Validation Schedule
+        /// LS Central Main Table data: 10000955 LSC Validation Schedule<p/>
+        /// LS Central PageWS: hierarchyDates, validationSchedules, dateSchedules, timeSchedules
         /// <p/><p/>
-        /// This function only checks if there are any available pre-actions for any of the tables involved in the Schedule data 
+        /// This function only checks if there are any available pre-actions for any of the tables involved in the Schedule data
         /// and if there is, the whole Validation Schedule will be replicated again.
         /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to Commerce Service for LS Central, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
@@ -2791,7 +2876,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10000920 LSC Hierarchy<p/>
-        /// LS Central WS4 : GetHierarchy
+        /// LS Central WS4: GetHierarchy
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2810,7 +2895,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10000921 LSC Hierar. Nodes<p/>
-        /// LS Central WS4 : GetHierarchyNodes
+        /// LS Central WS4: GetHierarchyNodes
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2829,7 +2914,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10000922 LSC Hierar. Node Link<p/>
-        /// LS Central WS4 : GetHierarchyLeaf
+        /// LS Central WS4: GetHierarchyLeaf
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2849,7 +2934,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Central Main Table data: 99001503 LSC Offer Line<p/>
         /// LS Central Delta Sub Tables: 10000922 LSC Hierar. Node Link<p/>
-        /// LS Central WS4 : GetHierarchyDeal
+        /// LS Central WS4: GetHierarchyDeal
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2869,7 +2954,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Central Main Table data: 99001651 LSC Deal Modifier Item<p/>
         /// LS Central Delta Sub Tables: 10000922 LSC Hierar. Node Link<p/>
-        /// LS Central WS4 : GetHierarchyDealLine
+        /// LS Central WS4: GetHierarchyDealLine
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2888,7 +2973,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 90 BOM Component<p/>
-        /// LS Central WS4 : GetWIItemRecipeBuffer
+        /// LS Central WS4: GetWIItemRecipeBuffer
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2907,7 +2992,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 99001483 LSC Information Subcode<p/>
-        /// LS Central WS4 : GetWIItemModifier
+        /// LS Central WS4: GetWIItemModifier
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2953,7 +3038,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10012862 LSC WI Discounts<p/>
-        /// LS Central WS4 : GetWIDiscounts
+        /// LS Central WS4: GetWIDiscounts
         /// <p/><p/>
         /// Data for this function needs to be generated in LS Central by running either COMMERCE_XXXX Scheduler Jobs<p/><p/>
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2973,7 +3058,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10012863 LSC WI Mix and Match Offer<p/>
-        /// LS Central WS4 : GetWIMixMatch
+        /// LS Central WS4: GetWIMixMatch
         /// <p/><p/>
         /// Data for this function needs to be generated in LS Central by running either COMMERCE_XXXX Scheduler Jobs<p/><p/>
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2995,7 +3080,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Central Main Table data: 99001453 LSC Periodic Discount<p/>
         /// LS Central Delta Sub Tables: 99001454 LSC Periodic Discount Line<p/>
-        /// LS Central WS4 : GetDiscountSetup
+        /// LS Central WS4: GetDiscountSetup
         /// <p/><p/>
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
@@ -3013,7 +3098,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 99001481 LSC Validation Period<p/>
-        /// LS Central WS4 : GetValidationPeriod
+        /// LS Central WS4: GetValidationPeriod
         /// <p/><p/>
         /// Data for this function needs to be generated in LS Central by running either COMMERCE_XXXX Scheduler Jobs<p/><p/>
         /// Most ReplEcommXX web methods work the same way.
@@ -3034,6 +3119,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 291 Shipping Agent
+        /// LS Central PageWS: shippingAgents ($expand=services)
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -3052,7 +3138,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 99009002 LSC Member Contact (with valid Membership Card)<p/>
-        /// LS Central WS4 : GetContact
+        /// LS Central WS4: GetContact
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -3071,7 +3157,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 18 Customer<p/>
-        /// LS Central WS4 : GetCustomer
+        /// LS Central WS4: GetCustomer
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -3090,7 +3176,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 9 Country/Region<p/>
-        /// LS Central WS4 : GetCountryCode
+        /// LS Central WS4: GetCountryCode
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// This function always performs full replication
@@ -3106,7 +3192,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 99001466 LSC Tender Type Setup<p/>
-        /// LS Central WS4 : GetTenderType
+        /// LS Central WS4: GetTenderType
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -3125,7 +3211,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 325 VAT Posting Setup<p/>
-        /// LS Central WS4 : GetVATPostingSetup
+        /// LS Central WS4: GetVATPostingSetup
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -3144,7 +3230,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 99001608 LSC Inventory Lookup Table<p/>
-        /// LS Central WS4 : GetInventoryStatus
+        /// LS Central WS4: GetInventoryStatus
         /// <p/><p/>
         /// Net Inventory field in Inventory Lookup Table must be updated before the replication can be done.  
         /// In Retail Product Group card, set up which products to check status for by click on Update POS Inventory Lookup button. Set store to be Web Store.
@@ -3167,6 +3253,10 @@ namespace LSOmni.Service
         /// <summary>
         /// Search different data based on SearchType value
         /// </summary>
+        /// <remarks>
+        /// LS Central PageWS: memberAttributes (SearchType.Profile)
+        /// LS Central PageWS: items (SearchType.Item)
+        /// </remarks>
         /// <param name="cardId"></param>
         /// <param name="search"></param>
         /// <param name="searchTypes"></param>
@@ -3182,7 +3272,7 @@ namespace LSOmni.Service
         /// Confirm Activity Booking
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : ConfirmActivityVx<p/><p/>
+        /// LS Central WS2: ConfirmActivityVx<p/><p/>
         /// If property [Paid] is set, then returns details for the retail basket.<p/>
         /// [BookingRef] should be assigned to the OrderLine and passed in with Order so retrieved basket payment through Commerce Service for LS Central will update the Activities payment status and assign the sales order document as payment document.<p/> 
         /// If activity type does not require [contactNo] then it is sufficient to provide client name.<p/>
@@ -3224,7 +3314,7 @@ namespace LSOmni.Service
         /// Cancel Activity
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : CancelActivity<p/><p/>
+        /// LS Central WS2: CancelActivity<p/><p/>
         /// If cancellation charges apply, then those vales will be returned and could be applied to a retail basket.
         /// </remarks>
         /// <param name="activityNo"></param>
@@ -3236,7 +3326,7 @@ namespace LSOmni.Service
         /// Returns list of available time-slots/prices for a specific location,product and date 
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetAvailabilityVx<p/><p/>
+        /// LS Central WS2: GetAvailabilityVx<p/><p/>
         /// Optional to include required resource (if only specific resource) and contactNo for accurate pricing.
         /// </remarks>
         /// <example>
@@ -3278,7 +3368,7 @@ namespace LSOmni.Service
         /// Returns list with the required or optional additional charges for the Activity as applied automatically according to the product
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetAdditionalCharges
+        /// LS Central WS2: GetAdditionalCharges
         /// </remarks>
         /// <param name="activityNo"></param>
         /// <returns></returns>
@@ -3289,7 +3379,7 @@ namespace LSOmni.Service
         /// Returns list of charges for products
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetProductChargesV2
+        /// LS Central WS2: GetProductChargesV2
         /// </remarks>
         /// <param name="locationNo"></param>
         /// <param name="productNo"></param>
@@ -3302,7 +3392,7 @@ namespace LSOmni.Service
         /// Change or insert additional charges to Activity
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : SetAdditionalChargesVx
+        /// LS Central WS2: SetAdditionalChargesVx
         /// </remarks>
         /// <example>
         /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
@@ -3344,7 +3434,7 @@ namespace LSOmni.Service
         /// 
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetReservationAdditionalCharges
+        /// LS Central WS2: GetReservationAdditionalCharges
         /// </remarks>
         /// <param name="reservationNo"></param>
         /// <returns></returns>
@@ -3355,7 +3445,7 @@ namespace LSOmni.Service
         /// Change or insert additional charges to a group reservation member
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : SetGroupAdditionalCharges
+        /// LS Central WS2: SetGroupAdditionalCharges
         /// </remarks>
         /// <example>
         /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
@@ -3397,7 +3487,7 @@ namespace LSOmni.Service
         /// 
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetGroupReservationAdditionalCharges
+        /// LS Central WS2: GetGroupReservationAdditionalCharges
         /// </remarks>
         /// <param name="reservationNo"></param>
         /// <param name="memberNo"></param>
@@ -3409,7 +3499,7 @@ namespace LSOmni.Service
         /// 
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : SetGroupMembers
+        /// LS Central WS2: SetGroupMembers
         /// </remarks>
         /// <param name="reservationNo"></param>
         /// <param name="memberSequence"></param>
@@ -3427,7 +3517,7 @@ namespace LSOmni.Service
         /// 
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : AssignGroupMember
+        /// LS Central WS2: AssignGroupMember
         /// </remarks>
         /// <param name="reservationNo"></param>
         /// <param name="memberSequence"></param>
@@ -3440,7 +3530,7 @@ namespace LSOmni.Service
         /// 
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : RemoveGroupMember
+        /// LS Central WS2: RemoveGroupMember
         /// </remarks>
         /// <param name="reservationNo"></param>
         /// <param name="memberSequence"></param>
@@ -3453,7 +3543,7 @@ namespace LSOmni.Service
         /// Returns list of Attributes which are assigned on a given Activity product, reservation or activity entry
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetAttributes
+        /// LS Central WS2: GetAttributes
         /// </remarks>
         /// <param name="type"></param>
         /// <param name="linkNo"></param>
@@ -3465,7 +3555,7 @@ namespace LSOmni.Service
         /// Action to set an attribute value on a given reservation or activity.  If attribute does not exist on the entry then its inserted otherwise updated
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : SetAttribute
+        /// LS Central WS2: SetAttribute
         /// </remarks>
         /// <param name="type"></param>
         /// <param name="linkNo"></param>
@@ -3479,7 +3569,7 @@ namespace LSOmni.Service
         /// Action to create a Reservation header into the LS Reservation table
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : InsertReservationVx
+        /// LS Central WS2: InsertReservationVx
         /// </remarks>
         /// <example>
         /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
@@ -3522,7 +3612,7 @@ namespace LSOmni.Service
         /// 
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : UpdateReservationStatus
+        /// LS Central WS2: UpdateReservationStatus
         /// </remarks>
         /// <param name="reservationNo"></param>
         /// <param name="setStatusCode"></param>
@@ -3534,7 +3624,7 @@ namespace LSOmni.Service
         /// 
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : UpdateActivityStatus
+        /// LS Central WS2: UpdateActivityStatus
         /// </remarks>
         /// <param name="activityNo"></param>
         /// <param name="setStatusCode"></param>
@@ -3546,7 +3636,7 @@ namespace LSOmni.Service
         /// Action to force update to a reservation header in the LS Reservation table.  Blank fields will be ignored
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : UpdateReservationVx
+        /// LS Central WS2: UpdateReservationVx
         /// </remarks>
         /// <example>
         /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
@@ -3589,7 +3679,7 @@ namespace LSOmni.Service
         /// Sell Membership (membership type) to Member Contact
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : SellMembership
+        /// LS Central WS2: SellMembership
         /// </remarks>
         /// <param name="contactNo">Member Contact</param>
         /// <param name="membersShipType"></param>
@@ -3601,7 +3691,7 @@ namespace LSOmni.Service
         /// Cancels a specific membership and validates if cancellation is in order (i.e. compares to commitment period)
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : CancelMembership
+        /// LS Central WS2: CancelMembership
         /// </remarks>
         /// <param name="contactNo">Member Contact</param>
         /// <param name="memberShipNo"></param>
@@ -3614,7 +3704,7 @@ namespace LSOmni.Service
         /// Get availability for specific resource, for a specific date and location (all required parameters)
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetResourceAvailability
+        /// LS Central WS2: GetResourceAvailability
         /// </remarks>
         /// <param name="locationNo"></param>
         /// <param name="activityDate"></param>
@@ -3629,7 +3719,7 @@ namespace LSOmni.Service
         /// Get availability for all active resource in specific resource group, for a specific date and location (all required parameters)
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetResourceGroupAvailability
+        /// LS Central WS2: GetResourceGroupAvailability
         /// </remarks>
         /// <param name="locationNo"></param>
         /// <param name="activityDate"></param>
@@ -3644,7 +3734,7 @@ namespace LSOmni.Service
         /// Check if valid access for either membership or ticketing.  
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : CheckAccess
+        /// LS Central WS2: CheckAccess
         /// </remarks>
         /// <param name="searchReference">Either TicketBarcode, Member No. or Membership No. LocationNo</param>
         /// <param name="locationNo">Optional Activity Location</param>
@@ -3660,7 +3750,7 @@ namespace LSOmni.Service
         /// Get Availability Token
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetAvailabilityToken
+        /// LS Central WS2: GetAvailabilityToken
         /// </remarks>
         /// <param name="locationNo"></param>
         /// <param name="productNo"></param>
@@ -3675,7 +3765,7 @@ namespace LSOmni.Service
         /// 
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : ExtendToken
+        /// LS Central WS2: ExtendToken
         /// </remarks>
         /// <param name="tokenId"></param>
         /// <param name="seconds"></param>
@@ -3687,7 +3777,7 @@ namespace LSOmni.Service
         /// 
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : CancelToken
+        /// LS Central WS2: CancelToken
         /// </remarks>
         /// <param name="tokenId"></param>
         /// <returns></returns>
@@ -3698,7 +3788,7 @@ namespace LSOmni.Service
         /// Create Group Reservation
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : InsertGroupReservationVx
+        /// LS Central WS2: InsertGroupReservationVx
         /// </remarks>
         /// <example>
         /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
@@ -3741,7 +3831,7 @@ namespace LSOmni.Service
         /// Update Group reservation header.  Blank fields will be ignored
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : UpdateGroupReservationVx
+        /// LS Central WS2: UpdateGroupReservationVx
         /// </remarks>
         /// <example>
         /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
@@ -3784,7 +3874,7 @@ namespace LSOmni.Service
         /// Confirm Group Activity Booking
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : ConfirmGroupActivityVx<p/><p/>
+        /// LS Central WS2: ConfirmGroupActivityVx<p/><p/>
         /// If property [Paid] is set, then returns details for the retail basket.<p/>
         /// [BookingRef] should be assigned to the OrderLine and passed in with Order so retrieved basket payment through Commerce Service for LS Central will update the Activities payment status and assign the sales order document as payment document.<p/> 
         /// If activity type does not require [contactNo] then it is sufficient to provide client name.<p/>
@@ -3835,7 +3925,7 @@ namespace LSOmni.Service
         /// Delete Group Activity
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : DeleteGroupActivity
+        /// LS Central WS2: DeleteGroupActivity
         /// </remarks>
         /// <param name="groupNo"></param>
         /// <param name="lineNo"></param>
@@ -3847,7 +3937,7 @@ namespace LSOmni.Service
         /// 
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : UpdateGroupHeaderStatus
+        /// LS Central WS2: UpdateGroupHeaderStatus
         /// </remarks>
         /// <param name="groupNo"></param>
         /// <param name="statusCode"></param>
@@ -3859,7 +3949,7 @@ namespace LSOmni.Service
         /// 
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : PreSellActivityProduct
+        /// LS Central WS2: PreSellActivityProduct
         /// </remarks>
         /// <param name="locationNo"></param>
         /// <param name="productNo"></param>
@@ -3878,7 +3968,7 @@ namespace LSOmni.Service
         /// Returns list of Activity Products
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : UploadActivityProducts
+        /// LS Central WS2: UploadActivityProducts
         /// </remarks>
         /// <returns></returns>
         [OperationContract]
@@ -3888,7 +3978,7 @@ namespace LSOmni.Service
         /// Returns list of Activity Types
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : UploadActivityTypes
+        /// LS Central WS2: UploadActivityTypes
         /// </remarks>
         /// <returns></returns>
         [OperationContract]
@@ -3898,7 +3988,7 @@ namespace LSOmni.Service
         /// Returns list of Activity Locations
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : UploadActivityLocations
+        /// LS Central WS2: UploadActivityLocations
         /// </remarks>
         /// <returns></returns>
         [OperationContract]
@@ -3908,9 +3998,9 @@ namespace LSOmni.Service
         /// Returns list of Reservations for Member Contact or list of Activities assigned to a Reservation
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : <p/>
-        /// With [contactNo, activityType] UploadClientBookingsV2<p/>
-        /// With [reservationNo] : UploadReservationActivities
+        /// LS Central WS2: <p/>
+        /// With [contactNo, activityType]: UploadClientBookingsV2<p/>
+        /// With [reservationNo]: UploadReservationActivities
         /// </remarks>
         /// <param name="reservationNo">Look up Activities for a Reservation</param>
         /// <param name="contactNo">Look up Reservations for a Contact</param>
@@ -3923,7 +4013,7 @@ namespace LSOmni.Service
         /// Look up Reservation Headers
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetActReservations
+        /// LS Central WS2: GetActReservations
         /// </remarks>
         /// <param name="reservationNo"></param>
         /// <param name="reservationType"></param>
@@ -3938,7 +4028,7 @@ namespace LSOmni.Service
         /// Returns list of Active Promotions (for information purposes only)
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : UploadPromotions
+        /// LS Central WS2: UploadPromotions
         /// </remarks>
         /// <returns></returns>
         [OperationContract]
@@ -3948,7 +4038,7 @@ namespace LSOmni.Service
         /// Returns list of Member Contacts issued (sold) allowances
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : UploadPurchasedAllowances
+        /// LS Central WS2: UploadPurchasedAllowances
         /// </remarks>
         /// <param name="contactNo">Member Contact</param>
         /// <returns></returns>
@@ -3959,7 +4049,7 @@ namespace LSOmni.Service
         /// Returns list of all entries charged to the Member Contact customer account (A/R). The Account no. is based on the contact business relation settings
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : UploadCustomerEntries
+        /// LS Central WS2: UploadCustomerEntries
         /// </remarks>
         /// <param name="contactNo">Member Contact</param>
         /// <param name="customerNo"></param>
@@ -3971,7 +4061,7 @@ namespace LSOmni.Service
         /// Returns list of Membership types (products) which are active and can be sold 
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : UploadMembershipProducts
+        /// LS Central WS2: UploadMembershipProducts
         /// </remarks>
         /// <returns></returns>
         [OperationContract]
@@ -3981,7 +4071,7 @@ namespace LSOmni.Service
         /// Returns list of all subscription charges posted towards their membership account. Draft unposted entries are not included
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : UploadMembershipSubscriptionCharges
+        /// LS Central WS2: UploadMembershipSubscriptionCharges
         /// </remarks>
         /// <param name="contactNo">Member Contact</param>
         /// <returns></returns>
@@ -3992,7 +4082,7 @@ namespace LSOmni.Service
         /// Returns list of Member Contact visit registrations
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : UploadAdmissionEntries
+        /// LS Central WS2: UploadAdmissionEntries
         /// </remarks>
         /// <param name="contactNo">Member Contact</param>
         /// <returns></returns>
@@ -4003,7 +4093,7 @@ namespace LSOmni.Service
         /// Returns list of the Member Contact current active or on hold memberships
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : UploadMembershipEntries
+        /// LS Central WS2: UploadMembershipEntries
         /// </remarks>
         /// <param name="contactNo">Member Contact</param>
         /// <returns></returns>
@@ -4014,7 +4104,7 @@ namespace LSOmni.Service
         /// Get list of activities assigned to a resource, required parameters Resource code (number), Date from and to date
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : UploadResourceActivities
+        /// LS Central WS2: UploadResourceActivities
         /// </remarks>
         /// <param name="locationNo"></param>
         /// <param name="resourceNo"></param>
@@ -4028,7 +4118,7 @@ namespace LSOmni.Service
         /// Get list of all resources 
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : UploadActivityResources
+        /// LS Central WS2: UploadActivityResources
         /// </remarks>
         /// <returns></returns>
         [OperationContract]
@@ -4042,7 +4132,7 @@ namespace LSOmni.Service
         /// Gets Profile setup for SPG App
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : SPGProfileGet
+        /// LS Central WS2: SPGProfileGet
         /// </remarks>
         /// <param name="profileId"></param>
         /// <param name="storeNo"></param>
@@ -4054,7 +4144,7 @@ namespace LSOmni.Service
         /// Check security status of a profile
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : SecurityCheckProfile
+        /// LS Central WS2: SecurityCheckProfile
         /// </remarks>
         /// <param name="orderNo"></param>
         /// <param name="storeNo"></param>
@@ -4063,8 +4153,11 @@ namespace LSOmni.Service
         bool SecurityCheckProfile(string orderNo, string storeNo);
 
         /// <summary>
-        /// 
+        /// Gets the most recent SPG security check log entry for an order
         /// </summary>
+        /// <remarks>
+        /// LS Central PageWS:spgSecurityCheckLogs
+        /// </remarks>
         /// <param name="orderNo"></param>
         /// <returns></returns>
         [OperationContract]
@@ -4074,7 +4167,7 @@ namespace LSOmni.Service
         /// Allow app to open Gate when exiting the store
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : SPGOpenGate
+        /// LS Central WS2: SPGOpenGate
         /// </remarks>
         /// <param name="qrCode"></param>
         /// <param name="storeNo"></param>
@@ -4090,7 +4183,7 @@ namespace LSOmni.Service
         /// Add or delete a payment card token
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : SetTokenEntry, SetMemberCardToken, DeleteMemberCardToken
+        /// LS Central WS2: SetTokenEntry, SetMemberCardToken, DeleteMemberCardToken
         /// </remarks>
         /// <example>
         /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
@@ -4129,7 +4222,7 @@ namespace LSOmni.Service
         /// Get Payment token
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetTokenEntry, GetMemberCardToken
+        /// LS Central WS2: GetTokenEntry, GetMemberCardToken
         /// </remarks>
         /// <param name="accountNo"></param>
         /// <param name="hotelToken">Get token for LS Hotels</param>

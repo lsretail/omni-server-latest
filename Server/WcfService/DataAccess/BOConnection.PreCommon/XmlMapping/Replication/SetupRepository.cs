@@ -196,7 +196,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
             return list;
         }
 
-        public decimal GetPointRate(XMLTableData table)
+        public decimal GetCurrExchangeRate(XMLTableData table)
         {
             if (table == null || table.NumberOfValues == 0)
                 return 0;

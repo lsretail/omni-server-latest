@@ -14,6 +14,9 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
         {
             Description = string.Empty;
             ItemCategoryId = string.Empty;
+            CategoryName = string.Empty;
+            ShelfLabelDescription = string.Empty;
+            ItemTemplateCode = string.Empty;
             Items = new List<LoyItem>();
             Images = new List<ImageView>();
         }
@@ -43,6 +46,12 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
         public string Description { get; set; }
         [DataMember]
         public string ItemCategoryId { get; set; }
+        [DataMember]
+        public string CategoryName { get; set; }
+        [DataMember]
+        public string ShelfLabelDescription { get; set; }
+        [DataMember]
+        public string ItemTemplateCode { get; set; }
         [DataMember]
         public List<LoyItem> Items { get; set; }
         [DataMember]
