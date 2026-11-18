@@ -97,7 +97,7 @@ namespace LSOmni.BLL.Loyalty
                         Title = title,
                         Body = body
                     },
-                    Token = token
+                    Fid = token
                 };
 
                 // Send the message

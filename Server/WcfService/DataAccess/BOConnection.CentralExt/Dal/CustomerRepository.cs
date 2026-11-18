@@ -24,8 +24,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                          "mt.[E-Mail],mt.[Home Page],mt.[Phone No_],mt.[Mobile Phone No_],mt.[Currency Code],mt.[VAT Bus_ Posting Group],mt.[Blocked],mt.[Prices Including VAT]," +
                          "mt.[Customer Price Group],mt.[Customer Disc_ Group],mt.[Payment Terms Code],mt.[Location Code]";
 
-            sqlfrom = " FROM [" + navCompanyName + "Customer$437dbf0e-84ff-417a-965d-ed2bb9650972] mt" +
-                      " JOIN [" + navCompanyName + "Customer$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] mt2 ON mt2.[No_]=mt.[No_]";
+            sqlfrom = " FROM [" + navCompanyName + "Customer$437dbf0e-84ff-417a-965d-ed2bb9650972] mt";
+            
+            if (LSCVersion >= new Version("29.0"))
+                sqlcolumns = sqlcolumns.Replace("mt2.", "mt."); // from Central 29 the extension fields are in the main table
+            else
+                sqlfrom += " JOIN [" + navCompanyName + "Customer$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] mt2 ON mt2.[No_]=mt.[No_]";
         }
 
         public List<ReplCustomer> ReplicateCustomer(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

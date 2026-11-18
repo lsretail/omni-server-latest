@@ -147,11 +147,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             // get records
             string sql = string.Empty;
             string sqlfrom = " FROM [" + navCompanyName + "Sales Price$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
-                      "JOIN [" + navCompanyName + "Sales Price$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] mt2 " +
+                      ((LSCVersion >= new Version("29.0")) ? string.Empty :
+                       "JOIN [" + navCompanyName + "Sales Price$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] mt2 " +
                       "ON mt2.[Item No_]=mt.[Item No_] AND mt2.[Sales Type]=mt.[Sales Type] AND mt2.[Sales Code]=mt.[Sales Code] " +
                       "AND mt2.[Starting Date]=mt.[Starting Date] AND mt2.[Currency Code]=mt.[Currency Code] " +
                       "AND mt2.[Variant Code]=mt.[Variant Code] AND mt2.[Unit of Measure Code]=mt.[Unit of Measure Code] " +
-                      "AND mt2.[Minimum Quantity]=mt.[Minimum Quantity]" + 
+                      "AND mt2.[Minimum Quantity]=mt.[Minimum Quantity]") +
                       ",[" + navCompanyName + "LSC Store Price Group$5ecfc871-5d82-43f1-9c54-59685e82318d] spg";
             string where = " AND spg.[Store] = '" + storeId + "' AND mt.[Sales Code]=spg.[Price Group Code]";
 
@@ -171,6 +172,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                   "mt.[Variant Code],mt.[Unit of Measure Code],mt.[Minimum Quantity],mt.[Unit Price]," +
                   "mt.[Price Includes VAT],mt2.[LSC Unit Price Including VAT$5ecfc871-5d82-43f1-9c54-59685e82318d],mt.[VAT Bus_ Posting Gr_ (Price)],spg.[Priority]" + 
                   sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, where, "mt.[Item No_]", storeId, true);
+
+            if (LSCVersion >= new Version("29.0"))
+                sql = sql.Replace("mt2.", "mt.");
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -263,8 +267,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             // get records remaining
             string sql = string.Empty;
             string sqlfrom = " FROM [" + navCompanyName + "Price List Line$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
-                             "JOIN [" + navCompanyName + "Price List Line$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] mt2 " +
-                             "ON mt2.[Price List Code]=mt.[Price List Code] AND mt2.[Line No_]=mt.[Line No_] " +
+                             ((LSCVersion >= new Version("29.0")) ? string.Empty : "JOIN [" + navCompanyName + "Price List Line$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] mt2 " +
+                             "ON mt2.[Price List Code]=mt.[Price List Code] AND mt2.[Line No_]=mt.[Line No_] ") +
                              "JOIN [" + navCompanyName + "LSC Store Price Group$5ecfc871-5d82-43f1-9c54-59685e82318d] spg " +
                              "ON spg.[Store] = '" + storeId + "' AND spg.[Price Group Code]=mt.[Source No_]";
             string where = " AND mt.[Asset Type]=10";
@@ -285,6 +289,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                 "mt.[Unit Price],mt.[Price Includes VAT],mt.[VAT Bus_ Posting Gr_ (Price)]," +
                 "mt2.[LSC Unit Price Including VAT$5ecfc871-5d82-43f1-9c54-59685e82318d],spg.[Priority]" +
                 sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, where, "mt.[Asset No_]", storeId, true);
+
+            if (LSCVersion >= new Version("29.0"))
+                sql = sql.Replace("mt2.", "mt.");
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -367,8 +374,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
 
             // get records remaining
             string sqlfrom = " FROM [" + navCompanyName + "Price List Line$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
-                             "JOIN [" + navCompanyName + "Price List Line$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] mt2 " +
-                             "ON mt2.[Price List Code]=mt.[Price List Code] AND mt2.[Line No_]=mt.[Line No_] " +
+                             ((LSCVersion >= new Version("29.0")) ? string.Empty : "JOIN [" + navCompanyName + "Price List Line$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] mt2 " +
+                             "ON mt2.[Price List Code]=mt.[Price List Code] AND mt2.[Line No_]=mt.[Line No_] ") +
                              "JOIN [" + navCompanyName + "LSC Store Price Group$5ecfc871-5d82-43f1-9c54-59685e82318d] spg " +
                              "ON spg.[Store] = '" + storeId + "' AND spg.[Price Group Code]=mt.[Source No_]";
             string where = " AND mt.[Asset Type]=10";
@@ -382,6 +389,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                 "mt.[Unit Price],mt.[Price Includes VAT],mt.[VAT Bus_ Posting Gr_ (Price)]," +
                 "mt2.[LSC Unit Price Including VAT$5ecfc871-5d82-43f1-9c54-59685e82318d],spg.[Priority]" +
                 sqlfrom + GetWhereStatementWithStoreDist(true, keys, where, "mt.[Asset No_]", storeId, true);
+
+            if (LSCVersion >= new Version("29.0"))
+                sql = sql.Replace("mt2.", "mt.");
 
             List<ReplPrice> list = new List<ReplPrice>();
             using (SqlConnection connection = new SqlConnection(connectionString))

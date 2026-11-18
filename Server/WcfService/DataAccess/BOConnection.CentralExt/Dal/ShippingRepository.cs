@@ -75,8 +75,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                     {
                         command.CommandText = "SELECT mt.[Code],mt.[Name],mt2.[LSC Web Store Customer No_$5ecfc871-5d82-43f1-9c54-59685e82318d],cu.[VAT Bus_ Posting Group] " +
                                               "FROM [" + navCompanyName + "Country_Region$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
-                                              "JOIN [" + navCompanyName + "Country_Region$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] mt2 ON mt2.[Code]=mt.[Code] " +
+                                              ((LSCVersion >= new Version("29.0")) ? string.Empty : "JOIN [" + navCompanyName + "Country_Region$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] mt2 ON mt2.[Code]=mt.[Code] ") +
                                               "LEFT JOIN [" + navCompanyName + "Customer$437dbf0e-84ff-417a-965d-ed2bb9650972] cu ON cu.[No_]=mt2.[LSC Web Store Customer No_$5ecfc871-5d82-43f1-9c54-59685e82318d]";
+
+                        if (LSCVersion >= new Version("29.0"))
+                            command.CommandText = command.CommandText.Replace("mt2.", "mt."); // from Central 29 the extension fields are in the main table
                     }
                     else
                     {

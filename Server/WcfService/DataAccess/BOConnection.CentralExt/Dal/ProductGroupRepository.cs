@@ -31,7 +31,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
 
             List<JscKey> keys = GetPrimaryKeys("LSC Retail Product Group$5ecfc871-5d82-43f1-9c54-59685e82318d");
             string prevLastKey = lastKey;
-            string sqlfrom2 = sqlfrom + " LEFT JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] it ON it.[LSC Retail Product Code$5ecfc871-5d82-43f1-9c54-59685e82318d]=mt.[Code]";
+            string sqlfrom2 = sqlfrom + " LEFT JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972" + ((LSCVersion >= new Version("29.0")) ? string.Empty : "$ext") + "] it ON it.[LSC Retail Product Code$5ecfc871-5d82-43f1-9c54-59685e82318d]=mt.[Code]";
 
             // get records remaining
             string sql = string.Empty;
@@ -129,7 +129,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
         {
             ProcessLastKey(lastKey, out string mainKey, out string delKey);
             List<JscKey> keys = GetPrimaryKeys("LSC Retail Product Group$5ecfc871-5d82-43f1-9c54-59685e82318d");
-            string sqlFrom2 = sqlfrom + " LEFT JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] it ON it.[LSC Retail Product Code$5ecfc871-5d82-43f1-9c54-59685e82318d]=mt.[Code]";
+            string sqlFrom2 = sqlfrom + " LEFT JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972" + ((LSCVersion >= new Version("29.0")) ? string.Empty : "$ext") + "] it ON it.[LSC Retail Product Code$5ecfc871-5d82-43f1-9c54-59685e82318d]=mt.[Code]";
 
             // get records remaining
             string sql = "SELECT COUNT(DISTINCT mt.[Code])" + sqlFrom2 + GetWhereStatementWithStoreDist(true, keys, "it.[No_]", storeId, false);

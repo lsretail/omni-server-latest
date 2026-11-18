@@ -24,8 +24,18 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                          "(SELECT TOP(1) il.[Image Id] FROM [" + navCompanyName + "LSC Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il " +
                          "WHERE il.[KeyValue]=mt2.[LSC Item No_$5ecfc871-5d82-43f1-9c54-59685e82318d] AND il.[TableName]='Item' " +
                          "ORDER BY il.[Display Order]) AS ImageId";
-            sqlfrom = " FROM [" + navCompanyName + "BOM Component$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] mt2" +
-                      " JOIN [" + navCompanyName + "BOM Component$437dbf0e-84ff-417a-965d-ed2bb9650972] mt ON mt.[Parent Item No_]=mt2.[Parent Item No_] AND mt.[Line No_]=mt2.[Line No_]";
+            
+            if (LSCVersion >= new Version("29.0"))
+            {
+                // from Central 29 the extension fields are in the main table
+                sqlcolumns = sqlcolumns.Replace("mt2.", "mt.");
+                sqlfrom = " FROM [" + navCompanyName + "BOM Component$437dbf0e-84ff-417a-965d-ed2bb9650972] mt";
+            }
+            else
+            {
+                sqlfrom = " FROM [" + navCompanyName + "BOM Component$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] mt2" +
+                          " JOIN [" + navCompanyName + "BOM Component$437dbf0e-84ff-417a-965d-ed2bb9650972] mt ON mt.[Parent Item No_]=mt2.[Parent Item No_] AND mt.[Line No_]=mt2.[Line No_]";
+            }
         }
 
         public List<ReplItemRecipe> ReplicateItemRecipe(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

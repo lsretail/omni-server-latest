@@ -43,8 +43,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                          "(SELECT TOP(1) sl.[Blocked on eCommerce] FROM [" + navCompanyName + "LSC Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
                          "WHERE sl.[Item No_]=mt.[No_] AND sl.[Variant Dimension 1 Code]='' AND sl.[Variant Code]='' AND sl.[Starting Date]<GETDATE() AND sl.[Blocked on eCommerce]=1) AS BlockEcom";
 
-            sqlFrom = " FROM [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] mt" +
-                      " JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] mt2 ON mt2.[No_]=mt.[No_] ";
+            sqlFrom = " FROM [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] mt ";
+            
+            if (LSCVersion >= new Version("29.0"))
+                sqlColumns = sqlColumns.Replace("mt2.", "mt."); // from Central 29 the extension fields are in the main table
+            else
+                sqlFrom += "JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] mt2 ON mt2.[No_]=mt.[No_] ";
 
             if (LSCVersion >= new Version("22.2"))
             {
@@ -629,6 +633,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             sqlFrom +
             " LEFT JOIN [" + navCompanyName + "LSC Retail Product Group$5ecfc871-5d82-43f1-9c54-59685e82318d] pg ON pg.[Code]=mt2.[LSC Retail Product Code$5ecfc871-5d82-43f1-9c54-59685e82318d]" +
             " WHERE (1=1)";
+
+            if (LSCVersion >= new Version("29.0"))
+                sql = sql.Replace("mt2.", "mt."); // from Central 29 the extension fields are in the main table
 
             if (string.IsNullOrWhiteSpace(itemCategoryId) == false)
                 sql += " AND pg.[Item Category Code]='" + itemCategoryId + "'";

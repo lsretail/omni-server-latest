@@ -26,11 +26,16 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             if (LSCVersion >= new Version("20.3"))
                 sqlcolumns += ",mt2.[LSC Ecom Selection$5ecfc871-5d82-43f1-9c54-59685e82318d]";
 
-            sqlfrom = " FROM [" + navCompanyName + "Item Unit of Measure$437dbf0e-84ff-417a-965d-ed2bb9650972] mt" +
-                      " JOIN [" + navCompanyName + "Item Unit of Measure$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] mt2" +
-                      " ON mt2.[Item No_]=mt.[Item No_] AND mt2.[Code]=mt.[Code]" +
-                      " JOIN [" + navCompanyName + "Unit of Measure$437dbf0e-84ff-417a-965d-ed2bb9650972] um" +
-                      " ON um.[Code]=mt.[Code]";
+            sqlfrom = " FROM [" + navCompanyName + "Item Unit of Measure$437dbf0e-84ff-417a-965d-ed2bb9650972] mt";
+            
+            if (LSCVersion >= new Version("29.0"))
+                sqlcolumns = sqlcolumns.Replace("mt2.", "mt."); // from Central 29 the extension fields are in the main table
+            else
+                sqlfrom += " JOIN [" + navCompanyName + "Item Unit of Measure$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] mt2" +
+                           " ON mt2.[Item No_]=mt.[Item No_] AND mt2.[Code]=mt.[Code]";
+
+            sqlfrom += " JOIN [" + navCompanyName + "Unit of Measure$437dbf0e-84ff-417a-965d-ed2bb9650972] um" +
+                       " ON um.[Code]=mt.[Code]";
         }
 
         public List<ReplItemUnitOfMeasure> ReplicateItemUOM(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

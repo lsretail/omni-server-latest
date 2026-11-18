@@ -224,8 +224,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                                           "mt.[Ship-to Post Code],mt.[Ship-to County],mt.[Ship-to Country_Region Code]," +
                                           "mt.[External Document No_],mt.[Shipping Agent Code],mt.[Shipping Agent Service Code],mt.[Package Tracking No_] " +
                                           "FROM [" + navCompanyName + "Sales Shipment Header$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
-                                          "JOIN [" + navCompanyName + "Sales Shipment Header$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] mt2 ON mt2.[No_]=mt.[No_] " +
-                                          "WHERE mt2.[LSC Customer Order ID$5ecfc871-5d82-43f1-9c54-59685e82318d]=@no";
+                                          ((LSCVersion >= new Version("29.0")) ? string.Empty : "JOIN [" + navCompanyName + "Sales Shipment Header$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] mt2 ON mt2.[No_]=mt.[No_] ") +
+                                          "WHERE " + ((LSCVersion >= new Version("29.0")) ? "mt" : "mt2") + ".[LSC Customer Order ID$5ecfc871-5d82-43f1-9c54-59685e82318d]=@no";
                     command.Parameters.AddWithValue("@no", orderId);
                     TraceSqlCommand(command);
                     connection.Open();
@@ -722,7 +722,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                     {
                         //Awarded points are linked to Sales Invoice Id
 
-                        command.CommandText = "SELECT [No_] FROM [" + navCompanyName + "Sales Invoice Header$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] WHERE [LSC Customer Order ID$5ecfc871-5d82-43f1-9c54-59685e82318d]=@id";
+                        command.CommandText = "SELECT [No_] FROM [" + navCompanyName + "Sales Invoice Header$437dbf0e-84ff-417a-965d-ed2bb9650972" + ((LSCVersion >= new Version("29.0")) ? string.Empty : "$ext") + "] WHERE [LSC Customer Order ID$5ecfc871-5d82-43f1-9c54-59685e82318d]=@id";
                         command.Parameters.AddWithValue("@id", custId);
                         TraceSqlCommand(command);
                         string salesId = (string)command.ExecuteScalar();

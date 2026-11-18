@@ -23,7 +23,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
 
             sqlfrom = " FROM [" + navCompanyName + "Item Category$437dbf0e-84ff-417a-965d-ed2bb9650972] mt" +
                       " LEFT JOIN [" + navCompanyName + "LSC Retail Product Group$5ecfc871-5d82-43f1-9c54-59685e82318d] pg ON pg.[Item Category Code]=mt.[Code]" +
-                      " LEFT JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] it ON it.[LSC Retail Product Code$5ecfc871-5d82-43f1-9c54-59685e82318d]=pg.[Code]";
+                      " LEFT JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972" + ((LSCVersion >= new Version("29.0")) ? string.Empty : "$ext") + "] it ON it.[LSC Retail Product Code$5ecfc871-5d82-43f1-9c54-59685e82318d]=pg.[Code]";
         }
 
         public List<ReplItemCategory> ReplicateItemCategory(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
